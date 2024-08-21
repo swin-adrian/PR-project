@@ -1,0 +1,531 @@
+/*
+filename: style.css
+author: Adrian Soe Myint created: 19/08//2024
+last modified: 19/08/2024
+description: stylings for CWA Assignmebnt 1
+*/
+
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+* {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+	text-align: center;
+	color: #403f4c;
+	font-size: 20px;
+}
+
+/* Basic styling for the navigation menu */
+.navi_menu {
+    overflow: hidden;
+    background-color: #B76D68;
+    z-index: 1001;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    flex-wrap: wrap; 
+}
+
+.navi_menu a {
+    font-size: 12px;
+    color: white;
+    text-align: center;
+    padding: 20px 25px;
+    text-decoration: none;
+    z-index: 1001;
+}
+
+.navi_menu a.active {
+    background-color: #403F4C;
+}
+
+.navi_menu a:hover {
+    background-color: #b8837f;
+}
+
+/* Responsive styling for the navigation menu*/
+@media screen and (max-width: 768px) {
+    .navi_menu {
+        flex-direction: column; 
+        padding: 0; 
+    }
+
+    .navi_menu a {
+        float: none; 
+        display: block; 
+        width: 100%; 
+        text-align: center; 
+        padding: 15px; 
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .navi_menu a {
+        font-size: 14px; 
+        padding: 10px; 
+    }
+}
+
+
+
+
+#background-video {
+	object-fit: cover;
+	top: 0;
+	left: 0;
+	height: 97%;
+	width: 100%
+}
+
+body {
+	margin: 0px 0px 0px 0px;
+	overflow-x: hidden;
+	width: 100%;
+	height: 100%;
+	background-color: #FFFF;
+}
+
+
+/*logo*/
+#brand1 {
+    position: absolute;
+    font: bold 10vw Poppins, sans-serif; 
+    text-align: center;
+    text-transform: uppercase;
+    color: #ddd;
+    top: 0.01em;
+    left: 50%;
+    transform: translateX(-50%); 
+    white-space: nowrap;
+    max-width: 100%;
+    box-sizing: border-box;
+    z-index: 2; /* Ensures the brand text is above the form */
+}
+
+.form-container {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+}
+
+#tagline {
+    position: absolute;
+    font: bolder 2vw Poppins, sans-serif; 
+    text-align: center;
+    color: white;
+    top: 22em;
+    left: 50%;
+    transform: translateX(-50%); 
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/*making logo responsive to screen size*/
+@media (max-width: 768px) {
+    #brand1 {
+        font-size: 8vw; 
+        top: 5em; 
+    }
+
+    #tagline {
+        font-size: 2vw; 
+        top: 28em; 
+    }
+}
+
+@media (max-width: 480px) {
+    #brand1 {
+        font-size: 12vw; 
+        top: 4em;
+    }
+
+    #tagline {
+        font-size: 2vw;
+        top: 37em; 
+    }
+}
+
+
+.logo-color
+{
+	color: #B76D68;
+}
+
+
+
+
+#company_intro {
+    padding: 2em;
+    background-color: #f9f9f9; 
+    color: #333; 
+    border-radius: 8px; 
+    margin: 2em auto; 
+    max-width: 800px; 
+    text-align: center; 
+}
+
+#company_intro h2 {
+    font-size: 2em; 
+    color: #333; 
+    margin-bottom: 0.5em; 
+}
+
+#company_intro p {
+    font-size: 1.2em; 
+    line-height: 1.5; 
+}
+
+
+/*background image in index.html*/
+#background_image {
+	object-fit: cover;
+	filter: brightness(70%);
+	top: 0;
+	left: 0;
+	height: 97%;
+	width: 100%
+	
+}
+
+article {
+	text-align: justify;
+	font-size: 14px;
+	clear: both;
+}
+
+
+
+@media screen and (max-width: 480px) 
+{
+    aside {
+        display: none; /* Hide the aside element */
+    }
+}
+
+main {
+    padding: 10px;
+}
+
+/* Product Overview Section */
+section {
+	overflow: hidden;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #fff; 
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+section h3 {
+    color: #403F4C; 
+    margin-bottom: 10px;
+}
+
+section p {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+/* Image Styling */
+img {
+	display: block;
+	margin: 0 auto;
+	width: 300px;
+	height: 300px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+
+div img {
+	display: block;
+	margin: 0 auto;
+	width: 300px;
+	height: 300px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* List Styling */
+ul, ol {
+    margin-left: 20px;
+}
+
+ul li, ol li {
+    margin-bottom: 10px;
+}
+
+/* Aside Styles */
+
+
+aside {
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    width: 25%;
+    padding: 15px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+aside h3 {
+    color: #403F4C;
+    margin-bottom: 15px;
+}
+
+aside ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+aside ul li {
+    margin-bottom: 10px;
+}
+
+aside ul li a {
+    text-decoration: none;
+    color: #403F4C;
+}
+
+aside ul li a:hover {
+    color: #B76D68;
+}
+
+
+/*definition list - terms*/
+dt {
+	display: table;
+	float: left;
+	width: auto;
+	text-align: right;
+}
+
+dt ::after {
+	content: ":"; 
+}
+
+
+
+/*definition list container for personal information*/
+#define_list {
+	float: left;
+	padding-top: 2em;
+	padding-left: 20em;
+}
+
+
+/*object data for resume in pdf*/
+
+footer {
+		bottom: 10px;
+		left: 0;
+		width: 100%;
+		font: 10px Arial, sans-serif;
+		color: black;
+		text-align: center;
+		background-color: white;
+		padding-bottom: 10px;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, #403F4C, #B76D68, #403F4C);
+    margin: 5px 0; 
+    width: 100%; 
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.7; 
+}
+
+
+
+
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0 10px;
+    color: #403F4C;
+}
+
+label {
+    margin: 10px 0 5px;
+    width: 100%;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 100px;
+}
+
+.radio-group, .checkbox-group {
+    margin-bottom: 10px;
+}
+
+.radio-group label, .checkbox-group label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #e65c00;
+}
+
+
+/* About me Style */
+dl {
+    margin: 0;
+    padding: 0;
+    vertical-align: top;  
+    width: calc(100% - 220px); 
+}
+
+dt {
+	text-align: left;
+    font-weight: bold;
+    width: 150px; /
+}
+
+dd {
+    margin: 0; 
+    padding-left: 10px; 
+}
+
+/* Style for the figure element */
+figure {
+    float: right;
+    border: 2px solid #000; 
+    padding: 20px;
+    margin: 0;
+    margin-left: 20px;
+    max-width: 100%;
+    box-sizing: border-box; 
+}
+
+
+
+@media (max-width: 768px) {
+    figure {
+        float: none;
+        margin: 20px auto; 
+        max-width: 80%;
+    }
+
+    img {
+        max-width: 100%; /* Allow the image to scale with the figure */
+    }
+}
+
+figcaption {
+    text-align: center;
+    margin-top: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+}
+
+thead {
+    background-color: #403F4C;
+    color: white;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+.product-main {
+	margin-left: 35%;	
+}
+
+.table-container {
+    display: flex;
+    justify-content: center; 
+}
+
+/* Container for the zoom effect */
+.image-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block; 
+}
+
+/* Zoom effect for the image */
+.image-container img {
+    transition: transform 0.5s ease; 
+    width: 100%; 
+}
+
+/* Zoom effect on hover */
+.image-container:hover img {
+    transform: scale(1.2); 
+}
