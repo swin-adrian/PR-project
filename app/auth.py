@@ -4,6 +4,7 @@ from flask_pymongo import PyMongo
 
 auth_bp = Blueprint('auth', __name__)
 
+
 #route for user login
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -18,20 +19,23 @@ def login():
         # Access the "users" collection using the "mongo" object
         user = mongo.db.users.find_one({"username": username})
 
-        if user and user["password"]==password:
+        # Check if the user exists and verify the password
+        if user and check_password_hash(user["password_hash"], password):
 
-            if user['usertype'] == 'migrant':
+            if user['user_type'] == 'migrant':
                 print("welcome Migrant")
                 return redirect(url_for('migrant.migrantlanding'))
-            elif user['usertype'] == 'agent':
+            elif user['user_type'] == 'agent':
                 return redirect(url_for('agent.agentlanding'))
-            elif user['usertype'] == 'edprovider':
+            elif user['user_type'] == 'edprovider':
                 return redirect(url_for('edprovider.edproviderlanding'))
+            elif user['user_type'] == 'Administrator':  
+                return redirect(url_for('admin.adminlanding')) 
             return "Unsupported user type"
 
-        #login_error = "Your password or username is incorrect"  # Set the login error message
+        login_error = "Your password or username is incorrect"  # Set the login error message
 
-    return render_template('login_error.html')  # Pass the login error to the template
+    return render_template('login_error.html', error=login_error)  # Pass the login error to the template
 
 
 @auth_bp.route('/signup', methods=["GET", "POST"])
@@ -88,14 +92,14 @@ def signup():
         session['user_id'] = str(user_id)
 
         # Redirect based on the user type
-        if user_type == 'Skilled Migrant':
+        if user_type == 'migrant':
             return redirect(url_for('migrant.migrantlanding'))
         elif user_type == 'agent':
             return redirect(url_for('agent.agentlanding'))
         elif user_type == 'edprovider':
             return redirect(url_for('edprovider.edproviderlanding'))
-        elif user_type == 'Adminstrator':
-            return redirect(url_for('admin.adminlanding'))
+        elif user_type == 'adminstrator':
+            return redirect(url_for('adminstrator.adminlanding'))
 
         flash("Registration successful!", "success")
         return redirect(url_for('auth.index.html'))
