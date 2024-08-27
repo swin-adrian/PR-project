@@ -3,6 +3,7 @@ from flask_pymongo import PyMongo
 from flask_moment import Moment
 from flask_session import Session
 # Import blueprints
+
 from auth import auth_bp
 
 
