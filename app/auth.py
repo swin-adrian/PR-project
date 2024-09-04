@@ -40,35 +40,21 @@ def login():
 
 @auth_bp.route('/signup', methods=["GET", "POST"])
 def signup():
-    
     mongo = PyMongo(current_app)
 
     if request.method == "POST":
-        username = request.form.get('username')
-        password = request.form.get('pwd')
-        firstname = request.form.get('Firstname')
-        lastname = request.form.get('Lastname')
-        user_type = request.form.get('acct')  # This must be defined before use
-        migrant_id = request.form.get('migrant_id')
         email = request.form.get('email')
-        dob = request.form.get('dob')
-        qualifications = request.form.get('qualifications')
-        nationality = request.form.get('nationality')
-        experience = request.form.get('experience')
+        password = request.form.get('pwd')
 
-        # Combine firstname and lastname
-        name = f"{firstname} {lastname}"
-
-        # Ensure user_type is defined before this condition
-        if not username or not password or not user_type or not migrant_id or not name or not email:
-            flash("All fields are required", "danger")
+        # Check if email and password are provided
+        if not email or not password:
+            flash("Email and password are required", "danger")
             return redirect(url_for('auth.signup'))
 
-        # Check if the username already exists
-        existing_user = mongo.db.users.find_one({"username": username})
-        
+        # Check if the email already exists in the database
+        existing_user = mongo.db.users.find_one({"email": email})
         if existing_user:
-            flash("Username already exists", "danger")
+            flash("Email already exists", "danger")
             return redirect(url_for('auth.signup'))
 
         # Hash the password for secure storage
@@ -76,35 +62,30 @@ def signup():
 
         # Insert the new user into the database
         user_id = mongo.db.users.insert_one({
-            "username": username,
-            "password_hash": password_hash,
-            "user_type": user_type,  # This ensures user_type is saved correctly
-            "migrant_id": migrant_id,
-            "name": name,
             "email": email,
-            "dob": dob,
-            "qualifications": qualifications,
-            "nationality": nationality,
-            "experience": experience
+            "password_hash": password_hash
         }).inserted_id
 
         # Set the session to the new user's ID
         session['user_id'] = str(user_id)
 
-        # Redirect based on the user type
-        if user_type == 'migrant':
-            return redirect(url_for('migrant.migrantlanding'))
-        elif user_type == 'agent':
-            return redirect(url_for('agent.agentlanding'))
-        elif user_type == 'edprovider':
-            return redirect(url_for('edprovider.edproviderlanding'))
-        elif user_type == 'adminstrator':
-            return redirect(url_for('adminstrator.adminlanding'))
+        # Extract the domain from the email and redirect accordingly
+        email_domain = email.split('@')[-1]
 
-        flash("Registration successful!", "success")
-        return redirect(url_for('auth.index.html'))
+        if email_domain == 'gmail.com':
+            return redirect(url_for('migrant.migrantlanding'))
+        elif email_domain == 'agent.com':
+            return redirect(url_for('agent.agentlanding'))
+        elif email_domain == 'edprovider.com':
+            return redirect(url_for('edprovider.edproviderlanding'))
+        elif email_domain == 'admin.com':
+            return redirect(url_for('admin.adminlanding'))
+        else:
+            flash("Unsupported email domain", "danger")
+            return redirect(url_for('auth.signup'))
 
     return render_template('signup.html')
+
 
 @auth_bp.route("/logout")
 def logout():
