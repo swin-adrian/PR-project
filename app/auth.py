@@ -5,38 +5,47 @@ from flask_pymongo import PyMongo
 auth_bp = Blueprint('auth', __name__)
 
 
-#route for user login
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
-    # Access the "mongo" object from the current app
     mongo = PyMongo(current_app)
     login_error = None  # Initialize a variable for login error
 
     if request.method == "POST":
-        username = request.form.get("username")
+        email = request.form.get("email")  # Use email instead of username
         password = request.form.get("password")
 
-        # Access the "users" collection using the "mongo" object
-        user = mongo.db.users.find_one({"username": username})
+        # Check if email and password are provided
+        if not email or not password:
+            login_error = "Email and password are required."
+            return render_template('login_error.html', error=login_error)
+
+        # Access the "users" collection using the "mongo" object and query by email
+        user = mongo.db.users.find_one({"email": email})
 
         # Check if the user exists and verify the password
         if user and check_password_hash(user["password_hash"], password):
+            # Set the session with the user's email or ID
+            session['user_id'] = str(user['_id'])  # Store user ID in the session
+            session['email'] = user.get('email')  # Store email for easier use
 
-            if user['user_type'] == 'migrant':
-                print("welcome Migrant")
+            # Extract domain from email
+            email_domain = user.get('email').split('@')[-1]
+
+            # Redirect based on the email domain
+            if email_domain == 'gmail.com':
                 return redirect(url_for('migrant.migrantlanding'))
-            elif user['user_type'] == 'agent':
+            elif email_domain == 'agent.com':
                 return redirect(url_for('agent.agentlanding'))
-            elif user['user_type'] == 'edprovider':
+            elif email_domain == 'edprovider.com':
                 return redirect(url_for('edprovider.edproviderlanding'))
-            elif user['user_type'] == 'Administrator':  
-                return redirect(url_for('admin.adminlanding')) 
-            return "Unsupported user type"
+            elif email_domain == 'admin.com':
+                return redirect(url_for('admin.adminlanding'))
+            else:
+                return "Unsupported user type"
 
-        login_error = "Your password or username is incorrect"  # Set the login error message
+        login_error = "Your password or email is incorrect."  # Set the login error message
 
     return render_template('login_error.html', error=login_error)  # Pass the login error to the template
-
 
 @auth_bp.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -62,12 +71,13 @@ def signup():
 
         # Insert the new user into the database
         user_id = mongo.db.users.insert_one({
-            "email": email,
+            "email": email,  # Use email as the unique identifier
             "password_hash": password_hash
         }).inserted_id
 
-        # Set the session to the new user's ID
+        # Set the session to the new user's ID and email
         session['user_id'] = str(user_id)
+        session['email'] = email
 
         # Extract the domain from the email and redirect accordingly
         email_domain = email.split('@')[-1]
@@ -85,14 +95,3 @@ def signup():
             return redirect(url_for('auth.signup'))
 
     return render_template('signup.html')
-
-
-@auth_bp.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/landing")
-
-# Defining a route for 'landing.html' or the landing page
-@auth_bp.route("/landing")
-def landing():
-    return render_template('landing.html')
