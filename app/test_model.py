@@ -17,5 +17,5 @@ def predict_pr_probability(age, prtype, english, overseaexp, ausexp, eduqual, au
     return probability[0][1]  # The second column contains the probability for class 1 (PR invitation)
 
 # Example usage
-pr_probability = predict_pr_probability(30, 1, 2, 5, 2, 1, 0, 1, 0, 1, 1, 0)
+pr_probability = predict_pr_probability(55, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0)
 print(f"Probability of PR invitation: {pr_probability * 100:.2f}%")
