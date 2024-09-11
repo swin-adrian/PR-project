@@ -1,34 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="description" content="Smart Migrate">
-    <meta name="keywords" content="Smart migrate, migration to Australia, PR Pathway">
-    <meta name="author" content="Adrian Soe Myint">
-    <!--accessibility setting-->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--stylesheet-->
+    <title>Add Course for Education Provider</title>
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <title>Smart Track | PR Pathway</title>
 </head>
-
-
 <body>
-    <header>
-        <nav>
-            <!--Navigation menu in header as a list to apply more styles-->
-            <div class="navi_menu">
-                <a class="active" href="/"><strong>Home</strong></a>
-                <!-- <a href="product.html"><strong>Products</strong></a>
-                <a href="enquire.html"><strong>Enquire</strong></a>
-                <a href="about.html"><strong>About</strong></a>
-                <a href="/"><strong>Enhancements</strong></a> !-->
+
+<div class="form-container">
+    <form action="/add_course" method="POST" class="course-form">
+        <fieldset class="form-fieldset">
+            <legend class="form-legend">Add New Course</legend>
+            <p class="form-description">Please enter the course details below:</p>
+
+            <!-- Course Code -->
+            <div class="form-group">
+                <label for="course_code" class="form-label">Course Code</label><br>
+                <input type="text" id="course_code" name="course_code" placeholder="e.g., 10067" class="form-input" required>
             </div>
-        </nav>
-    </header>
-<h1>Welcome Education Provider</h1>
+
+            <!-- Course Type -->
+            <div class="form-group">
+                <label for="course_type" class="form-label">Course Type</label><br>
+                <input type="text" id="course_type" name="course_type" placeholder="e.g., English upskill level 1" class="form-input" required>
+            </div>
+
+            <!-- Duration -->
+            <div class="form-group">
+                <label for="duration" class="form-label">Duration</label><br>
+                <select id="duration" name="duration" class="form-select" required>
+                    <option value="6 months">6 months</option>
+                    <option value="3 months">3 months</option>
+                    <option value="1 month">1 month</option>
+                </select>
+            </div>
+
+            <br>
+            <button type="submit" class="form-button">Add Course</button>
+        </fieldset>
+    </form>
+</div>
+
 </body>
-
-
-
 </html>

@@ -4,34 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="form-container">
         <div class="logo-container">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Business logo" class="business-logo">
         </div>
+
+        <!-- Form starts here -->
         <form method="POST" action="{{ url_for('auth.signup') }}">
-            <input type="text" name="username" placeholder="Username" required class="input-field">
-            <input type="text" name="Firstname" placeholder="Firstname" required class="input-field">
-            <input type="text" name="Lastname" placeholder="LastName" required class="input-field">
-            <input type="password" name="pwd" placeholder="Password" required class="input-field">
-            <select name="acct" required class="input-field">
-                <option value="Type of Acc" >Select Account Type</option>
-                <option value="Skilled Migrant">Student</option>
-                <option value="agent">Agent</option>
-                <option value="edprovider">Educational Provider</option>
-                <option value="Adminstrator">Adminstrator</option>
-            </select>
-            <input type="text" name="migrant_id" placeholder="Migrant ID" required class="input-field">
-            <input type="email" name="email" placeholder="Email" required class="input-field">
-            <input type="date" name="dob" placeholder="Date of Birth" required class="input-field">
-            <input type="text" name="qualifications" placeholder="Qualifications" required class="input-field">
-            <input type="text" name="nationality" placeholder="Nationality" required class="input-field">
-            <input type="text" name="experience" placeholder="Experience" required class="input-field">
+            <!-- Input field for email -->
+            <input type="email" name="email" placeholder="Email" required class="input-field" autocomplete="email">
+            
+            <!-- Input field for password -->
+            <input type="password" name="pwd" placeholder="Password" required class="input-field" autocomplete="new-password">
+            
+            <!-- Confirm password field for validation -->
+            <input type="password" name="confirm_pwd" placeholder="Confirm Password" required class="input-field" autocomplete="new-password">
+            
+            <!-- Register button -->
             <button type="submit" class="submit-button">Register</button>
         </form>
+
+        <!-- Link to login page -->
         <p class="login-prompt">Already a user? <a href="{{ url_for('auth.login') }}">Log in here</a>.</p>
+
+        <!-- Display flash messages or errors (if using Flask messages) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
     </div>
 </body>
 </html>
