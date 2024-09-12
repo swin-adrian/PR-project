@@ -1379,14 +1379,26 @@
     <!--Page 8-->
     <div class="tab">
         <div class="header">Australian Educational Qualification</div>
-            <label>Degree, diploma, advanced diploma or trade qualification?</label>
+            <label>Degree, diploma, advanced diploma or trade qualification from an Australian educational institution which took at least 2 years of full-time study and was taught in English.</label>
         <div class="option">
             <label>
-                <input type="radio" name="qualification" value="yes" required> Yes
+                <input type="radio" name="qualification" value="yes" onclick="showFollowUp(true)" required> Yes
             </label>
             <label>
-                <input type="radio" name="qualification" value="no"> No
+                <input type="radio" name="qualification" value="no" onclick="showFollowUp(false)"> No
             </label>
+        </div>
+        <div id="followUpSection" class="section hidden">
+            <div class="header">Designated regional area study</div>
+            <p>Did you live and study in a ‘designated regional area’ of Australia and complete a course which meets the ‘Australian study requirement’ at the time of invitation to apply for the visa?</p>
+            <div class="option">
+            <label>
+                <input type="radio" name="regionalStudy" value="yes"> Yes
+            </label>
+            <label>
+                <input type="radio" name="regionalStudy" value="no"> No
+            </label>
+            </div>
         </div>
     </div>
     <!--Page 9-->
@@ -1475,6 +1487,7 @@
       </div>
     <!-- Circles which indicates the steps of the form: -->
 <div style="text-align:center;margin-top:40px;">
+    <span class="step"></span>
     <span class="step"></span>
     <span class="step"></span>
     <span class="step"></span>

@@ -153,5 +153,14 @@ document.addEventListener('DOMContentLoaded', function() {
           document.getElementById("toefl-score").style.display = "block";
       }
     });
-  });
+});
+    // Condition for page 8
+  function showFollowUp(isYes) {
+    const followUpSection = document.getElementById("followUpSection");
+    if (isYes) {
+        followUpSection.classList.remove("hidden");
+    } else {
+        followUpSection.classList.add("hidden");
+    }
+  }
   

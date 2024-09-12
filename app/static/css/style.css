@@ -530,7 +530,7 @@ tbody tr:hover {
     transform: scale(1.2); 
 }
 
-<<<<<<< HEAD
+
 /* Form container styles */
 .form-container {
     width: 100%;
@@ -615,7 +615,7 @@ tbody tr:hover {
 .form-button:hover {
     background-color: #45a049;
 }
-=======
+
 /* Form page*/
 .container {
     border: 1px solid #FF9933;
@@ -723,4 +723,9 @@ select, input[type="text"] {
 .score-section {
     display: none; /* Initially hide score input sections */
 }
->>>>>>> 98e58ee33d0aee858546a5199c1a8ea8fb74d317
+
+/* Page 8 */
+.hidden {
+    display: none;
+  }
+
