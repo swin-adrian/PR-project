@@ -1,0 +1,72 @@
+/* Main container for the table and form */
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+/* Table container */
+.table-container {
+    flex: 2;
+    margin-right: 20px;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container table th, .table-container table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.table-container table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+/* Form container */
+.form-container {
+    flex: 1;
+    max-width: 350px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Form Styling */
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-container .form-group {
+    margin-bottom: 15px;
+}
+
+.form-container input, .form-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+/* Button styling */
+.form-container .btn {
+    background-color: orange;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.form-container .btn:hover {
+    background-color: darkorange;
+}
