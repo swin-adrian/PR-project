@@ -530,6 +530,7 @@ tbody tr:hover {
     transform: scale(1.2); 
 }
 
+<<<<<<< HEAD
 /* Form container styles */
 .form-container {
     width: 100%;
@@ -614,4 +615,116 @@ tbody tr:hover {
 .form-button:hover {
     background-color: #45a049;
 }
+<<<<<<< HEAD
 
+=======
+=======
+/* Form page*/
+.container {
+    border: 1px solid #FF9933;
+    border-radius: 5px;
+    padding: 15px;
+    max-width: 100%;
+}
+.header {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FF9933;
+    margin-bottom: 10px;
+}
+.question {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+.option {
+    margin-bottom: 15px;
+    background-color: #FAF4EF;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #E0E0E0;
+}
+.option input[type="radio"] {
+    margin-right: 10px;
+    accent-color: #0073E6;
+}
+.option label {
+    display: block;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/*Create multiple step form
+
+    /* Hide all steps by default: */
+.tab {
+    display: none;
+  }
+  
+  /* When the first tab is shown, make sure display is block */
+.tab:first-child {
+    display: block;
+  }
+
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  #prevBtn {
+    background-color: #bbbbbb;
+  }
+  
+  .step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbbbbb;
+    border: none;
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+  }
+  
+  .step.active {
+    opacity: 1;
+  }
+  
+  .step.finish {
+    background-color: #4CAF50;
+  }
+  
+  .invalid {
+    background-color: #ffdddd;
+  }
+
+
+  /*page 2 */
+  .q2-2-section {
+    display: none; /* Hide all Q2.2 sections by default */
+}
+
+  /*page 4 */
+
+select, input[type="text"] {
+    width: 99%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+.score-section {
+    display: none; /* Initially hide score input sections */
+}
+>>>>>>> 98e58ee33d0aee858546a5199c1a8ea8fb74d317
+>>>>>>> 3415781b465d8b517e4b696f4b342c0048833142

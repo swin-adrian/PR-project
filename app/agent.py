@@ -11,4 +11,3 @@ def agentlanding():
     return render_template('agentlanding.html')
 # tutor_bp route for tutor availability
 
-
