@@ -1,38 +1,70 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
-from bson import ObjectId
-from flask_pymongo import PyMongo
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from bson.objectid import ObjectId
 from datetime import datetime
 
+# Define the blueprint
 edprovider_bp = Blueprint('edprovider', __name__)
 
-@edprovider_bp.route('/edproviderlanding')
+# Route for edproviderlanding (Add Course form)
+@edprovider_bp.route('/edproviderlanding', methods=['GET', 'POST'])
 def edproviderlanding():
-    #tutor_id = session['user_id']
-    return render_template('edproviderlanding.html')
-# tutor_bp route for tutor availability
-
-@edprovider_bp.route('/add_course', methods=['GET', 'POST'])
-def add_course():
     if request.method == 'POST':
-        coursecode = request.form.get('coursecode')
-        coursetype = request.form.get('coursetype')
+        # Capture form data
+        industry = request.form.get('industry')
+        course_name = request.form.get('course_name')
+        course_type = request.form.get('course_type')
         duration = request.form.get('duration')
+        course_structure = request.form.get('course_structure')
+        key_learnings = request.form.get('key_learnings')
 
-        # Inserting course details into MongoDB
+        # Prepare course data
         course_data = {
-            "CourseCode": coursecode,
-            "CourseType": coursetype,
+            "Industry": industry,
+            "CourseName": course_name,
+            "CourseType": course_type,
             "Duration": duration,
+            "CourseStructure": course_structure,
+            "KeyLearnings": key_learnings,
             "created_at": datetime.now()
         }
 
-        try:
-            mongo.db.courses.insert_one(course_data)
-            flash("Course added successfully!", "success")
-        except Exception as e:
-            flash(f"An error occurred: {e}", "danger")
+        # Insert the data into MongoDB
+        from main import mongo
+        mongo.db.courses.insert_one(course_data)
+        
+        # Flash a success message
+        flash("Course added successfully!", "success")
 
-        return redirect(url_for('edprovider.edproviderlanding'))
-    
-    return render_template('add_course.html')
+        # Redirect to the add_course page to view the course table
+        return redirect(url_for('edprovider.view_courses'))
 
+    return render_template('edproviderlanding.html')
+
+# Route for viewing the course table (course_table.html)
+@edprovider_bp.route('/view_courses', methods=['GET'])
+def view_courses():
+    from main import mongo
+    courses = mongo.db.courses.find().limit(10)
+    return render_template('add_course.html', courses=courses)
+
+# Route for searching courses
+@edprovider_bp.route('/search_courses', methods=['POST'])
+def search_courses():
+    query = request.form.get('search_query')
+    from main import mongo
+    # Search courses by CourseName or Industry
+    courses = mongo.db.courses.find({
+        "$or": [
+            {"CourseName": {"$regex": query, "$options": "i"}},
+            {"Industry": {"$regex": query, "$options": "i"}}
+        ]
+    })
+    return render_template('add_course.html', courses=courses)
+
+# Route for deleting a course
+@edprovider_bp.route('/delete_course/<course_id>', methods=['POST'])
+def delete_course(course_id):
+    from main import mongo
+    mongo.db.courses.delete_one({"_id": ObjectId(course_id)})
+    flash("Course deleted successfully!", "success")
+    return redirect(url_for('edprovider.view_courses'))
