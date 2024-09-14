@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Added Courses</title>
     <link rel="stylesheet" href="../static/css/style.css"> <!-- Update this path if necessary -->
 </head>
@@ -57,6 +58,72 @@
     {% else %}
         <p>No courses have been added yet.</p>
     {% endif %}
+=======
+    <title>Course Information</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <!--Navigation menu in header as a list to apply more styles-->
+            <div class="navi_menu">
+                <a class="active" href="index.html"><strong>Home</strong></a>
+                <!-- <a href="product.html"><strong>Products</strong></a>
+                <a href="enquire.html"><strong>Enquire</strong></a>
+                <a href="about.html"><strong>About</strong></a>
+                <a href="/"><strong>Enhancements</strong></a> !-->
+            </div>
+        </nav>
+    </header>
+
+<div class="container">
+    <form action="{{ url_for('edprovider.search_courses') }}" method="POST">
+        <input type="text" name="search_query" placeholder="Search by Course Name or Industry">
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<div class="container">
+    <h2>Course Information</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Industry</th>
+                <th>Course Name</th>
+                <th>Course Type</th>
+                <th>Duration</th>
+                <th>Course Structure</th>
+                <th>Key Learnings</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.Industry }}</td>
+                <td>{{ course.CourseName }}</td>
+                <td>{{ course.CourseType }}</td>
+                <td>{{ course.Duration }}</td>
+                <td>{{ course.CourseStructure }}</td>
+                <td>{{ course.KeyLearnings }}</td>
+                <td>
+                    <form action="{{ url_for('edprovider.delete_course', course_id=course._id) }}" method="POST">
+                        <button type="submit" style="background-color: red;">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No courses found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <a href="{{ url_for('edprovider.edproviderlanding') }}" class="form-button">Back to Add Course</a>
+>>>>>>> new-somto2
 </div>
 
 </body>
