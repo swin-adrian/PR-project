@@ -3,60 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>Education Provider Dashboard</title>
-    <link rel="stylesheet" href="../static/css/edprovider_style.css"> <!-- Update this path if necessary -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- For AJAX -->
-</head>
-<body>
-
-<div class="container">
-    <!-- Left side: Table preview -->
-    <div class="table-container">
-        <h2>Added Courses</h2>
-        <table id="coursesTable" class="table">
-            <thead>
-                <tr>
-                    <th>Course Code</th>
-                    <th>Course Type</th>
-                    <th>Duration</th>
-                    <th>Added On</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for course in courses %}
-                <tr data-course-id="{{ course._id }}">
-                    <td>{{ course.CourseCode }}</td>
-                    <td>{{ course.CourseType }}</td>
-                    <td>{{ course.Duration }}</td>
-                    <td>{{ course.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                    <td>
-                        <!-- Modify button -->
-                        <button class="btn btn-warning modify-btn" data-id="{{ course._id }}">Modify</button>
-                        
-                        <!-- Delete button -->
-                        <button class="btn btn-danger delete-btn" data-id="{{ course._id }}">Delete</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Right side: Form for adding courses -->
-    <div class="form-container">
-        <h2>Add New Course</h2>
-        <form id="addCourseForm" method="POST">
-            <div class="form-group">
-                <label for="course_code">Course Code</label>
-                <input type="text" id="course_code" name="course_code" placeholder="e.g., 10067" required>
-            </div>
-
-            <div class="form-group">
-                <label for="course_type">Course Type</label>
-                <input type="text" id="course_type" name="course_type" placeholder="e.g., English upskill level 1" required>
-=======
     <title>Course Information Form</title>
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
 </head>
@@ -93,7 +39,6 @@
                 <h3>Actions</h3>
                 <a href="{{ url_for('edprovider.view_courses') }}" class="view-courses-btn">View Courses</a>
                 
->>>>>>> new-somto2
             </div>
             </div>
     <div class="container">
@@ -101,21 +46,6 @@
             <fieldset class="form-fieldset">
                 <legend>Add New Course</legend>
 
-<<<<<<< HEAD
-            <div class="form-group">
-                <label for="duration">Duration</label>
-                <select id="duration" name="duration" required>
-                    <option value="6 months">6 months</option>
-                    <option value="3 months">3 months</option>
-                    <option value="1 month">1 month</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn">Add Course</button>
-        </form>
-    </div>
-</div>
-=======
             <!-- Industry Dropdown -->
             <div class="form-group">
                 <label for="industry" class="form-label">Industry</label>
@@ -215,70 +145,3 @@
                 <button type="submit">Add Course</button>
             </fieldset>
         </form>
-
-
-
-
-
->>>>>>> new-somto2
-
-<script>
-    // Handle form submission with AJAX
-    $('#addCourseForm').on('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
-
-        $.ajax({
-            url: "{{ url_for('edprovider.add_course_ajax') }}",
-            method: "POST",
-            data: $(this).serialize(),
-            success: function(response) {
-                if (response.success) {
-                    $('#addCourseForm')[0].reset();  // Clear the form
-
-                    var tableBody = $('#coursesTable tbody');
-                    tableBody.empty();  // Clear the existing table rows
-
-                    response.courses.forEach(function(course) {
-                        var row = '<tr data-course-id="' + course._id + '">' +
-                            '<td>' + course.CourseCode + '</td>' +
-                            '<td>' + course.CourseType + '</td>' +
-                            '<td>' + course.Duration + '</td>' +
-                            '<td>' + new Date(course.created_at).toLocaleString() + '</td>' +
-                            '<td>' +
-                            '<button class="btn btn-warning modify-btn" data-id="' + course._id + '">Modify</button>' +
-                            '<button class="btn btn-danger delete-btn" data-id="' + course._id + '">Delete</button>' +
-                            '</td>' +
-                            '</tr>';
-                        tableBody.append(row);
-                    });
-                } else {
-                    alert('Error: ' + response.error);
-                }
-            }
-        });
-    });
-
-    // Handle Delete with AJAX
-    $(document).on('click', '.delete-btn', function() {
-        var courseId = $(this).data('id');
-        var row = $(this).closest('tr');
-
-        if (confirm('Are you sure you want to delete this course?')) {
-            $.ajax({
-                url: '/delete_course/' + courseId,
-                method: 'POST',
-                success: function(response) {
-                    if (response.success) {
-                        // Remove the row from the table
-                        row.remove();
-                    } else {
-                        alert('Error: ' + response.error);
-                    }
-                }
-            });
-        }
-    });
-</script>
-
-</body>
-</html>
