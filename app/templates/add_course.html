@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Information</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
 </head>
 <body>
     <header>
@@ -12,6 +12,7 @@
             <!--Navigation menu in header as a list to apply more styles-->
             <div class="navi_menu">
                 <a class="active" href="index.html"><strong>Home</strong></a>
+                <a  Class="active" href="{{ url_for('edprovider.edproviderlanding') }}" class="form-button">Add Course</a>
                 <!-- <a href="product.html"><strong>Products</strong></a>
                 <a href="enquire.html"><strong>Enquire</strong></a>
                 <a href="about.html"><strong>About</strong></a>
