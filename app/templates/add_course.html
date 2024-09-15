@@ -12,18 +12,14 @@
             <!--Navigation menu in header as a list to apply more styles-->
             <div class="navi_menu">
                 <a class="active" href="index.html"><strong>Home</strong></a>
-                <a  Class="active" href="{{ url_for('edprovider.edproviderlanding') }}" class="form-button">Add Course</a>
-                <!-- <a href="product.html"><strong>Products</strong></a>
-                <a href="enquire.html"><strong>Enquire</strong></a>
-                <a href="about.html"><strong>About</strong></a>
-                <a href="/"><strong>Enhancements</strong></a> !-->
+                <a class="active" href="{{ url_for('edprovider.edproviderlanding') }}" class="view-courses-btn">Add Course</a>
             </div>
         </nav>
     </header>
 
 <div class="container">
-    <form action="{{ url_for('edprovider.search_courses') }}" method="POST">
-        <input type="text" name="search_query" placeholder="Search by Course Name or Industry">
+    <form action="{{ url_for('edprovider.search_courses') }}" method="POST" class="search-container">
+        <input type="text" name="search_query" placeholder="Search by Course Name or Industry" value="{{ search_query }}">
         <button type="submit">Search</button>
     </form>
 </div>
@@ -53,7 +49,7 @@
                 <td>{{ course.KeyLearnings }}</td>
                 <td>
                     <form action="{{ url_for('edprovider.delete_course', course_id=course._id) }}" method="POST">
-                        <button type="submit" style="background-color: red;">Delete</button>
+                        <button type="submit" class="form-button" style="background-color: #B76D68;">Delete</button>
                     </form>
                 </td>
             </tr>
@@ -64,6 +60,27 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+<!-- Pagination Controls -->
+<div class="pagination">
+    <ul style="list-style-type:none; display:flex; justify-content: center;">
+        {% if page > 1 %}
+        <li style="margin-right:10px;">
+            <a href="{{ url_for('edprovider.view_courses', page=page-1) }}" class="form-button">Previous</a>
+        </li>
+        {% endif %}
+
+        <li style="margin-right:10px;">
+            <span>Page {{ page }} of {{ (total_courses // per_page) + (1 if total_courses % per_page > 0 else 0) }}</span>
+        </li>
+
+        {% if page * per_page < total_courses %}
+        <li>
+            <a href="{{ url_for('edprovider.view_courses', page=page+1) }}" class="form-button">Next</a>
+        </li>
+        {% endif %}
+    </ul>
 </div>
 
 <div class="container">

@@ -40,26 +40,59 @@ def edproviderlanding():
 
     return render_template('edproviderlanding.html')
 
-# Route for viewing the course table (course_table.html)
 @edprovider_bp.route('/view_courses', methods=['GET'])
 def view_courses():
+    page = request.args.get('page', 1, type=int)  # Get the current page, default to 1
+    per_page = 6  # Set how many courses you want to display per page
+    
     from main import mongo
-    courses = mongo.db.courses.find().limit(10)
-    return render_template('add_course.html', courses=courses)
+    # Count total number of courses for pagination
+    total_courses = mongo.db.courses.count_documents({})
+    
+    # Fetch courses for the current page
+    courses = mongo.db.courses.find().skip((page - 1) * per_page).limit(per_page)
+    
+    # Pass the page, per_page, and total_courses to the template
+    return render_template(
+        'add_course.html',
+        courses=courses,
+        page=page,
+        per_page=per_page,
+        total_courses=total_courses
+    )
 
-# Route for searching courses
-@edprovider_bp.route('/search_courses', methods=['POST'])
+
+# Route for searching courses with pagination
+@edprovider_bp.route('/search_courses', methods=['GET', 'POST'])
 def search_courses():
-    query = request.form.get('search_query')
+    page = request.args.get('page', 1, type=int)  # Get the current page or default to 1
+    per_page = 10  # Define how many items you want to display per page
+    query = request.form.get('search_query') if request.method == 'POST' else request.args.get('search_query', '')
+
     from main import mongo
     # Search courses by CourseName or Industry
-    courses = mongo.db.courses.find({
+    search_filter = {
         "$or": [
             {"CourseName": {"$regex": query, "$options": "i"}},
             {"Industry": {"$regex": query, "$options": "i"}}
         ]
-    })
-    return render_template('add_course.html', courses=courses)
+    }
+
+    # Count total matching courses for pagination
+    total_courses = mongo.db.courses.count_documents(search_filter)
+
+    # Retrieve the relevant page of courses
+    courses = mongo.db.courses.find(search_filter).skip((page - 1) * per_page).limit(per_page)
+
+    return render_template(
+        'add_course.html',
+        courses=courses,
+        page=page,
+        per_page=per_page,
+        total_courses=total_courses,
+        search_query=query
+    )
+
 
 # Route for deleting a course
 @edprovider_bp.route('/delete_course/<course_id>', methods=['POST'])
