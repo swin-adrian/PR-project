@@ -22,6 +22,7 @@
     </header>
 <!-- Add Course Form Container -->
 <body>
+  
     <div class="container">
         <!-- Display Flash Messages Here -->
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -40,7 +41,9 @@
     <div class="container">
         <form action="{{ url_for('edprovider.edproviderlanding') }}" method="POST">
             <fieldset class="form-fieldset">
+                
                 <legend><strong>Add New Course</strong></legend>
+                <h1 class="container"> Select one of the options provided below: </h1>
 
             <!-- Industry Dropdown -->
             <div class="form-group">
