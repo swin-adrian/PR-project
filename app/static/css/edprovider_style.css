@@ -1,0 +1,312 @@
+/* Somto CSS for a calm and soft design */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;  /* Light, neutral background */
+    color: #444;  /* Dark grey for text, easy on the eyes */
+    margin: 0;
+    padding: 0;
+}
+
+/* Container to center content and provide padding */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Form container with soft colors and rounded corners */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 40px;  /* Increased padding for more space */
+    background: linear-gradient(135deg, #ffffff, #ffffff);  /* Soft gradient for form background */
+    border-radius: 15px;  /* More rounded corners */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);  /* Stronger shadow for a pop-out effect */
+    text-align: left;
+}
+
+/* Calm, welcoming form title */
+.form-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #4a4a4a;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form group styles with soft colors */
+.form-group {
+    width: 100%;
+    margin-bottom: 25px;  /* Increased space between form groups */
+}
+
+.form-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #666;  /* Softer grey text */
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Soft input, select, and textarea field styles */
+.form-input,
+.form-select,
+.form-textarea {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: #555;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Soft focus effect */
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #B76D68;  /* Color from navigation bar */
+    box-shadow: 0 0 10px rgba(183, 109, 104, 0.3);  /* Softer focus shadow */
+}
+
+/* Button styles with gradient background */
+.form-button,
+button[type="submit"] {
+    padding: 14px;
+    background: linear-gradient(135deg, #b76d68, #b8837f);  /* Gradient from nav color */
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+    text-align: center;
+    display: inline-block;
+}
+
+.form-button:hover,
+button[type="submit"]:hover {
+    background: linear-gradient(135deg, #b8837f, #b76d68);  /* Hover with gradient reversal */
+    transform: translateY(-2px);  /* Lift effect on hover */
+}
+
+/* Button for table actions */
+button[style="background-color: red;"] {
+    background-color: #B76D68;  /* Consistent with navigation bar */
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+button[style="background-color: red;"]:hover {
+    background-color: #b8837f;  /* Hover state matches nav bar hover */
+    transform: translateY(-2px);  /* Lift effect on hover */
+}
+/* Adjusting the form-input for textareas specifically */
+textarea.form-input {
+    width: 95%;  /* Keep full width */
+    height: 150px;  /* Increased height for vertical enlargement */
+    padding: 16px;  /* Adjust padding for larger fields */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 18px;
+    background-color: #f9f9f9;
+    color: #555;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;  /* Allow vertical resizing */
+}
+
+/* Soft focus effect */
+textarea.form-input:focus {
+    border-color: #B76D68;  /* Color from navigation bar */
+    box-shadow: 0 0 10px rgba(183, 109, 104, 0.3);
+}
+
+
+/* Table styling with subtle lines and soft shadows */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;  /* Light borders */
+    font-size: 15px;
+}
+
+th {
+    background-color: #B76D68;  /* Soft red header matching nav bar */
+    color: white;
+}
+
+tr:hover {
+    background-color: #f0f0f0;  /* Gentle highlight on hover */
+}
+
+/* Search form container with clean lines */
+.search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-container input[type="text"] {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    color: #555;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    background-color: #B76D68;  /* Match search button to nav bar */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #b8837f;  /* Slight hover effect, consistent with nav bar */
+}
+
+/* Center the icons and the view course button */
+.side-section {
+    margin-top: 20px;
+    text-align: center;  /* Centers the content horizontally */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* Ensures the icons and buttons are centered */
+    justify-content: center;  /* Vertically centers the content */
+}
+
+.view-courses-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #B76D68;  /* Consistent with nav bar */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-top: 20px;  /* Adds space between the icons and the button */
+}
+
+.view-courses-btn:hover {
+    background-color: #b8837f;  /* Hover effect consistent with nav bar */
+}
+
+/* To ensure icons are centered and displayed correctly */
+.icons-container {
+    display: flex;
+    justify-content: center;  /* Horizontally centers the icons */
+    gap: 15px;  /* Adds space between icons */
+    margin-bottom: 20px;  /* Adds space below the icons */
+}
+
+.icon {
+    font-size: 32px;  /* Adjust the size of the icons */
+    color: #B76D68;  /* Apply the same color theme as the nav bar */
+}
+
+.icon:hover {
+    color: #b8837f;  /* Slight color change on hover, consistent with nav */
+}
+
+/* Basic styling for the navigation menu */
+.navi_menu {
+    overflow: hidden;
+    background-color: #B76D68;
+    z-index: 1001;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    flex-wrap: wrap; 
+}
+
+.navi_menu a {
+    font-size: 12px;
+    color: white;
+    text-align: center;
+    padding: 20px 25px;
+    text-decoration: none;
+    z-index: 1001;
+}
+
+.navi_menu a.active {
+    background-color: #403F4C;
+}
+
+.navi_menu a:hover {
+    background-color: #b8837f;
+}
+
+/* Responsive styling for the navigation menu */
+@media screen and (max-width: 768px) {
+    .navi_menu {
+        flex-direction: column; 
+        padding: 0; 
+    }
+
+    .navi_menu a {
+        float: none; 
+        display: block; 
+        width: 100%; 
+        text-align: center; 
+        padding: 15px; 
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .navi_menu a {
+        font-size: 14px; 
+        padding: 10px; 
+    }
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    .form-button,
+    button[type="submit"] {
+        margin-top: 20px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .search-container input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .search-container button {
+        width: 100%;
+    }
+}
