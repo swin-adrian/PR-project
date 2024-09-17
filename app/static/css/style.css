@@ -530,85 +530,135 @@ tbody tr:hover {
     transform: scale(1.2); 
 }
 
-/*Create multiple step form
+/* Form.html page */
+.container {
+    border: 1px solid #FF9933;
+    border-radius: 5px;
+    padding: 15px;
+    max-width: 90%;
+    margin: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin-top: 60px;
+}
 
-    /* Hide all steps by default: */
-.tab {
-    display: none;
-  }
-  
-  /* When the first tab is shown, make sure display is block */
-.tab:first-child {
-    display: block;
-  }
+/* Header Styling */
+.header {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FF9933;
+    margin-bottom: 15px;
+    text-align: left;
+    border-bottom: 1px solid #FF9933;
+    padding-bottom: 10px;
+}
 
-  button {
+/* Option Styling  */
+.option {
+    margin-bottom: 15px;
+    background-color: #FAF4EF;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #E0E0E0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Radio Buttons Styling */
+.option input[type="radio"] {
+    margin-right: 10px;
+    accent-color: #0073E6;
+}
+
+.option label {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Form Button Styling */
+.form-button {
     background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 20px;
-    margin-top: 10px;
+    padding: 10px 25px;
+    font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  button:hover {
+    margin-top: 10px;
+    float: right;
+    margin-right: 30px;
+}
+
+.form-button:hover {
     background-color: #45a049;
-  }
-  
-  #prevBtn {
+}
+
+/* Styling for Previous Button */
+#prevBtn {
     background-color: #bbbbbb;
-  }
-  
-  .step {
+    color: white;
+    margin-right: 30px;
+}
+
+/* Progress Circle Styling */
+.progress-circle {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Progress Step Styling */
+.step {
     height: 15px;
     width: 15px;
-    margin: 0 2px;
+    margin: 0 3px;
     background-color: #bbbbbb;
     border: none;
     border-radius: 50%;
     display: inline-block;
     opacity: 0.5;
-  }
-  
-  .step.active {
-    opacity: 1;
-  }
-  
-  .step.finish {
-    background-color: #4CAF50;
-  }
-  
-  .invalid {
-    background-color: #ffdddd;
-  }
-
-
-  /*page 2 */
-  .q2-2-section {
-    display: none; /* Hide all Q2.2 sections by default */
 }
 
-  /*page 4 */
+.step.active,
+.step.finish {
+    opacity: 1;
+    background-color: #4CAF50;
+}
 
-select, input[type="text"] {
-    width: 99%;
+/* Tab Styling */
+.tab {
+    display: none;
+}
+
+/* Show first tab on page */
+.tab:first-child {
+    display: block;
+}
+
+/* Styling for invalid input fields */
+.invalid {
+    background-color: #ffdddd;
+}
+
+select, input[type="text"], input[type="date"] {
+    width: 100%;
     padding: 8px;
     margin-bottom: 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
 }
-.score-section {
-    display: none; /* Initially hide score input sections */
+  /*page 2 */
+  .q2-2-section {
+    display: none; 
 }
-<<<<<<< HEAD
->>>>>>> 98e58ee33d0aee858546a5199c1a8ea8fb74d317
->>>>>>> 3415781b465d8b517e4b696f4b342c0048833142
-=======
+
+  /*page 4 */
+.score-section {
+    display: none;
+}
 
 /* Page 8 */
 .hidden {
-    display: none;
-  }
+  display: none;
+}
 
->>>>>>> new-somto2

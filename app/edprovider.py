@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from bson.objectid import ObjectId
 from datetime import datetime
 
@@ -48,18 +48,21 @@ def view_courses():
     from main import mongo
     # Count total number of courses for pagination
     total_courses = mongo.db.courses.count_documents({})
+    total_pages = (total_courses + per_page - 1) // per_page  # Calculate total number of pages
     
     # Fetch courses for the current page
     courses = mongo.db.courses.find().skip((page - 1) * per_page).limit(per_page)
     
-    # Pass the page, per_page, and total_courses to the template
+    # Pass the page, per_page, total_pages, and total_courses to the template
     return render_template(
         'add_course.html',
         courses=courses,
         page=page,
         per_page=per_page,
-        total_courses=total_courses
+        total_courses=total_courses,
+        total_pages=total_pages  # Pass total pages to the template
     )
+
 
 
 # Route for searching courses with pagination
@@ -101,3 +104,27 @@ def delete_course(course_id):
     mongo.db.courses.delete_one({"_id": ObjectId(course_id)})
     flash("Course deleted successfully!", "success")
     return redirect(url_for('edprovider.view_courses'))
+
+# AJAX route for modifying a course
+@edprovider_bp.route('/modify_course_ajax/<course_id>', methods=['POST'])
+def modify_course_ajax(course_id):
+    from main import mongo
+    updated_course = {
+        "Industry": request.form.get('industry'),
+        "CourseName": request.form.get('course_name'),
+        "CourseType": request.form.get('course_type'),
+        "Duration": request.form.get('duration'),
+        "CourseStructure": request.form.get('course_structure'),
+        "KeyLearnings": request.form.get('key_learnings'),
+        "updated_at": datetime.now()
+    }
+
+    result = mongo.db.courses.update_one(
+        {"_id": ObjectId(course_id)}, 
+        {"$set": updated_course}
+    )
+
+    if result.modified_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False})
