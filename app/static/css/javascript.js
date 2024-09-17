@@ -242,4 +242,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching results:', error);
             });
     });
+      // Condition for page 8
+  function showFollowUp(isYes) {
+    const followUpSection = document.getElementById("followUpSection");
+    if (isYes) {
+        followUpSection.classList.remove("hidden");
+    } else {
+        followUpSection.classList.add("hidden");
+    }
+}
     
