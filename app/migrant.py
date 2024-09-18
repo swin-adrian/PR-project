@@ -145,6 +145,8 @@ def submit_migrant_form():
         
         # Predict PR probability
         pr_prob = model.predict_proba(input_data_scaled)[:, 1][0] * 100  # Convert to percentage
+
+        pr_prob = round(pr_prob, 1)
         
         
         # You can now store or return the total score and individual scores as needed

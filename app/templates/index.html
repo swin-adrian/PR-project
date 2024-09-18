@@ -12,7 +12,6 @@
     <title>EasiResi</title>
 </head>
 
-
 <body>
     <header>
         <nav>
@@ -26,16 +25,12 @@
             </div>
         </nav>
     </header>
-    <div class="video-container">
-        <video id="background-video" playsinline autoplay muted loop poster="background_video.mp4">
-            <source src="../static/css/images/background_video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-        <p id="brand1"> Easi <span class="logo-color">Resi</span></p>
+
+    <div class="background-container">
+        <img src="../static/css/images/background.jpg" alt="Background Image" id="background-image">
+        <p id="brand1">Easi <span class="logo-color">Resi</span></p>
 
         <div class="form-container">
-            
-
             <form method="post" action="/login" id="login_form">
                 <fieldset>
                     <legend>Sign in</legend>
@@ -49,7 +44,6 @@
                     <button type="submit" value="signin">Sign In</button>
                 </fieldset>
             </form>
-            
         </div>
     </div>
 
@@ -57,7 +51,4 @@
         &#169 2024-2025 Shine Brite Pty Ltd All Rights Reserved
     </footer>
 </body>
-
-
-
 </html>

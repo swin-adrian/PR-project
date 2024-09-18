@@ -43,7 +43,7 @@
     <script>
         // Use your actual PR probability value here
         var prProbability = {{ pr_prob }}; // Ensure this value is properly rendered by your server-side template engine
-
+    
         var options = {
             series: [prProbability],
             chart: {
@@ -58,13 +58,13 @@
                     dataLabels: {
                         name: {
                             fontSize: '16px',
-                            color: undefined,
+                            color: '#FF9933', // Primary orange color for the label
                             offsetY: 120
                         },
                         value: {
                             offsetY: 76,
                             fontSize: '22px',
-                            color: undefined,
+                            color: '#3366FF', // Complementary blue for the value
                             formatter: function (val) {
                                 return val + "%";
                             }
@@ -75,23 +75,26 @@
             fill: {
                 type: 'gradient',
                 gradient: {
-                    shade: 'dark',
+                    shade: 'light',
                     shadeIntensity: 0.15,
                     inverseColors: false,
+                    gradientToColors: ['#FFCC33', '#FF9933', '#3366FF'], // Gradient from yellow to orange to blue
                     opacityFrom: 1,
                     opacityTo: 1,
-                    stops: [0, 50, 65, 91]
+                    stops: [0, 50, 100]
                 },
             },
             stroke: {
-                dashArray: 4
+                dashArray: 4,
+                colors: ['#FF6633'] // Analogous red-orange for stroke
             },
             labels: ['PR Probability'],
         };
-
+    
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
     </script>
+    
 </body>
 
 </html>
