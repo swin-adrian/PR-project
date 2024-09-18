@@ -7,7 +7,7 @@
     <title>Form</title>
 </head>
 <body>
-    <script src="../static/css/javascript.js"></script>
+    <script src="../static/js/javascript.js"></script>
     <div class="container">
         <form method="post" action="submit_migrant_form" id="migrant_form">
 
@@ -309,12 +309,12 @@
     </div>
     <div style="overflow:auto;">
         <div style="float:right;">
-          <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-          <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+          <button class="form-button" type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+          <button class="form-button" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
         </div>
       </div>
     <!-- Circles which indicates the steps of the form: -->
-<div style="text-align:center;margin-top:40px;">
+<div class="progress-circle">
     <span class="step"></span>
     <span class="step"></span>
     <span class="step"></span>
