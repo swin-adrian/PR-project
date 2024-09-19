@@ -2,13 +2,83 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from bson import ObjectId
 from flask_pymongo import PyMongo
 from datetime import datetime
-# Load the required libraries
-from sklearn.preprocessing import StandardScaler
-import joblib
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 
 
+# Define the Blueprint before using it
 migrant_bp = Blueprint('migrant', __name__)
+@migrant_bp.route('/recommendcourse', methods=['GET', 'POST'])
+def recommendcourse():
+    try:
+        if request.method == 'POST':
+            # Collect user input from the form
+            industry = request.form.get("industry")
+            key_learnings = request.form.get("key_learnings")
+
+            # Combine the user input into a single text string for comparison
+            migrant_text = f"{industry} {key_learnings}"
+
+            # Initialize MongoDB
+            mongo = PyMongo(current_app)
+
+            # Fetch courses from MongoDB
+            courses_cursor = mongo.db.courses.find({})
+            courses = list(courses_cursor)
+
+            if not courses:
+                return jsonify({"courses": []})  # No courses found
+
+            # Convert ObjectId to string in the courses list
+            for course in courses:
+                course['_id'] = str(course['_id'])  # Convert ObjectId to string
+
+            # Prepare course text for comparison (combine CourseStructure and KeyLearnings)
+            course_texts = [f"{course.get('Industry', '')} {course.get('KeyLearnings', '')}" for course in courses]
+
+            # Add user input to the course texts for comparison
+            course_texts.append(migrant_text)
+
+            # Apply TF-IDF to compare user input with courses
+            vectorizer = TfidfVectorizer(stop_words='english')
+            tfidf_matrix = vectorizer.fit_transform(course_texts)
+
+            # Get the similarity scores between the user input (last entry) and the courses
+            similarity_scores = cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1])[0]
+
+            # Assign similarity scores to courses
+            for idx, score in enumerate(similarity_scores):
+                courses[idx]['Similarity_Score'] = round(score * 100, 2)  # Convert to percentage
+
+            # Sort the courses by similarity score (highest first)
+            sorted_courses = sorted(courses, key=lambda x: x['Similarity_Score'], reverse=True)
+
+            # Assign ranking points to the top courses
+            if len(sorted_courses) > 0:
+                sorted_courses[0]['Ranking_Points'] = 20  # Top course gets 20 points
+            if len(sorted_courses) > 1:
+                sorted_courses[1]['Ranking_Points'] = 15  # Second course gets 15 points
+            for course in sorted_courses[2:]:
+                course['Ranking_Points'] = 0  # Remaining courses get 0 points
+
+            # Calculate total points (Similarity Score + Ranking Points)
+            for course in sorted_courses:
+                course['Total_Points'] = course['Similarity_Score'] + course['Ranking_Points']
+
+            # Limit the number of courses to 2
+            limited_courses = sorted_courses[:2]
+
+            # Return the limited courses as a JSON response
+            return jsonify({"courses": limited_courses})
+        else:
+            return render_template('recommendcourse.html')
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({"error": "An error occurred while processing your request."}), 500
+
+
+
 
 @migrant_bp.route('/migrantlanding')
 def migrantlanding():

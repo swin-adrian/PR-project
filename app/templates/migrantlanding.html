@@ -1,34 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="description" content="Smart Migrate">
-    <meta name="keywords" content="Smart migrate, migration to Australia, PR Pathway">
-    <meta name="author" content="Adrian Soe Myint">
-    <!--accessibility setting-->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--stylesheet-->
+    <title>Migrant Landing Page</title>
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <title>Smart Track | PR Pathway</title>
 </head>
-
-
 <body>
     <header>
         <nav>
-            <!--Navigation menu in header as a list to apply more styles-->
             <div class="navi_menu">
-                <a class="active" href="/"><strong>Home</strong></a>
-                <!-- <a href="product.html"><strong>Products</strong></a>
-                <a href="enquire.html"><strong>Enquire</strong></a>
-                <a href="about.html"><strong>About</strong></a>
-                <a href="/"><strong>Enhancements</strong></a> !-->
+                <a href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
+                <a href="{{ url_for('migrant.recommendcourse') }}"><strong>Recommended Courses</strong></a>
+
             </div>
         </nav>
     </header>
-<h1>Welcome Migrant</h1>
+
+    <div class="container">
+        <h1>Welcome Migrant</h1>
+        <p>Explore your recommended courses by clicking the link above.</p>
+    </div>
 </body>
-
-
-
 </html>
