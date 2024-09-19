@@ -83,6 +83,7 @@ def search_courses():
 
     # Count total matching courses for pagination
     total_courses = mongo.db.courses.count_documents(search_filter)
+    total_pages = (total_courses + per_page - 1) // per_page  # Calculate total number of pages
 
     # Retrieve the relevant page of courses
     courses = mongo.db.courses.find(search_filter).skip((page - 1) * per_page).limit(per_page)
@@ -93,17 +94,22 @@ def search_courses():
         page=page,
         per_page=per_page,
         total_courses=total_courses,
+        total_pages=total_pages,  # Pass total pages to the template
         search_query=query
     )
 
 
-# Route for deleting a course
+
+# Route for deleting a course using AJAX
 @edprovider_bp.route('/delete_course/<course_id>', methods=['POST'])
 def delete_course(course_id):
     from main import mongo
-    mongo.db.courses.delete_one({"_id": ObjectId(course_id)})
-    flash("Course deleted successfully!", "success")
-    return redirect(url_for('edprovider.view_courses'))
+    result = mongo.db.courses.delete_one({"_id": ObjectId(course_id)})
+    if result.deleted_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False})
+
 
 # AJAX route for modifying a course
 @edprovider_bp.route('/modify_course_ajax/<course_id>', methods=['POST'])

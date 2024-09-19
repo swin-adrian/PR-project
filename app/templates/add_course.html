@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
     <title>Course Information</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
     <script src="{{ url_for('static', filename='../static/js/edprovider.js') }}"></script>
@@ -51,9 +52,7 @@
                     <td>
                         <div class="button-container">
                             <button type="button" class="form-button modify-button" data-course-id="{{ course._id }}">Modify</button>
-                            <form action="{{ url_for('edprovider.delete_course', course_id=course._id) }}" method="POST" style="display:inline-block;">
-                                <button type="submit" class="form-button delete-button">Delete</button>
-                            </form>
+                            <button type="button" class="form-button delete-button" data-course-id="{{ course._id }}">Delete</button>
                         </div>
                     </td>                   
                 </tr>
@@ -175,7 +174,5 @@
         <a href="{{ url_for('edprovider.edproviderlanding') }}" class="form-button">Back to Add Course</a>
     </div>
 
-    <!-- Link the external JS file -->
-    <script src="{{ url_for('static', filename='../static/js/edprovider.js') }}"></script>
 </body>
 </html>

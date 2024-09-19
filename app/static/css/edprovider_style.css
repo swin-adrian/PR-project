@@ -25,7 +25,7 @@ body {
     padding: 50px;
     background: linear-gradient(135deg, #ffffff, #ffffff);
     border-radius: 15px;
-    border: 3px solid #B76D68;
+    border: 3px solid #FF9933; /* Updated to Main Color */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     text-align: left;
 }
@@ -59,7 +59,7 @@ body {
 .form-textarea {
     width: 100%;
     padding: 15px;
-    border: 3px solid #B76D68;
+    border: 3px solid #FF9933; /* Updated to Main Color */
     border-radius: 8px;
     font-size: 18px;
     background-color: #ffffff;
@@ -71,15 +71,15 @@ body {
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-    border-color: #b8837f;
-    box-shadow: 0 0 10px rgba(183, 109, 104, 0.3);
+    border-color: #FFB366; /* Updated to Monochromatic Color */
+    box-shadow: 0 0 10px rgba(255, 179, 102, 0.3); /* Updated to Monochromatic Color */
 }
 
 /* Button styles with gradient background */
 .form-button,
 button[type="submit"] {
     padding: 14px;
-    background: linear-gradient(135deg, #b76d68, #b8837f);
+    background: linear-gradient(135deg, #FF9933, #FFB366); /* Updated to Main and Monochromatic Colors */
     color: white;
     font-size: 18px;
     font-weight: 700;
@@ -93,13 +93,13 @@ button[type="submit"] {
 
 .form-button:hover,
 button[type="submit"]:hover {
-    background: linear-gradient(135deg, #b8837f, #b76d68);
+    background: linear-gradient(135deg, #FFB366, #FF9933); /* Updated to Monochromatic and Main Colors */
     transform: translateY(-2px);
 }
 
 /* Button for table actions */
 button[style="background-color: red;"] {
-    background-color: #B76D68;
+    background-color: #FF6633; /* Updated to Analogous Color */
     border: none;
     padding: 12px 20px;
     border-radius: 8px;
@@ -110,7 +110,7 @@ button[style="background-color: red;"] {
 }
 
 button[style="background-color: red;"]:hover {
-    background-color: #b8837f;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
     transform: translateY(-2px);
 }
 
@@ -119,7 +119,7 @@ textarea.form-input {
     width: 95%;
     height: 150px;
     padding: 16px;
-    border: 3px solid #B76D68;
+    border: 3px solid #FF9933; /* Updated to Main Color */
     border-radius: 8px;
     font-size: 18px;
     background-color: #f9f9f9;
@@ -130,8 +130,8 @@ textarea.form-input {
 
 /* Soft focus effect */
 textarea.form-input:focus {
-    border-color: #b8837f;
-    box-shadow: 0 0 10px rgba(183, 109, 104, 0.3);
+    border-color: #FFB366; /* Updated to Monochromatic Color */
+    box-shadow: 0 0 10px rgba(255, 179, 102, 0.3); /* Updated to Monochromatic Color */
 }
 
 /* Table styling with subtle lines and soft shadows */
@@ -151,9 +151,18 @@ th, td {
 }
 
 th {
-    background-color: #B76D68;
+    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
     color: white;
+    padding: 16px;
+    text-align: left;
+    font-size: 16px;
+    border-right: 1px solid #ffffff; /* Adds a division line between headers */
 }
+
+th:last-child {
+    border-right: none; /* Removes the right border from the last header cell */
+}
+
 
 tr:hover {
     background-color: #f0f0f0;
@@ -183,7 +192,7 @@ tr:hover {
 /* Search button */
 .search-container button {
     padding: 10px 20px;
-    background-color: #B76D68;
+    background-color: #FF9933; /* Updated to Main Color */
     color: white;
     border: none;
     border-radius: 8px;
@@ -193,7 +202,7 @@ tr:hover {
 
 /* Hover effect for search button */
 .search-container button:hover {
-    background-color: #b8837f;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 /* Center the icons and the view course button */
@@ -210,7 +219,7 @@ tr:hover {
 .view-courses-btn {
     display: inline-block;
     padding: 12px 24px;
-    background-color: #B76D68;
+    background-color: #FF9933; /* Updated to Main Color */
     color: white;
     border: none;
     border-radius: 5px;
@@ -222,7 +231,7 @@ tr:hover {
 }
 
 .view-courses-btn:hover {
-    background-color: #b8837f;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 /* To ensure icons are centered and displayed correctly */
@@ -235,17 +244,17 @@ tr:hover {
 
 .icon {
     font-size: 32px;
-    color: #B76D68;
+    color: #FF9933; /* Updated to Main Color */
 }
 
 .icon:hover {
-    color: #b8837f;
+    color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 /* Basic styling for the navigation menu */
 .navi_menu {
     overflow: hidden;
-    background-color: #B76D68;
+    background-color: #FF9933; /* Main Color */
     z-index: 1001;
     display: flex;
     justify-content: center;
@@ -260,14 +269,16 @@ tr:hover {
     padding: 20px 25px;
     text-decoration: none;
     z-index: 1001;
+    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
+    transition: background-color 0.3s;
 }
 
 .navi_menu a.active {
-    background-color: #403F4C;
+    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
 }
 
 .navi_menu a:hover {
-    background-color: #b8837f;
+    background-color: #FFB366; /* Updated to Lighter Orange Color */
 }
 
 /* Responsive styling for the navigation menu */
@@ -329,7 +340,7 @@ tr:hover {
 /* Numbered page links */
 .pagination-number {
     padding: 8px 14px;
-    background-color: #b76d68;
+    background-color: #FF9933; /* Updated to Main Color */
     color: white;
     border-radius: 5px;
     font-size: 18px;
@@ -338,7 +349,7 @@ tr:hover {
 }
 
 .pagination-number:hover {
-    background-color: #b8837f;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 /* Current page styling */
@@ -346,13 +357,13 @@ tr:hover {
     font-weight: bold;
     padding: 8px 14px;
     font-size: 18px;
-    color: #b76d68;
+    color: #FF9933; /* Updated to Main Color */
 }
 
 /* Pagination arrows */
 .pagination-arrow {
     padding: 8px 14px;
-    background-color: #b76d68;
+    background-color: #FF9933; /* Updated to Main Color */
     color: white;
     border-radius: 50%;
     font-size: 18px;
@@ -361,13 +372,13 @@ tr:hover {
 }
 
 .pagination-arrow:hover {
-    background-color: #b8837f;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 /* Ellipsis dots */
 .pagination-dots {
     font-size: 16px;
-    color: #b76d68;
+    color: #FF9933; /* Updated to Main Color */
     padding: 8px 12px;
 }
 
@@ -385,13 +396,13 @@ tr:hover {
 /* Style for the pagination arrows (smaller size and rounded corners) */
 .pagination-arrow {
     font-size: 18px;
-    background-color: #b76d68;
+    background-color: #FF9933; /* Updated to Main Color */
     padding: 5px 10px;
     border-radius: 50%;
 }
 
 .pagination-arrow:hover {
-    background-color: #b8837f;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 .button-container {
@@ -412,19 +423,19 @@ tr:hover {
 }
 
 .modify-button {
-    background-color: #6A8EAE;
+    background-color: #33FF99; /* Updated to Triadic Color */
 }
 
 .modify-button:hover {
-    background-color: #5A7B91;
+    background-color: #29D684; /* Darkened Triadic Color */
 }
 
 .delete-button {
-    background-color: #B76D68;
+    background-color: #FF6633; /* Updated to Analogous Color */
 }
 
 .delete-button:hover {
-    background-color: #9A504D;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 /* Style form inputs inside table rows */
@@ -452,7 +463,7 @@ tr:hover {
 /* Consistent padding and button appearance */
 .edit-course-form button {
     padding: 8px 14px;
-    background-color: #B76D68;
+    background-color: #FF9933; /* Updated to Main Color */
     color: white;
     font-size: 14px;
     border: none;
@@ -463,7 +474,7 @@ tr:hover {
 }
 
 .edit-course-form button:hover {
-    background-color: #9A504D;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 /* Ensure form inputs are aligned within table cells */
@@ -476,7 +487,7 @@ tr:hover {
     margin-top: 10px;
     padding: 8px 14px;
     font-size: 14px;
-    background-color: #B76D68;
+    background-color: #FF9933; /* Updated to Main Color */
     color: white;
     border: none;
     border-radius: 5px;
@@ -484,7 +495,7 @@ tr:hover {
 }
 
 .edit-course-form button:hover {
-    background-color: #9A504D;
+    background-color: #FFB366; /* Updated to Monochromatic Color */
 }
 
 /* Style the select dropdown to match input fields */

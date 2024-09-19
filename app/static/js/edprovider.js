@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle form submission with AJAX
+    // Handle form submission with AJAX for modifying courses
     document.querySelectorAll('.edit-course-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault(); // Prevent form from submitting normally
@@ -42,11 +42,47 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle Cancel button
+    // Handle Cancel button for hiding the edit form
     document.querySelectorAll('.cancel-button').forEach(button => {
         button.addEventListener('click', function() {
             const courseId = this.dataset.courseId;
             document.getElementById(`edit-row-${courseId}`).style.display = 'none'; // Hide the edit form
+        });
+    });
+
+    // Handle delete course with AJAX
+    document.querySelectorAll('.delete-button').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default behavior
+            const courseId = this.dataset.courseId;
+            const courseRow = document.getElementById(`course-row-${courseId}`);
+
+            // Confirm the deletion
+            const confirmation = confirm('Are you sure you want to delete this course?');
+            if (!confirmation) {
+                return;
+            }
+
+            // Temporarily hide the course row immediately
+            courseRow.style.display = 'none';
+
+            // Send the AJAX request to delete the course
+            fetch(`/delete_course/${courseId}`, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    // Show the row again if deletion failed
+                    courseRow.style.display = 'table-row';
+                    alert('Error deleting course.');
+                }
+            })
+            .catch(error => {
+                // Show the row again if an error occurred
+                courseRow.style.display = 'table-row';
+                console.error('Error deleting course:', error);
+            });
         });
     });
 });
