@@ -21,7 +21,7 @@ h1 {
 /* Basic styling for the navigation menu */
 .navi_menu {
     overflow: hidden;
-    background-color: #FF9933;
+    background-color: #B76D68;  
     z-index: 1001;
     display: flex;
     justify-content: center; 
@@ -39,7 +39,7 @@ h1 {
 }
 
 .navi_menu a.active {
-    background-color: #FF6633;
+    background-color: #B76D68;
 }
 
 .navi_menu a:hover {
@@ -166,7 +166,7 @@ form {
 
 .logo-color
 {
-	color: #FF9933;
+	color: #B76D68;
 }
 
 
@@ -410,7 +410,7 @@ textarea {
 button {
     width: 100%;
     padding: 12px;
-    background-color: #FF9933;
+    background-color: #B76D68;
     color: white;
     border: none;
     border-radius: 5px;
@@ -420,7 +420,7 @@ button {
 }
 
 button:hover {
-    background-color: #e65c00;
+    background-color: #b8837f;
 }
 
 
