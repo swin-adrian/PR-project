@@ -46,58 +46,6 @@
         </section>
     </div>
 
-    <!-- JavaScript for Form Submission -->
-    <script>
-        $(document).ready(function() {
-            $('#recommendationForm').on('submit', function(event) {
-                event.preventDefault();
-
-                $('#feedback').text('');
-                $('#courseResults').html('');
-
-                var formData = {
-                    'industry': $('#industry').val(),
-                    'key_learnings': $('#key_learnings').val(),
-                };
-
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ url_for('migrant.recommendcourse') }}",
-                    data: formData,
-                    success: function(response) {
-                        var courseResults = $('#courseResults');
-                        courseResults.empty();
-
-                        if (response.courses.length > 0) {
-                            $.each(response.courses, function(index, course) {
-                                if (course.Similarity_Score > 20) {
-                                    var card = `
-                                        <div class="course-card">
-                                            <div class="course-title">${course.CourseName}</div>
-                                            <div class="course-info">Industry: ${course.Industry}</div>
-                                            <div class="course-info">Course Type: ${course.CourseType}</div>
-                                            <div class="course-info">Duration: ${course.Duration}</div>
-                                            <div class="course-info">Similarity Score: ${course.Similarity_Score}%</div>
-                                            <div class="course-points">Total Points: ${course.Total_Points}</div>
-                                        </div>`;
-                                    courseResults.append(card);
-                                }
-                            });
-
-                            if (courseResults.children().length === 0) {
-                                courseResults.html('<p class="no-results">No courses found with a similarity score above 20%.</p>');
-                            }
-                        } else {
-                            courseResults.html('<p class="no-results">No courses found matching your profile.</p>');
-                        }
-                    },
-                    error: function(error) {
-                        $('#feedback').text('Error fetching recommendations. Please try again later.');
-                    }
-                });
-            });
-        });
-    </script>
 
 </body>
 </html>
