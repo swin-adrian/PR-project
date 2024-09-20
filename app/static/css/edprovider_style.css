@@ -7,6 +7,7 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
+<<<<<<< HEAD
     height: 100%;
     background-color: #FFFF;
 }
@@ -14,6 +15,244 @@ body {
 /* Navigation Bar */
 .navi_menu {
     background-color: #FF9933;
+=======
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 50px;
+    background: linear-gradient(135deg, #ffffff, #ffffff);
+    border-radius: 15px;
+    border: 3px solid #FF9933; /* Updated to Main Color */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+/* Calm, welcoming form title */
+.form-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #4a4a4a;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form group styles with soft colors */
+.form-group {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.form-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Input, select, and textarea fields with heavier borders */
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 15px;
+    border: 3px solid #FF9933; /* Updated to Main Color */
+    border-radius: 8px;
+    font-size: 18px;
+    background-color: #ffffff;
+    color: #555;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Soft focus effect */
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #FFB366; /* Updated to Monochromatic Color */
+    box-shadow: 0 0 10px rgba(255, 179, 102, 0.3); /* Updated to Monochromatic Color */
+}
+
+/* Button styles with gradient background */
+.form-button,
+button[type="submit"] {
+    padding: 14px;
+    background: linear-gradient(135deg, #FF9933, #FFB366); /* Updated to Main and Monochromatic Colors */
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+    text-align: center;
+    display: inline-block;
+}
+
+.form-button:hover,
+button[type="submit"]:hover {
+    background: linear-gradient(135deg, #FFB366, #FF9933); /* Updated to Monochromatic and Main Colors */
+    transform: translateY(-2px);
+}
+
+/* Button for table actions */
+button[style="background-color: red;"] {
+    background-color: #FF6633; /* Updated to Analogous Color */
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+button[style="background-color: red;"]:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+    transform: translateY(-2px);
+}
+
+/* Adjusting the form-input for textareas specifically */
+textarea.form-input {
+    width: 95%;
+    height: 150px;
+    padding: 16px;
+    border: 3px solid #FF9933; /* Updated to Main Color */
+    border-radius: 8px;
+    font-size: 18px;
+    background-color: #f9f9f9;
+    color: #555;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;
+}
+
+/* Soft focus effect */
+textarea.form-input:focus {
+    border-color: #FFB366; /* Updated to Monochromatic Color */
+    box-shadow: 0 0 10px rgba(255, 179, 102, 0.3); /* Updated to Monochromatic Color */
+}
+
+/* Table styling with subtle lines and soft shadows */
+table {
+    width: 100%;
+    font-size: 16px;
+    border-collapse: collapse;
+    margin-top: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+}
+
+th {
+    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
+    color: white;
+    padding: 16px;
+    text-align: left;
+    font-size: 16px;
+    border-right: 1px solid #ffffff; /* Adds a division line between headers */
+}
+
+th:last-child {
+    border-right: none; /* Removes the right border from the last header cell */
+}
+
+
+tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* Adjust search form container to align items in the same row */
+.search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Search bar input with increased width */
+.search-container input[type="text"] {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    color: #555;
+}
+
+/* Search button */
+.search-container button {
+    padding: 10px 20px;
+    background-color: #FF9933; /* Updated to Main Color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Hover effect for search button */
+.search-container button:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+}
+
+/* Center the icons and the view course button */
+.side-section {
+    margin-top: 20px;
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-courses-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #FF9933; /* Updated to Main Color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+.view-courses-btn:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+}
+
+/* To ensure icons are centered and displayed correctly */
+.icons-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.icon {
+    font-size: 32px;
+    color: #FF9933; /* Updated to Main Color */
+}
+
+.icon:hover {
+    color: #FFB366; /* Updated to Monochromatic Color */
+}
+
+/* Basic styling for the navigation menu */
+.navi_menu {
+    overflow: hidden;
+    background-color: #FF9933; /* Main Color */
+    z-index: 1001;
+>>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,11 +267,21 @@ body {
     color: white;
     padding: 20px 25px;
     text-decoration: none;
+<<<<<<< HEAD
     text-align: center;
+=======
+    z-index: 1001;
+    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
+    transition: background-color 0.3s;
+}
+
+.navi_menu a.active {
+    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
+>>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
 }
 
 .navi_menu a:hover {
-    background-color: #b8837f;
+    background-color: #FFB366; /* Updated to Lighter Orange Color */
 }
 
 .navi_menu a.active {
@@ -179,6 +428,7 @@ h2 {
     margin-top: 20px;
 }
 
+<<<<<<< HEAD
 /* Footer */
 footer {
     bottom: 10px;
@@ -186,21 +436,162 @@ footer {
     width: 100%;
     font: 10px Arial, sans-serif;
     color: black;
+=======
+/* Numbered page links */
+.pagination-number {
+    padding: 8px 14px;
+    background-color: #FF9933; /* Updated to Main Color */
+    color: white;
+    border-radius: 5px;
+    font-size: 18px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-number:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+}
+
+/* Current page styling */
+.current-page {
+    font-weight: bold;
+    padding: 8px 14px;
+    font-size: 18px;
+    color: #FF9933; /* Updated to Main Color */
+}
+
+/* Pagination arrows */
+.pagination-arrow {
+    padding: 8px 14px;
+    background-color: #FF9933; /* Updated to Main Color */
+    color: white;
+    border-radius: 50%;
+    font-size: 18px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-arrow:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+}
+
+/* Ellipsis dots */
+.pagination-dots {
+    font-size: 16px;
+    color: #FF9933; /* Updated to Main Color */
+    padding: 8px 12px;
+}
+
+/* Make sure the pagination list items have a consistent margin */
+.pagination ul li {
+    margin: 0 5px;
+}
+
+/* Adjust hover effect for pagination numbers */
+.pagination-number:hover,
+.pagination-arrow:hover {
+    transform: translateY(-2px);
+}
+
+/* Style for the pagination arrows (smaller size and rounded corners) */
+.pagination-arrow {
+    font-size: 18px;
+    background-color: #FF9933; /* Updated to Main Color */
+    padding: 5px 10px;
+    border-radius: 50%;
+}
+
+.pagination-arrow:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.form-button {
+    padding: 8px 12px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 7px !important;
+    font-size: 14px !important;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.modify-button {
+    background-color: #33FF99; /* Updated to Triadic Color */
+}
+
+.modify-button:hover {
+    background-color: #29D684; /* Darkened Triadic Color */
+}
+
+.delete-button {
+    background-color: #FF6633; /* Updated to Analogous Color */
+}
+
+.delete-button:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+}
+
+/* Style form inputs inside table rows */
+.edit-course-form input[type="text"],
+.edit-course-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    text-align: left;
+    background-color: #fff;
+    color: #333;
+}
+
+/* Style for the textarea to match input fields */
+.edit-course-form textarea {
+    resize: vertical;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+/* Consistent padding and button appearance */
+.edit-course-form button {
+    padding: 8px 14px;
+    background-color: #FF9933; /* Updated to Main Color */
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+>>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
     text-align: center;
     background-color: white;
     padding-bottom: 10px;
 }
 
+<<<<<<< HEAD
 /* Responsive Design */
 @media screen and (max-width: 768px) {
     .container {
         padding: 10px;
     }
+=======
+.edit-course-form button:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+}
+>>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
 
     h1, h2 {
         font-size: 18px;
     }
 
+<<<<<<< HEAD
     .course-card {
         padding: 15px;
     }
@@ -209,4 +600,45 @@ footer {
         font-size: 14px;
         padding: 10px;
     }
+=======
+.edit-course-form button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 14px;
+    font-size: 14px;
+    background-color: #FF9933; /* Updated to Main Color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-course-form button:hover {
+    background-color: #FFB366; /* Updated to Monochromatic Color */
+}
+
+/* Style the select dropdown to match input fields */
+.form-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #333;
+}
+
+/* Cancel Button Style */
+.cancel-button {
+    background-color: #ccc;
+    color: #333;
+    margin-left: 10px;
+    border-radius: 5px;
+    padding: 8px 14px;
+}
+
+.cancel-button:hover {
+    background-color: #bbb;
+>>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
 }

@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
     <title>Form</title>
 </head>
 <body>
     <script src="../static/js/javascript.js"></script>
-    <div class="container">
+    <div class="questionaire-container">
         <form method="post" action="submit_migrant_form" id="migrant_form">
 
     <!--Page 1-->   
@@ -38,32 +39,40 @@
     <!--Page 2-->
             <!-- Page 2 - MLTSSL, STSOL, or ROL selection based on visa subclass -->
             <div class="tab">
-                <h2>Occupation Preference</h2>
+                <div class="header">Occupation Preference</div>
                 
                 <!-- For subclass 189 -->
                 <div id="question-189" class="occupation-section">
+                    <div class="option">
                     <label>Select your occupation on the Medium and Long-term Strategic Skills List (MLTSSL)</label>
-                    <div>
+                        <div>
                         <input type="radio" name="occupation-list-189" value="MLTSSL" checked>
                         Medium and Long-term Strategic Skills List (MLTSSL)
+                        </div>
                     </div>
                 </div>
                 
                 <!-- For subclass 190 -->
+        
                 <div id="question-190" class="occupation-section">
-                    <label>Is your occupation on Medium and Long-term Strategic Skills List or Short-term Skilled Occupation List?</label>
-                    <div>
-                        <input type="radio" name="occupation-list-190" value="MLTSSL">
-                        Medium and Long-term Strategic Skills List (MLTSSL)
-                    </div>
-                    <div>
-                        <input type="radio" name="occupation-list-190" value="STSOL">
-                        Short-term Skilled Occupation List (STSOL)
+                    <div class="option">
+                        <label>Is your occupation on Medium and Long-term Strategic Skills List or Short-term Skilled Occupation List?</label>
+                        <div>
+                            <input type="radio" name="occupation-list-190" value="MLTSSL">
+                            Medium and Long-term Strategic Skills List (MLTSSL)
+                        </div>
+                        <div>
+                            <input type="radio" name="occupation-list-190" value="STSOL">
+                            Short-term Skilled Occupation List (STSOL)
+                        </div>
                     </div>
                 </div>
             
+            
+            
                 <!-- For subclass 491 -->
                 <div id="question-491" class="occupation-section">
+                <div class="option">
                     <label>Is your occupation on Medium and Long-term Strategic Skills List, Short-term Skilled Occupation List, or Regional Occupation List?</label>
                     <div>
                         <input type="radio" name="occupation-list-491" value="MLTSSL">
@@ -78,12 +87,15 @@
                         Regional Occupation List (ROL)
                     </div>
                 </div>
+                </div>
             
                 <div id="occupation-dropdown-section">
+                    <div class="option">
                     <label for="occupations">Select your occupation:</label>
                     <select id="occupations" name="occupation">
                         <option value="">-- Select Occupation --</option>
                     </select>
+                    </div>
                 </div>
             </div>
             
