@@ -1,4 +1,4 @@
-{
+* {
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -35,7 +35,7 @@ body {
 }
 
 .navi_menu a.active {
-    background-color: #FF6633;
+    background-color: #403F4C;
 }
 
 /* Responsive Navigation Bar */

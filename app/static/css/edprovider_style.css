@@ -1,27 +1,31 @@
-/* General Styling */
-* {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
+/* Somto CSS for a calm and soft design */
 body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    color: #444;
     margin: 0;
     padding: 0;
-    width: 100%;
-<<<<<<< HEAD
-    height: 100%;
-    background-color: #FFFF;
 }
 
-/* Navigation Bar */
-.navi_menu {
-    background-color: #FF9933;
-=======
+/* Container to center content and provide padding */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Form container with heavier borders */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
     max-width: 900px;
     margin: 40px auto;
     padding: 50px;
     background: linear-gradient(135deg, #ffffff, #ffffff);
     border-radius: 15px;
-    border: 3px solid #FF9933; /* Updated to Main Color */
+    border: 3px solid #B76D68; /* Updated to Main Pink */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     text-align: left;
 }
@@ -55,7 +59,7 @@ body {
 .form-textarea {
     width: 100%;
     padding: 15px;
-    border: 3px solid #FF9933; /* Updated to Main Color */
+    border: 3px solid #B76D68; /* Updated to Main Pink */
     border-radius: 8px;
     font-size: 18px;
     background-color: #ffffff;
@@ -67,15 +71,15 @@ body {
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-    border-color: #FFB366; /* Updated to Monochromatic Color */
-    box-shadow: 0 0 10px rgba(255, 179, 102, 0.3); /* Updated to Monochromatic Color */
+    border-color: #b8837f; /* Updated to Soft Pink */
+    box-shadow: 0 0 10px rgba(183, 131, 127, 0.3); /* Updated to Soft Pink */
 }
 
 /* Button styles with gradient background */
 .form-button,
 button[type="submit"] {
     padding: 14px;
-    background: linear-gradient(135deg, #FF9933, #FFB366); /* Updated to Main and Monochromatic Colors */
+    background: linear-gradient(135deg, #B76D68, #b8837f); /* Updated to Main and Soft Pink */
     color: white;
     font-size: 18px;
     font-weight: 700;
@@ -89,13 +93,13 @@ button[type="submit"] {
 
 .form-button:hover,
 button[type="submit"]:hover {
-    background: linear-gradient(135deg, #FFB366, #FF9933); /* Updated to Monochromatic and Main Colors */
+    background: linear-gradient(135deg, #b8837f, #B76D68); /* Updated to Soft and Main Pink */
     transform: translateY(-2px);
 }
 
 /* Button for table actions */
 button[style="background-color: red;"] {
-    background-color: #FF6633; /* Updated to Analogous Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     border: none;
     padding: 12px 20px;
     border-radius: 8px;
@@ -106,7 +110,7 @@ button[style="background-color: red;"] {
 }
 
 button[style="background-color: red;"]:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
     transform: translateY(-2px);
 }
 
@@ -115,7 +119,7 @@ textarea.form-input {
     width: 95%;
     height: 150px;
     padding: 16px;
-    border: 3px solid #FF9933; /* Updated to Main Color */
+    border: 3px solid #B76D68; /* Updated to Main Pink */
     border-radius: 8px;
     font-size: 18px;
     background-color: #f9f9f9;
@@ -126,8 +130,8 @@ textarea.form-input {
 
 /* Soft focus effect */
 textarea.form-input:focus {
-    border-color: #FFB366; /* Updated to Monochromatic Color */
-    box-shadow: 0 0 10px rgba(255, 179, 102, 0.3); /* Updated to Monochromatic Color */
+    border-color: #b8837f; /* Updated to Soft Pink */
+    box-shadow: 0 0 10px rgba(183, 131, 127, 0.3); /* Updated to Soft Pink */
 }
 
 /* Table styling with subtle lines and soft shadows */
@@ -147,7 +151,7 @@ th, td {
 }
 
 th {
-    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     color: white;
     padding: 16px;
     text-align: left;
@@ -158,7 +162,6 @@ th {
 th:last-child {
     border-right: none; /* Removes the right border from the last header cell */
 }
-
 
 tr:hover {
     background-color: #f0f0f0;
@@ -188,7 +191,7 @@ tr:hover {
 /* Search button */
 .search-container button {
     padding: 10px 20px;
-    background-color: #FF9933; /* Updated to Main Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     color: white;
     border: none;
     border-radius: 8px;
@@ -198,7 +201,7 @@ tr:hover {
 
 /* Hover effect for search button */
 .search-container button:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
 /* Center the icons and the view course button */
@@ -215,7 +218,7 @@ tr:hover {
 .view-courses-btn {
     display: inline-block;
     padding: 12px 24px;
-    background-color: #FF9933; /* Updated to Main Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     color: white;
     border: none;
     border-radius: 5px;
@@ -227,7 +230,7 @@ tr:hover {
 }
 
 .view-courses-btn:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
 /* To ensure icons are centered and displayed correctly */
@@ -240,55 +243,42 @@ tr:hover {
 
 .icon {
     font-size: 32px;
-    color: #FF9933; /* Updated to Main Color */
+    color: #B76D68; /* Updated to Main Pink */
 }
 
 .icon:hover {
-    color: #FFB366; /* Updated to Monochromatic Color */
+    color: #b8837f; /* Updated to Soft Pink */
 }
 
 /* Basic styling for the navigation menu */
 .navi_menu {
     overflow: hidden;
-    background-color: #FF9933; /* Main Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     z-index: 1001;
->>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    overflow: hidden;
-    z-index: 1001;
-    padding: 10px 0;
 }
 
 .navi_menu a {
-    font-size: 8px;
+    font-size: 12px;
     color: white;
+    text-align: center;
     padding: 20px 25px;
     text-decoration: none;
-<<<<<<< HEAD
-    text-align: center;
-=======
     z-index: 1001;
-    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
-    transition: background-color 0.3s;
 }
 
 .navi_menu a.active {
-    background-color: #FF6633; /* Updated to Deep Orange/Red Color */
->>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
+    background-color: #403F4C;
 }
 
 .navi_menu a:hover {
-    background-color: #FFB366; /* Updated to Lighter Orange Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
-.navi_menu a.active {
-    background-color: #FF6633;
-}
-
-/* Responsive Navigation Bar */
+/* Responsive styling for the navigation menu */
 @media screen and (max-width: 768px) {
     .navi_menu {
         flex-direction: column;
@@ -311,136 +301,43 @@ tr:hover {
     }
 }
 
-/* Main Container */
-.container {
-    max-width: 90%;
-    margin: 60px auto;
-    padding: 15px;
-    border: 1px solid #FF9933;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background-color: white;
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    .form-button,
+    button[type="submit"] {
+        margin-top: 20px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .search-container input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .search-container button {
+        width: 100%;
+    }
 }
 
-/* Form Section */
-.form-section {
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-h1 {
-    color: #403f4c;
-    font-size: 20px;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-fieldset {
-    border: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-}
-
-label {
-    margin: 10px 0 5px;
-    text-align: left;
-    width: 100%;
-    display: block;
-    font-size: 16px;
-    color: #333;
-}
-
-input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
-
-/* Button */
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #FF9933;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #e65c00;
-}
-
-/* Course Section */
-.course-section {
-    margin-top: 40px;
-}
-
-h2 {
-    color: #403F4C;
-    font-size: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Course Cards */
-.course-card {
-    background-color: #FFE6CC; /* Lighter version of #FF9933 */
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.course-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.course-title {
-    font-size: 14px;
-    font-weight: bold;
-    color: #403f4c;
-    margin-bottom: 10px;
-}
-
-.course-info {
-    font-size: 14px;
-    color: #666;
-}
-
-.course-points {
-    font-size: 14px;
-    color: #403f4c;
-    font-weight: bold;
-}
-
-/* Feedback */
-#feedback {
-    color: red;
+/* Pagination styling with numbered links and arrows */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 20px;
 }
 
-<<<<<<< HEAD
-/* Footer */
-footer {
-    bottom: 10px;
-    left: 0;
-    width: 100%;
-    font: 10px Arial, sans-serif;
-    color: black;
-=======
 /* Numbered page links */
 .pagination-number {
     padding: 8px 14px;
-    background-color: #FF9933; /* Updated to Main Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     color: white;
     border-radius: 5px;
     font-size: 18px;
@@ -449,7 +346,7 @@ footer {
 }
 
 .pagination-number:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
 /* Current page styling */
@@ -457,13 +354,13 @@ footer {
     font-weight: bold;
     padding: 8px 14px;
     font-size: 18px;
-    color: #FF9933; /* Updated to Main Color */
+    color: #B76D68; /* Updated to Main Pink */
 }
 
 /* Pagination arrows */
 .pagination-arrow {
     padding: 8px 14px;
-    background-color: #FF9933; /* Updated to Main Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     color: white;
     border-radius: 50%;
     font-size: 18px;
@@ -472,13 +369,13 @@ footer {
 }
 
 .pagination-arrow:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
 /* Ellipsis dots */
 .pagination-dots {
     font-size: 16px;
-    color: #FF9933; /* Updated to Main Color */
+    color: #B76D68; /* Updated to Main Pink */
     padding: 8px 12px;
 }
 
@@ -496,13 +393,13 @@ footer {
 /* Style for the pagination arrows (smaller size and rounded corners) */
 .pagination-arrow {
     font-size: 18px;
-    background-color: #FF9933; /* Updated to Main Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     padding: 5px 10px;
     border-radius: 50%;
 }
 
 .pagination-arrow:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
 .button-container {
@@ -523,19 +420,19 @@ footer {
 }
 
 .modify-button {
-    background-color: #33FF99; /* Updated to Triadic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
 .modify-button:hover {
-    background-color: #29D684; /* Darkened Triadic Color */
+    background-color: #a07875; /* Darkened Soft Pink */
 }
 
 .delete-button {
-    background-color: #FF6633; /* Updated to Analogous Color */
+    background-color: #B76D68; /* Updated to Main Pink */
 }
 
 .delete-button:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
 /* Style form inputs inside table rows */
@@ -563,50 +460,31 @@ footer {
 /* Consistent padding and button appearance */
 .edit-course-form button {
     padding: 8px 14px;
-    background-color: #FF9933; /* Updated to Main Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     color: white;
     font-size: 14px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
->>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
     text-align: center;
-    background-color: white;
-    padding-bottom: 10px;
+    transition: background-color 0.3s ease;
 }
 
-<<<<<<< HEAD
-/* Responsive Design */
-@media screen and (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-=======
 .edit-course-form button:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
->>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
 
-    h1, h2 {
-        font-size: 18px;
-    }
+/* Ensure form inputs are aligned within table cells */
+.edit-course-form td {
+    padding: 8px;
+}
 
-<<<<<<< HEAD
-    .course-card {
-        padding: 15px;
-    }
-
-    .navi_menu a {
-        font-size: 14px;
-        padding: 10px;
-    }
-=======
 .edit-course-form button {
     display: inline-block;
     margin-top: 10px;
     padding: 8px 14px;
     font-size: 14px;
-    background-color: #FF9933; /* Updated to Main Color */
+    background-color: #B76D68; /* Updated to Main Pink */
     color: white;
     border: none;
     border-radius: 5px;
@@ -614,7 +492,7 @@ footer {
 }
 
 .edit-course-form button:hover {
-    background-color: #FFB366; /* Updated to Monochromatic Color */
+    background-color: #b8837f; /* Updated to Soft Pink */
 }
 
 /* Style the select dropdown to match input fields */
@@ -640,5 +518,4 @@ footer {
 
 .cancel-button:hover {
     background-color: #bbb;
->>>>>>> d5e1aafeeeeeb61cf854864d82c80cd46292a8a5
 }
