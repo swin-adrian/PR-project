@@ -7,6 +7,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 
 
+
+
 # Define the Blueprint before using it
 migrant_bp = Blueprint('migrant', __name__)
 @migrant_bp.route('/recommendcourse', methods=['GET', 'POST'])
