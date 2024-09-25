@@ -13,7 +13,6 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")  # Use email instead of username
         password = request.form.get("password")
-
         # Check if email and password are provided
         if not email or not password:
             login_error = "Email and password are required."

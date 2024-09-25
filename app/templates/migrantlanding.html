@@ -4,24 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Migrant Landing Page</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
     <title>Smart Track | PR Pathway</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
 </head>
 <body>
     <header>
         <nav>
             <div class="navi_menu">
                 <a href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
-                <a href="{{ url_for('migrant.recommendcourse') }}"><strong>Recommended Courses</strong></a>
-
+                <a href="{{ url_for('migrant.migrantlanding') }}"><strong>Recommended Courses</strong></a>
             </div>
         </nav>
     </header>
 
     <div class="container">
-        <h1>Welcome Migrant</h1>
-        <p>Explore your recommended courses by clicking the link above.</p>
+        <h1>Welcome {{ first_name }}</h1>
+        {% if not profile_complete %}
+        <p>Please <a href="{{ url_for('migrant.migrantform') }}">fill up your profile</a> to get personalized recommendations.</p>
+        {% endif %}
     </div>
+
+    <!-- Profile Card Section -->
+    <div class="profile-card">
+        <a href="{{ url_for('migrant.migrantform') }}" class="profile-link">
+            <img src="../static/css/images/profile.png" alt="Profile Form Icon" class="profile-icon">
+            <div class="profile-text">My Profile</div>
+        </a>
+    </div>
+
+    <!-- Results Section -->
+    <div class="container">
+        <h1>Results</h1>
+        <!-- Wrapper for the tiles -->
+        <div class="results-tiles">
+            <!-- Score Tile -->
+            <div class="tile">
+                <h2>Your Score</h2>
+                <p class="large-score">{% if total_score %}{{ total_score }}{% else %}Not available{% endif %}</p>
+            </div>
+            
+            <!-- PR Probability Tile -->
+            <div class="tile">
+                <h2>PR Probability</h2>
+                <div id="chart">
+                    {% if pr_prob %}
+                    <script>
+                        // Use your actual PR probability value here
+                        var prProbability = {{ pr_prob }};
+                    
+                        var options = {
+                            series: [prProbability],
+                            chart: {
+                                height: 350,
+                                type: 'radialBar',
+                                offsetY: -10
+                            },
+                            plotOptions: {
+                                radialBar: {
+                                    startAngle: -135,
+                                    endAngle: 135,
+                                    dataLabels: {
+                                        name: {
+                                            fontSize: '16px',
+                                            color: '#FF9933', // Primary orange color for the label
+                                            offsetY: 120
+                                        },
+                                        value: {
+                                            offsetY: 76,
+                                            fontSize: '22px',
+                                            color: '#3366FF', // Complementary blue for the value
+                                            formatter: function (val) {
+                                                return val + "%";
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            fill: {
+                                type: 'gradient',
+                                gradient: {
+                                    shade: 'light',
+                                    shadeIntensity: 0.15,
+                                    inverseColors: false,
+                                    gradientToColors: ['#FFCC33', '#FF9933', '#3366FF'], // Gradient from yellow to orange to blue
+                                    opacityFrom: 1,
+                                    opacityTo: 1,
+                                    stops: [0, 50, 100]
+                                },
+                            },
+                            stroke: {
+                                dashArray: 4,
+                                colors: ['#FF6633'] // Analogous red-orange for stroke
+                            },
+                            labels: ['PR Probability'],
+                        };
+                    
+                        var chart = new ApexCharts(document.querySelector("#chart"), options);
+                        chart.render();
+                    </script>
+                    {% else %}
+                    <p>PR Probability not available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Recommended Courses Section -->
+<div class="container">
+    <h2>Recommended Courses</h2>
+    <div id="recommendation-message">
+        <p>Based on your occupation and industry: <strong>{{ occupation }}</strong>, <strong>{{ industry }}</strong>, we recommend the following courses to improve your chances of getting a PR.</p>
+    </div>
+    <div id="courseResults">
+        <p class="no-results">Fetching recommended courses...</p>
+    </div>
+</div>
+
+    <!-- JavaScript to fetch and display recommended courses -->
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                type: 'GET',
+                url: "{{ url_for('migrant.recommendcourse') }}",
+                success: function(response) {
+                    var courseResults = $('#courseResults');
+                    courseResults.empty();
+
+                    if (response.courses.length > 0) {
+                        $.each(response.courses, function(index, course) {
+                            if (course.Similarity_Score > 20) {
+                                var card = `
+                                    <div class="course-card">
+                                        <div class="course-title">${course.CourseName}</div>
+                                        <div class="course-info">Industry: ${course.Industry}</div>
+                                        <div class="course-info">Course Type: ${course.CourseType}</div>
+                                        <div class="course-info">Duration: ${course.Duration}</div>
+                                        <div class="course-info">Similarity Score: ${course.Similarity_Score}%</div>
+                                        <div class="course-points">Total Points: ${course.Total_Points}</div>
+                                    </div>`;
+                                courseResults.append(card);
+                            }
+                        });
+
+                        if (courseResults.children().length === 0) {
+                            courseResults.html('<p class="no-results">No courses found with a similarity score above 20%.</p>');
+                        }
+                    } else {
+                        courseResults.html('<p class="no-results">No courses found matching your profile.</p>');
+                    }
+                },
+                error: function(error) {
+                    $('#courseResults').html('<p class="no-results">Error fetching recommendations. Please try again later.</p>');
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
