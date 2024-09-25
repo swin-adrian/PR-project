@@ -1,102 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recommended Courses</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/migrant.css"> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+
 <body>
 
-    <!-- Navigation Bar -->
-    <header>
-        <nav class="navi_menu">
-            <a href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
-            <a href="{{ url_for('migrant.migrantlanding') }}"><strong>Recommended Courses</strong></a>
-        </nav>
-    </header>
+    <div class="navi_menu">
+        <a href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
+        <a href="{{ url_for('migrant.recommendcourse') }}"><strong>Recommended Courses</strong></a>
+  </div>
 
-    <!-- Main Container -->
-    <div class="main-container">
-        <section class="form-section">
-            <h1>Enter Your Profile to Get Recommended Courses</h1>
-            <form id="recommendationForm">
-                <fieldset>
-                    <label for="industry">Industry:</label>
-                    <input type="text" id="industry" name="industry" placeholder="E.g., Engineering, Culinaryskills" required>
+    <!-- Main Container with Bootstrap Grid -->
+    <div class="container main-container">
+        <div class="row">
+            <!-- Form Section -->
+            <div class="col-md-6">
+                <div class="form-section">
+                    <h1>Enter Your Profile to Get Recommended Courses</h1>
+                    <form id="recommendationForm">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="industry">Industry:</label>
+                                <input type="text" class="form-control" id="industry" name="industry" placeholder="E.g., Engineering, Culinary skills" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="key_learnings">Key Learnings:</label>
+                                <input type="text" class="form-control" id="key_learnings" name="key_learnings" placeholder="E.g., Information about your course" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        </fieldset>
+                    </form>
 
-                    <label for="key_learnings">Key Learnings:</label>
-                    <input type="text" id="key_learnings" name="key_learnings" placeholder="E.g., Information about your course" required>
-
-                    <button type="submit">Submit</button>
-                </fieldset>
-            </form>
-
-            <!-- Feedback Area -->
-            <div id="feedback"></div>
-        </section>
-
-        <!-- Recommendations Section -->
-        <section class="course-section">
-            <h2>Top Recommended Courses</h2>
-            <div id="courseResults">
-                <p class="no-results">No recommended courses yet. Enter your profile above to see recommendations.</p>
+                    <!-- Feedback Area -->
+                    <div id="feedback"></div>
+                </div>
             </div>
-        </section>
+
+            <!-- Recommendations Section -->
+            <div class="col-md-6">
+                <div class="course-section">
+                    <h2>Top Recommended Courses</h2>
+                    <div id="courseResults">
+                        <p class="no-results">No recommended courses yet. Enter your profile above to see recommendations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-<!-- JavaScript for Form Submission -->
-<script>
-    $(document).ready(function() {
-        $('#recommendationForm').on('submit', function(event) {
-            event.preventDefault();
 
-            $('#feedback').text('');
-            $('#courseResults').html('');
+    <!-- JavaScript for Form Submission -->
+    <script>
+        $(document).ready(function() {
+            $('#recommendationForm').on('submit', function(event) {
+                event.preventDefault();
 
-            var formData = {
-                'industry': $('#industry').val(),
-                'key_learnings': $('#key_learnings').val(),
-            };
+                $('#feedback').text('');
+                $('#courseResults').html('');
 
-            $.ajax({
-                type: 'POST',
-                url: "{{ url_for('migrant.recommendcourse') }}",
-                data: formData,
-                success: function(response) {
-                    var courseResults = $('#courseResults');
-                    courseResults.empty();
+                var formData = {
+                    'industry': $('#industry').val(),
+                    'key_learnings': $('#key_learnings').val(),
+                };
 
-                    if (response.courses.length > 0) {
-                        $.each(response.courses, function(index, course) {
-                            if (course.Similarity_Score > 20) {
-                                var card = `
-                                    <div class="course-card">
-                                        <div class="course-title">${course.CourseName}</div>
-                                        <div class="course-info">Industry: ${course.Industry}</div>
-                                        <div class="course-info">Course Type: ${course.CourseType}</div>
-                                        <div class="course-info">Duration: ${course.Duration}</div>
-                                        <div class="course-info">Similarity Score: ${course.Similarity_Score}%</div>
-                                        <div class="course-points">Total Points: ${course.Total_Points}</div>
-                                    </div>`;
-                                courseResults.append(card);
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('migrant.recommendcourse') }}",
+                    data: formData,
+                    success: function(response) {
+                        var courseResults = $('#courseResults');
+                        courseResults.empty();
+
+                        if (response.courses.length > 0) {
+                            $.each(response.courses, function(index, course) {
+                                if (course.Similarity_Score > 20) {
+                                    var card = `
+                                        <div class="card mb-3 course-card">
+                                            <div class="card-body">
+                                                <h5 class="card-title course-title">${course.CourseName}</h5>
+                                                <p class="card-text course-info">Industry: ${course.Industry}</p>
+                                                <p class="card-text course-info">Course Type: ${course.CourseType}</p>
+                                                <p class="card-text course-info">Duration: ${course.Duration}</p>
+                                                <p class="card-text course-info">Similarity Score: ${course.Similarity_Score}%</p>
+                                                <p class="card-text course-points">Total Points: ${course.Total_Points}</p>
+                                                <!-- Subscribe and Pay Button -->
+                                                <button class="btn btn-success btn-block subscribe-btn" data-course="${course.CourseName}">Subscribe & Pay</button>
+                                            </div>
+                                        </div>`;
+                                    courseResults.append(card);
+                                }
+                            });
+
+                            if (courseResults.children().length === 0) {
+                                courseResults.html('<p class="no-results">No courses found with a similarity score above 20%.</p>');
                             }
-                        });
-
-                        if (courseResults.children().length === 0) {
-                            courseResults.html('<p class="no-results">No courses found with a similarity score above 20%.</p>');
+                        } else {
+                            courseResults.html('<p class="no-results">No courses found matching your profile.</p>');
                         }
-                    } else {
-                        courseResults.html('<p class="no-results">No courses found matching your profile.</p>');
+                    },
+                    error: function(error) {
+                        $('#feedback').text('Error fetching recommendations. Please try again later.');
                     }
-                },
-                error: function(error) {
-                    $('#feedback').text('Error fetching recommendations. Please try again later.');
-                }
+                });
+            });
+
+            // Event Listener for Subscription Button
+            $(document).on('click', '.subscribe-btn', function() {
+                var courseName = $(this).data('course');
+                alert('You have chosen to subscribe and pay for: ' + courseName);
+                // Redirect to payment gateway or subscription handler
+                // Example: window.location.href = "/payment_gateway?course=" + courseName;
             });
         });
-    });
-</script>
+    </script>
 
 </body>
+
 </html>
