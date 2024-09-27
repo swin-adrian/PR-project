@@ -7,15 +7,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle form submission with AJAX for modifying courses
     document.querySelectorAll('.edit-course-form').forEach(form => {
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent form from submitting normally
-
+            e.preventDefault();
+    
             const courseId = this.dataset.courseId;
             const formData = new FormData(this);
-
-            // Send the AJAX request
+    
+            // Ensure cost is included, even if it's 0.00
+            if (!formData.has('cost') || formData.get('cost') === '') {
+                formData.set('cost', '0.00');
+            }
+    
             fetch(`/modify_course_ajax/${courseId}`, {
                 method: 'POST',
                 body: formData,
@@ -23,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update the course row with new details
+                    // Update the course row with the new details, including cost
                     const courseRow = document.getElementById(`course-row-${courseId}`);
                     courseRow.children[0].textContent = formData.get('industry');
                     courseRow.children[1].textContent = formData.get('course_name');
@@ -31,7 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     courseRow.children[3].textContent = formData.get('duration');
                     courseRow.children[4].textContent = formData.get('course_structure');
                     courseRow.children[5].textContent = formData.get('key_learnings');
+                    courseRow.children[6].textContent = `$${parseFloat(formData.get('cost')).toFixed(2)}`;
 
+    
                     // Hide the edit form
                     document.getElementById(`edit-row-${courseId}`).style.display = 'none';
                 } else {
@@ -41,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.log('Error:', error));
         });
     });
+    
 
     // Handle Cancel button for hiding the edit form
     document.querySelectorAll('.cancel-button').forEach(button => {

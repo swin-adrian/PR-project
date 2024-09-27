@@ -57,7 +57,7 @@ body {
 .form-input,
 .form-select,
 .form-textarea {
-    width: 100%;
+    width: 98%;
     padding: 15px;
     border: 3px solid #B76D68; /* Updated to Main Pink */
     border-radius: 8px;
@@ -116,7 +116,7 @@ button[style="background-color: red;"]:hover {
 
 /* Adjusting the form-input for textareas specifically */
 textarea.form-input {
-    width: 95%;
+    width: 98%;
     height: 150px;
     padding: 16px;
     border: 3px solid #B76D68; /* Updated to Main Pink */

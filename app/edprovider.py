@@ -16,6 +16,17 @@ def edproviderlanding():
         duration = request.form.get('duration')
         course_structure = request.form.get('course_structure')
         key_learnings = request.form.get('key_learnings')
+        cost = request.form.get('cost')  # New field
+
+        # Validate and process the cost
+        try:
+            cost = float(cost)
+            if cost < 0:
+                flash('Cost cannot be negative.', 'error')
+                return redirect(url_for('edprovider.edproviderlanding'))
+        except (ValueError, TypeError):
+            flash('Invalid cost value.', 'error')
+            return redirect(url_for('edprovider.edproviderlanding'))
 
         # Prepare course data
         course_data = {
@@ -25,6 +36,7 @@ def edproviderlanding():
             "Duration": duration,
             "CourseStructure": course_structure,
             "KeyLearnings": key_learnings,
+             "cost": Cost,
             "created_at": datetime.now()
         }
 
@@ -110,11 +122,14 @@ def delete_course(course_id):
     else:
         return jsonify({"success": False})
 
-
-# AJAX route for modifying a course
 @edprovider_bp.route('/modify_course_ajax/<course_id>', methods=['POST'])
 def modify_course_ajax(course_id):
     from main import mongo
+
+    # Retrieve form data including the cost
+    cost = request.form.get('cost')  # Corrected from 'Cost' to 'cost'
+
+    # Update course with the cost
     updated_course = {
         "Industry": request.form.get('industry'),
         "CourseName": request.form.get('course_name'),
@@ -122,13 +137,11 @@ def modify_course_ajax(course_id):
         "Duration": request.form.get('duration'),
         "CourseStructure": request.form.get('course_structure'),
         "KeyLearnings": request.form.get('key_learnings'),
+        "Cost": cost,  # Update the cost field
         "updated_at": datetime.now()
     }
 
-    result = mongo.db.courses.update_one(
-        {"_id": ObjectId(course_id)}, 
-        {"$set": updated_course}
-    )
+    result = mongo.db.courses.update_one({"_id": ObjectId(course_id)}, {"$set": updated_course})
 
     if result.modified_count > 0:
         return jsonify({"success": True})

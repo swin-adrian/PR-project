@@ -37,6 +37,7 @@
                     <th>Duration</th>
                     <th>Course Structure</th>
                     <th>Key Learnings</th>
+                    <th>Cost (AUD)</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -49,6 +50,13 @@
                     <td>{{ course.Duration }}</td>
                     <td>{{ course.CourseStructure }}</td>
                     <td>{{ course.KeyLearnings }}</td>
+                    <td>${{ "%.2f"|format(course.get('Cost', 0.00)) }}</td>
+
+
+
+
+
+
                     <td>
                         <div class="button-container">
                             <button type="button" class="form-button modify-button" data-course-id="{{ course._id }}">Modify</button>
@@ -128,8 +136,16 @@
                 
                             <!-- Key Learnings Textarea -->
                             <textarea name="key_learnings" class="form-input" required>{{ course.KeyLearnings }}</textarea>
+
+                            <!-- Cost Field -->
+                            <label for="cost">Cost (AUD)</label>
+                            <input type="number" id="cost" name="cost" class="form-input" placeholder="Enter course cost" required min="0" step="0.01">
+
+
                 
                             <button type="submit" class="form-button">Save Changes</button>
+
+                            </form>
                         </form>
                     </td>
                 </tr>

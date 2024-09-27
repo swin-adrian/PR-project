@@ -391,3 +391,46 @@ def results_page():
     
     # Render the template and pass the parameters
     return render_template('prscore.html', total_score=total_score, pr_prob=pr_prob)
+
+
+@migrant_bp.route('/register_course', methods=['POST'])
+def register_course():
+    mongo = PyMongo(current_app)
+
+    try:
+        # Get the user_id from the session
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 403
+
+        user_object_id = ObjectId(user_id)
+
+        # Get data from the request
+        course_id = request.form.get('courseId')
+        course_name = request.form.get('courseName')
+        first_name = request.form.get('firstName')
+        last_name = request.form.get('lastName')
+        email = request.form.get('email')
+
+        # Validate the data
+        if not all([course_id, first_name, last_name, email]):
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Store the registration data
+        registration_data = {
+            "user_id": user_object_id,
+            "course_id": course_id,
+            "course_name": course_name,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "registration_date": datetime.utcnow()
+        }
+
+        mongo.db.registrations.insert_one(registration_data)
+
+        return jsonify({"message": "Registration successful"}), 200
+
+    except Exception as e:
+        print(f"Error occurred during registration: {e}")
+        return jsonify({"error": "An error occurred while processing your registration."}), 500
