@@ -2,124 +2,146 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <!--accessibility setting-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--stylesheet-->
-    <link rel="stylesheet" type="text/css" href="../static/css/edprovider_style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/admin_style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/user_management.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+    <script src="../static/js/user_management.js" defer></script>
     <title>Smart Track | PR Pathway</title>
 </head>
-
 
 <body>
     <header>
         <nav>
-            <!--Navigation menu in header as a list to apply more styles-->
             <div class="navi_menu">
                 <a class="active" href="/"><strong>Home</strong></a>
-                <!-- <a href="product.html"><strong>Products</strong></a>
-                <a href="enquire.html"><strong>Enquire</strong></a>
-                <a href="about.html"><strong>About</strong></a>
-                <a href="/"><strong>Enhancements</strong></a> !-->
+                <a class="active" href="{{ url_for('admin.adminlanding') }}" class="view-courses-btn">Dashboard</a>
+                <a class="active" href="{{ url_for('admin.user_management') }}" class="view-courses-btn">User Management</a>
             </div>
         </nav>
     </header>
-<h1>Welcome Adminstrator</h1>
-   <!-- Add User Form -->
-   <div class="container">
-    <h2>Add New User</h2>
-    <form action="{{ url_for('admin.user_management') }}" method="POST">
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" name="email" required>
-        </div>
-        <div>
-            <label for="password_hash">Password:</label>
-            <input type="text" name="password_hash" required>
-        </div>
-        <div>
-            <label for="role">Role:</label>
-            <select name="role" required>
-                <option value="admin">Admin</option>
-                <option value="edprovider">Edprovider</option>
-            </select>
-        </div>
-        <button type="submit">Add User</button>
-    </form>
+    <h1>Welcome Administrator</h1>
+    
+    <!-- Button to open the modal for adding a new user -->
+    <button id="openModalBtn">Add New User</button>
+
+    <!-- Add User Modal -->
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 style="text-align: center; color: #333;">Add New User</h2>
+        <form action="{{ url_for('admin.user_management') }}" method="POST">
+            <div>
+                <label for="email" style="display: block; margin-bottom: 5px;">Email:</label>
+                <input type="email" name="email" required>
+            </div>
+            <div>
+                <label for="password_hash" style="display: block; margin-bottom: 5px;">Password:</label>
+                <input type="password" name="password_hash" required>
+            </div>
+            <button type="submit">Add User</button>
+        </form>
+    </div>
 </div>
 
-<!-- Flash message for success/failure -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <ul>
-        {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-{% endwith %}
 
-<!-- Search Bar -->
-<div class="container">
-    <form action="{{ url_for('admin.search_users') }}" method="POST" class="search-container">
-        <input type="text" name="search_query" placeholder="Search by Role" value="{{ search_query }}">
-        <button type="submit">Search</button>
-    </form>
+    <!-- Modify User Modal -->
+<div id="modifyModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Modify User</h2>
+        <form id="modifyUserForm">
+            <input type="hidden" name="user_id" id="modifyUserId">
+            <div>
+                <label for="modifyEmail">Email:</label>
+                <input type="email" name="email" id="modifyEmail" required>
+            </div>
+            <div>
+                <label for="modifyPassword">New Password (Optional):</label>
+                <input type="password" name="password" id="modifyPassword">
+            </div>
+            <button type="submit">Modify User</button>
+        </form>
+    </div>
 </div>
 
-<!-- User List with Pagination -->
-<div class="container">
-    <h2>User Management</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr id="user-row-{{ user._id }}">
-                <td>{{ user['email'] }}</td>
-                <td>{{ user['role'] }}</td>
-                <td>
-                    <div class="button-container">
-                        <button type="button" class="form-button modify-button" data-user-id="{{ user._id }}">Modify</button>
-                        <button type="button" class="form-button delete-button" data-user-id="{{ user._id }}">Delete</button>
-                    </div>
-                </td>
-            </tr>
+
+    <!-- Flash message for success/failure -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </ul>
+        {% endif %}
+    {% endwith %}
 
-<!-- Pagination Controls -->
-<div class="pagination">
-    <ul style="list-style-type:none; display:flex; justify-content: center; align-items: center;">
-        {% if page > 1 %}
-        <li style="margin-right:10px;">
-            <a href="{{ url_for('admin.user_management', page=page-1) }}" class="pagination-arrow">&laquo;</a>
-        </li>
-        {% endif %}
-        {% for num in range(1, total_pages + 1) %}
-        {% if num == page %}
-        <li style="margin-right:10px;">
-            <span class="current-page">{{ num }}</span>
-        </li>
-        {% else %}
-        <li style="margin-right:10px;">
-            <a href="{{ url_for('admin.user_management', page=num) }}">{{ num }}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
-        {% if page < total_pages %}
-        <li style="margin-left:10px;">
-            <a href="{{ url_for('admin.user_management', page=page+1) }}" class="pagination-arrow">&raquo;</a>
-        </li>
-        {% endif %}
-    </ul>
-</div>
+    <!-- Search Bar -->
+    <div class="container">
+        <form action="{{ url_for('admin.search_users') }}" method="POST" class="search-container">
+            <input type="text" name="search_query" placeholder="Search by Role" value="{{ search_query }}">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <!-- User List with Pagination -->
+    <div class="container">
+        <h2>User Management</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr id="user-row-{{ user._id }}">
+                    <td>{{ user['email'] }}</td>
+                    <td>{{ user.get('role', 'N/A') }}</td> <!-- Display the detected role -->
+                    <td>
+                        <div class="button-container">
+                            <button type="button" class="form-button modify-button" data-user-id="{{ user._id }}" data-user-email="{{ user['email'] }}">Modify</button>
+                            <button type="button" class="form-button delete-button" data-user-id="{{ user._id }}">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <ul style="list-style-type:none; display:flex; justify-content: center; align-items: center;">
+            {% if page > 1 %}
+            <li style="margin-right:10px;">
+                <a href="{{ url_for('admin.user_management', page=page-1) }}" class="pagination-arrow">&laquo;</a>
+            </li>
+            {% endif %}
+            {% for num in range(1, total_pages + 1) %}
+            {% if num == page %}
+            <li style="margin-right:10px;">
+                <span class="current-page">{{ num }}</span>
+            </li>
+            {% elif num <= 5 or num > total_pages - 5 or (page - 2 <= num <= page + 2) %}
+            <li style="margin-right:10px;">
+                <a href="{{ url_for('admin.user_management', page=num) }}" class="pagination-number">{{ num }}</a>
+            </li>
+            {% elif num == 6 or num == total_pages - 5 %}
+            <li style="margin-right:10px;">
+                <span class="pagination-dots">...</span>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if page < total_pages %}
+            <li style="margin-left:10px;">
+                <a href="{{ url_for('admin.user_management', page=page+1) }}" class="pagination-arrow">&raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
 </body>
 </html>
