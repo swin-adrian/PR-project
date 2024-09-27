@@ -419,7 +419,6 @@ def register_course():
         # Store the registration data
         registration_data = {
             "user_id": user_object_id,
-            "course_id": course_id,
             "course_name": course_name,
             "first_name": first_name,
             "last_name": last_name,
