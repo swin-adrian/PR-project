@@ -20,7 +20,7 @@
 
     <div class="container">
         <form action="{{ url_for('edprovider.search_courses') }}" method="POST" class="search-container">
-            <input type="text" name="search_query" placeholder="Search by Course Name or Industry" value="{{ search_query }}">
+            <input type="text" name="search_query" placeholder="Search by Course Name or Key Learnings" value="{{ search_query }}">
             <button type="submit">Search</button>
         </form>
     </div>
@@ -30,73 +30,55 @@
         <table>
             <thead>
                 <tr>
-                    <th>Industry</th>
                     <th>Course Name</th>
-                    <th>Course Type</th>
-                    <th>Duration</th>
-                    <th>Course Structure</th>
-                    <th>Key Learnings</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
                     <th>Cost (AUD)</th>
+                    <th>Key Learnings</th>
+                    <th>Registration Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for course in courses %}
-                <tr id="course-row-{{ course._id }}">
-                    <td>{{ course.Industry }}</td>
-                    <td>{{ course.CourseName }}</td>
-                    <td>{{ course.CourseType }}</td>
-                    <td>{{ course.Duration }}</td>
-                    <td>{{ course.CourseStructure }}</td>
-                    <td>{{ course.KeyLearnings }}</td>
-                    <td>${{ "%.2f"|format(course.get('Cost', 0.00)) }}</td>
+                {% for registration in registrations %}
+                <tr id="registration-row-{{ registration._id }}">
+                    <td>{{ registration.course_name }}</td>
+                    <td>{{ registration.first_name }}</td>
+                    <td>{{ registration.last_name }}</td>
+                    <td>{{ registration.email }}</td>
+                    <td>${{ "%.2f"|format(registration.get('cost', 0.00)) }}</td>
+                    <td>{{ registration.key_learnings }}</td>
+                    <td>{{ registration.registration_date }}</td>
                     <td>
                         <div class="button-container">
-                            <button type="button" class="form-button modify-button" data-course-id="{{ course._id }}">Modify</button>
-                            <button type="button" class="form-button delete-button" data-course-id="{{ course._id }}">Delete</button>
+                            <button type="button" class="form-button modify-button" data-registration-id="{{ registration._id }}">Modify</button>
+                            <button type="button" class="form-button delete-button" data-registration-id="{{ registration._id }}">Delete</button>
                         </div>
                     </td>                   
                 </tr>
                 
                 <!-- Hidden edit form when modifying -->
-                <tr id="edit-row-{{ course._id }}" style="display:none;">
+                <tr id="edit-row-{{ registration._id }}" style="display:none;">
                     <td colspan="7">
-                        <form id="edit-course-form-{{ course._id }}" class="edit-course-form" data-course-id="{{ course._id }}">
-                            <!-- Populate the form with course details for editing -->
-                            <select id="industry" name="industry" class="form-select" required>
-                                <option value="Engineering" {% if course.Industry == 'Engineering' %}selected{% endif %}>Engineering</option>
-                                <option value="Community and Personal Care" {% if course.Industry == 'Community and Personal Care' %}selected{% endif %}>Community and Personal Care</option>
-                                <!-- Other options... -->
-                            </select>
-
+                        <form id="edit-registration-form-{{ registration._id }}" class="edit-registration-form" data-registration-id="{{ registration._id }}">
                             <!-- Course Name -->
-                            <select id="course_name" name="course_name" class="form-select" required>
-                                <option value="Sociology, Psychology" {% if course.CourseName == 'Sociology, Psychology' %}selected{% endif %}>Sociology, Psychology</option>
-                                <!-- Add more course names here -->
-                            </select>
+                            <input type="text" name="course_name" class="form-input" value="{{ registration.course_name }}" required>
 
-                            <!-- Course Type -->
-                            <select id="course_type" name="course_type" class="form-select" required>
-                                <option value="Bachelors" {% if course.CourseType == 'Bachelors' %}selected{% endif %}>Bachelors</option>
-                                <option value="Diploma" {% if course.CourseType == 'Diploma' %}selected{% endif %}>Diploma</option>
-                                <!-- Add other course types -->
-                            </select>
+                            <!-- First Name -->
+                            <input type="text" name="first_name" class="form-input" value="{{ registration.first_name }}" required>
 
-                            <!-- Duration -->
-                            <select id="duration" name="duration" class="form-select" required>
-                                <option value="1 year" {% if course.Duration == '1 year' %}selected{% endif %}>1 year</option>
-                                <!-- Add other durations -->
-                            </select>
+                            <!-- Last Name -->
+                            <input type="text" name="last_name" class="form-input" value="{{ registration.last_name }}" required>
 
-                            <!-- Course Structure -->
-                            <textarea name="course_structure" class="form-input" required>{{ course.CourseStructure }}</textarea>
+                            <!-- Email -->
+                            <input type="email" name="email" class="form-input" value="{{ registration.email }}" required>
+
+                            <!-- Cost -->
+                            <input type="number" name="cost" class="form-input" value="{{ registration.get('cost', 0.00) }}" required min="0" step="0.01">
 
                             <!-- Key Learnings -->
-                            <textarea name="key_learnings" class="form-input" required>{{ course.KeyLearnings }}</textarea>
-
-                            <!-- Cost Field -->
-                            <label for="cost">Cost (AUD)</label>
-                            <input type="number" id="cost" name="cost" class="form-input" value="{{ course.get('Cost', 0.00) }}" required min="0" step="0.01">
+                            <textarea name="key_learnings" class="form-input" required>{{ registration.key_learnings }}</textarea>
 
                             <button type="submit" class="form-button">Save Changes</button>
                         </form>

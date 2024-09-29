@@ -2,73 +2,72 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show the edit form when the Modify button is clicked
     document.querySelectorAll('.modify-button').forEach(button => {
         button.addEventListener('click', function() {
-            const courseId = this.dataset.courseId;
-            document.getElementById(`edit-row-${courseId}`).style.display = 'table-row'; // Show the edit form
+            const registrationId = this.dataset.registrationId;
+            document.getElementById(`edit-row-${registrationId}`).style.display = 'table-row'; // Show the edit form
         });
     });
 
-    // Handle form submission for editing courses
-    document.querySelectorAll('.edit-course-form').forEach(form => {
+    // Handle form submission for editing a registration
+    document.querySelectorAll('.edit-registration-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
     
-            const courseId = this.dataset.courseId;
+            const registrationId = this.dataset.registrationId;
             const formData = new FormData(this);
     
-            fetch(`/modify_course_ajax/${courseId}`, {
+            fetch(`/modify_registration_ajax/${registrationId}`, {
                 method: 'POST',
                 body: formData,
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update the course row with the new details, including cost
-                    const courseRow = document.getElementById(`course-row-${courseId}`);
-                    courseRow.children[0].textContent = formData.get('industry');
-                    courseRow.children[1].textContent = formData.get('course_name');
-                    courseRow.children[2].textContent = formData.get('course_type');
-                    courseRow.children[3].textContent = formData.get('duration');
-                    courseRow.children[4].textContent = formData.get('course_structure');
-                    courseRow.children[5].textContent = formData.get('key_learnings');
-                    courseRow.children[6].textContent = `$${parseFloat(formData.get('cost')).toFixed(2)}`;
+                    // Update the registration row with new details
+                    const registrationRow = document.getElementById(`registration-row-${registrationId}`);
+                    registrationRow.children[0].textContent = formData.get('course_name');
+                    registrationRow.children[1].textContent = formData.get('first_name');
+                    registrationRow.children[2].textContent = formData.get('last_name');
+                    registrationRow.children[3].textContent = formData.get('email');
+                    registrationRow.children[4].textContent = `$${parseFloat(formData.get('cost')).toFixed(2)}`;
+                    registrationRow.children[5].textContent = formData.get('key_learnings');
 
-                    // Hide the edit form
-                    document.getElementById(`edit-row-${courseId}`).style.display = 'none';
+                    document.getElementById(`edit-row-${registrationId}`).style.display = 'none'; // Hide the edit form
                 } else {
-                    alert('Error updating course');
+                    alert('Error updating registration');
                 }
             })
             .catch(error => console.log('Error:', error));
         });
     });
 
-    // Handle delete course with AJAX
+    // Handle delete registration with AJAX
     document.querySelectorAll('.delete-button').forEach(button => {
         button.addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default behavior
-            const courseId = this.dataset.courseId;
-            const courseRow = document.getElementById(`course-row-${courseId}`);
+            const registrationId = this.dataset.registrationId;
+            const registrationRow = document.getElementById(`registration-row-${registrationId}`);
 
-            const confirmation = confirm('Are you sure you want to delete this course?');
+            const confirmation = confirm('Are you sure you want to delete this registration?');
             if (!confirmation) {
                 return;
             }
 
-            courseRow.style.display = 'none';
+            // Temporarily hide the registration row
+            registrationRow.style.display = 'none';
 
-            fetch(`/delete_course/${courseId}`, {
+            fetch(`/delete_registration/${registrationId}`, {
                 method: 'POST',
             })
             .then(response => response.json())
             .then(data => {
                 if (!data.success) {
-                    courseRow.style.display = 'table-row';
-                    alert('Error deleting course.');
+                    registrationRow.style.display = 'table-row'; // Show row again if deletion failed
+                    alert('Error deleting registration.');
                 }
             })
             .catch(error => {
-                courseRow.style.display = 'table-row';
-                console.error('Error deleting course:', error);
+                registrationRow.style.display = 'table-row'; // Show row again if an error occurred
+                console.error('Error deleting registration:', error);
             });
         });
     });

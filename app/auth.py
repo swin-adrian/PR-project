@@ -4,15 +4,37 @@ from flask_pymongo import PyMongo
 
 auth_bp = Blueprint('auth', __name__)
 
+# Detect role function must be defined before being used in signup and login
+def detect_role(email):
+    """Detects the role based on the email with the new naming convention."""
+    email_domain = email.split('@')[-1].strip().lower()  # Clean up the email domain
 
+    # Admin detection
+    if 'admin' in email:
+        return 'Admin'
+
+    # Education Provider (University) detection
+    university_domains = ['swinburne.edu.au', 'monash.edu.au', 'latrobe.edu.au']
+    if email_domain in university_domains:
+        return 'Education Provider'
+
+    # Agent detection
+    elif 'agent' in email:
+        return 'Agent'
+
+    # Default to Migrant
+    return 'Migrant'
+
+# Login route
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     mongo = PyMongo(current_app)
     login_error = None  # Initialize a variable for login error
 
-    if request.method == "POST":
-        email = request.form.get("email")  # Use email instead of username
-        password = request.form.get("password")
+    if request.method == "POST":  # Fix indentation here
+        # Get the email and password, and convert the email to lowercase
+        email = request.form.get('email').strip().lower()  # Ensure email is lowercase and trimmed
+        password = request.form.get('password')  # Match the form's input name, possibly 'password' instead of 'pwd'
 
         # Check if email and password are provided
         if not email or not password:
@@ -47,12 +69,15 @@ def login():
 
     return render_template('login_error.html', error=login_error)  # Pass the login error to the template
 
+
+# Signup route
 @auth_bp.route('/signup', methods=["GET", "POST"])
 def signup():
     mongo = PyMongo(current_app)
 
-    if request.method == "POST":
-        email = request.form.get('email')
+    if request.method == "POST": 
+        # Get the email and password, and convert the email to lowercase
+        email = request.form.get('email').strip().lower()  # Ensure email is lowercase and trimmed
         password = request.form.get('pwd')
 
         # Check if email and password are provided
@@ -77,7 +102,6 @@ def signup():
             "email": email,  # Use email as the unique identifier
             "password_hash": password_hash,
             "role": role,  # Store the role based on email
-            "created_at": datetime.now()
         }).inserted_id
 
         # Set the session to the new user's ID, email, and role
