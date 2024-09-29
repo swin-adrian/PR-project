@@ -129,6 +129,8 @@
         <span class="close-button">&times;</span>
         <h2>Register for Course</h2>
         <p id="modalCourseTitle"></p>
+        
+        <!-- Main Form -->
         <form id="registerForm">
             <!-- First Name and Last Name fields -->
             <label for="firstName">First Name:</label>
@@ -137,15 +139,23 @@
             <label for="lastName">Last Name:</label>
             <input type="text" id="lastName" name="lastName" required>
 
-            <!-- Include other fields if needed -->
-            <!-- For example: Email -->
+            <!-- Email Field -->
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
 
+            <!-- University Selection Dropdown -->
+            <label for="university">Select University:</label>
+            <select id="university" name="university" class="input-field" required>
+                <option value="" disabled selected>Select your option</option>
+                <option value="Swinburne">Swinburne University of Technology</option>
+                <option value="Monash">Monash University</option>
+                <option value="La Trobe">La Trobe University</option>
+            </select>
+
+            <!-- Submit Button -->
             <button type="submit" id="submitRegistration">Submit Registration</button>
         </form>
-    </div>
-</div>
+
 
     <!-- JavaScript to fetch and display recommended courses -->
     <script>
@@ -201,49 +211,51 @@
                 $('#firstName').focus();
             });
         
-            // Handle registration form submission
-            registerForm.submit(function(event) {
-                event.preventDefault(); // Prevent default form submission
-        
-                var formData = $(this).serializeArray(); // Get form data
-        
-                // Convert form data to an object
-                var userData = {};
-                $.each(formData, function(_, field) {
-                    userData[field.name] = field.value;
-                });
-        
-                // Prepare data to send to the server
-                var dataToSend = {
-                    courseId: selectedCourseData.CourseID,
-                    courseName: selectedCourseData.CourseName,
-                    firstName: userData.firstName,
-                    lastName: userData.lastName,
-                    email: userData.email
-                };
-        
-                // Send data to the server via AJAX
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ url_for('migrant.register_course') }}",
-                    data: dataToSend,
-                    success: function(response) {
-                        alert('Successfully registered for the course!');
-                        
-                        // Hide the modal
-                        registerModal.hide();
-        
-                        // Reset the form
-                        registerForm[0].reset();
-        
-                        // Remove the corresponding course card
-                        $(`div[data-course-id='${selectedCourseData.CourseID}']`).remove();
-                    },
-                    error: function(error) {
-                        alert('Error registering for the course. Please try again.');
-                    }
-                });
-            });
+ // Handle registration form submission
+registerForm.submit(function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    var formData = $(this).serializeArray(); // Get form data
+
+    // Convert form data to an object
+    var userData = {};
+    $.each(formData, function(_, field) {
+        userData[field.name] = field.value;
+    });
+
+    // Prepare data to send to the server
+    var dataToSend = {
+        courseId: selectedCourseData.CourseID,
+        courseName: selectedCourseData.CourseName,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        university: userData.university  // Capture the selected university
+    };
+
+    // Send data to the server via AJAX
+    $.ajax({
+        type: 'POST',
+        url: "{{ url_for('migrant.register_course') }}",
+        data: dataToSend,
+        success: function(response) {
+            alert('Successfully registered for the course!');
+
+            // Hide the modal
+            registerModal.hide();
+
+            // Reset the form
+            registerForm[0].reset();
+
+            // Remove the corresponding course card
+            $(`div[data-course-id='${selectedCourseData.CourseID}']`).remove();
+        },
+        error: function(error) {
+            alert('Error registering for the course. Please try again.');
+        }
+    });
+});
+
         
             // Fetch and display courses
             $.ajax({

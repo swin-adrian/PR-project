@@ -406,29 +406,44 @@ def register_course():
         user_object_id = ObjectId(user_id)
 
         # Get data from the request
-        course_id = request.form.get('courseId')
         course_name = request.form.get('courseName')
         first_name = request.form.get('firstName')
         last_name = request.form.get('lastName')
         email = request.form.get('email')
+        university = request.form.get('university')  # Capture the university from the form
 
         # Validate the data
-        if not all([course_id, first_name, last_name, email]):
+        if not all([course_name, first_name, last_name, email, university]):
             return jsonify({"error": "Missing required fields"}), 400
 
-        # Store the registration data
+        # Find the corresponding course in the "courses" collection by course_name
+        course_data = mongo.db.courses.find_one({"CourseName": course_name})
+
+        # If course is found, fetch the cost and key_learnings, otherwise set defaults
+        if course_data:
+            cost = course_data.get('Cost', 0.00)  # Default to 0.00 if cost is not available
+            key_learnings = course_data.get('KeyLearnings', "Not available")
+        else:
+            cost = 0.00
+            key_learnings = "Not available"
+
+        # Store the registration data along with the course cost, key_learnings, and university
         registration_data = {
             "user_id": user_object_id,
             "course_name": course_name,
             "first_name": first_name,
             "last_name": last_name,
             "email": email,
+            "university": university,  # Store the university information
+            "cost": cost,  # Include the cost from the course
+            "key_learnings": key_learnings,  # Include the key learnings from the course
             "registration_date": datetime.utcnow()
         }
 
+        # Insert the registration data into the "registrations" collection
         mongo.db.registrations.insert_one(registration_data)
 
-        return jsonify({"message": "Registration successful"}), 200
+        return jsonify({"message": "Registration successful", "cost": cost, "key_learnings": key_learnings}), 200
 
     except Exception as e:
         print(f"Error occurred during registration: {e}")
