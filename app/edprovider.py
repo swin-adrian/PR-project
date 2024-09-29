@@ -18,6 +18,10 @@ def edproviderlanding():
         key_learnings = request.form.get('key_learnings')
         cost = request.form.get('cost')  # New field
 
+        # Get user information from session (Assuming the session has edprovider info)
+        user_id = session.get('user_id')
+        user_email = session.get('email')  # Assuming user email stored in session
+
         # Validate and process the cost
         try:
             cost = float(cost)
@@ -28,44 +32,44 @@ def edproviderlanding():
             flash('Invalid cost value.', 'error')
             return redirect(url_for('edprovider.edproviderlanding'))
 
-        # Prepare course data
-        course_data = {
+        # Prepare course data for insertion into `registration` collection
+        registration_data = {
+            "user_id": user_id,
+            "email": user_email,
             "Industry": industry,
             "CourseName": course_name,
             "CourseType": course_type,
             "Duration": duration,
             "CourseStructure": course_structure,
             "KeyLearnings": key_learnings,
-             "cost": Cost,
-            "created_at": datetime.now()
+            "Cost": cost,
+            "registration_date": datetime.utcnow()
         }
 
-        # Insert the data into MongoDB
-        from main import mongo
-        mongo.db.courses.insert_one(course_data)
+        # Insert the data into the `registration` collection
+        mongo.db.registration.insert_one(registration_data)
         
         # Flash a success message
         flash("Course added successfully!", "success")
 
-        # Redirect to the add_course page to view the course table
+        # Redirect to the view_courses page to view the courses table
         return redirect(url_for('edprovider.view_courses'))
 
     return render_template('edproviderlanding.html')
 
+# View Courses Route (Now from the `registration` collection)
 @edprovider_bp.route('/view_courses', methods=['GET'])
 def view_courses():
     page = request.args.get('page', 1, type=int)  # Get the current page, default to 1
     per_page = 6  # Set how many courses you want to display per page
     
-    from main import mongo
-    # Count total number of courses for pagination
-    total_courses = mongo.db.courses.count_documents({})
+    # Count total number of courses in `registration` collection for pagination
+    total_courses = mongo.db.registration.count_documents({})
     total_pages = (total_courses + per_page - 1) // per_page  # Calculate total number of pages
     
-    # Fetch courses for the current page
-    courses = mongo.db.courses.find().skip((page - 1) * per_page).limit(per_page)
+    # Fetch courses for the current page from `registration` collection
+    courses = mongo.db.registration.find().skip((page - 1) * per_page).limit(per_page)
     
-    # Pass the page, per_page, total_pages, and total_courses to the template
     return render_template(
         'add_course.html',
         courses=courses,
@@ -74,76 +78,45 @@ def view_courses():
         total_courses=total_courses,
         total_pages=total_pages  # Pass total pages to the template
     )
-
-
-
-# Route for searching courses with pagination
-@edprovider_bp.route('/search_courses', methods=['GET', 'POST'])
-def search_courses():
-    page = request.args.get('page', 1, type=int)  # Get the current page or default to 1
-    per_page = 10  # Define how many items you want to display per page
-    query = request.form.get('search_query') if request.method == 'POST' else request.args.get('search_query', '')
-
-    from main import mongo
-    # Search courses by CourseName or Industry
-    search_filter = {
-        "$or": [
-            {"CourseName": {"$regex": query, "$options": "i"}},
-            {"Industry": {"$regex": query, "$options": "i"}}
-        ]
-    }
-
-    # Count total matching courses for pagination
-    total_courses = mongo.db.courses.count_documents(search_filter)
-    total_pages = (total_courses + per_page - 1) // per_page  # Calculate total number of pages
-
-    # Retrieve the relevant page of courses
-    courses = mongo.db.courses.find(search_filter).skip((page - 1) * per_page).limit(per_page)
-
-    return render_template(
-        'add_course.html',
-        courses=courses,
-        page=page,
-        per_page=per_page,
-        total_courses=total_courses,
-        total_pages=total_pages,  # Pass total pages to the template
-        search_query=query
-    )
-
-
-
-# Route for deleting a course using AJAX
-@edprovider_bp.route('/delete_course/<course_id>', methods=['POST'])
-def delete_course(course_id):
-    from main import mongo
-    result = mongo.db.courses.delete_one({"_id": ObjectId(course_id)})
-    if result.deleted_count > 0:
-        return jsonify({"success": True})
-    else:
-        return jsonify({"success": False})
-
+# Modify course route
 @edprovider_bp.route('/modify_course_ajax/<course_id>', methods=['POST'])
 def modify_course_ajax(course_id):
     from main import mongo
 
-    # Retrieve form data including the cost
-    cost = request.form.get('cost')  # Corrected from 'Cost' to 'cost'
+    # Retrieve form data, including the cost field
+    industry = request.form.get('industry')
+    course_name = request.form.get('course_name')
+    course_type = request.form.get('course_type')
+    duration = request.form.get('duration')
+    course_structure = request.form.get('course_structure')
+    key_learnings = request.form.get('key_learnings')
+    cost = request.form.get('cost')
 
-    # Update course with the cost
+    # Update course data in the 'registration' collection
     updated_course = {
-        "Industry": request.form.get('industry'),
-        "CourseName": request.form.get('course_name'),
-        "CourseType": request.form.get('course_type'),
-        "Duration": request.form.get('duration'),
-        "CourseStructure": request.form.get('course_structure'),
-        "KeyLearnings": request.form.get('key_learnings'),
-        "Cost": cost,  # Update the cost field
+        "Industry": industry,
+        "CourseName": course_name,
+        "CourseType": course_type,
+        "Duration": duration,
+        "CourseStructure": course_structure,
+        "KeyLearnings": key_learnings,
+        "Cost": float(cost),
         "updated_at": datetime.now()
     }
 
-    result = mongo.db.courses.update_one({"_id": ObjectId(course_id)}, {"$set": updated_course})
+    result = mongo.db.registration.update_one({"_id": ObjectId(course_id)}, {"$set": updated_course})
 
     if result.modified_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False})
+
+# Delete course route
+@edprovider_bp.route('/delete_course/<course_id>', methods=['POST'])
+def delete_course(course_id):
+    from main import mongo
+    result = mongo.db.registration.delete_one({"_id": ObjectId(course_id)})
+    if result.deleted_count > 0:
         return jsonify({"success": True})
     else:
         return jsonify({"success": False})

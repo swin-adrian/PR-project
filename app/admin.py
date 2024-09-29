@@ -9,14 +9,24 @@ admin_bp = Blueprint('admin', __name__)
 
 def detect_role(email):
     """Detects the role based on the email with the new naming convention."""
+    email_domain = email.split('@')[-1].lower()  # Extract domain and convert to lowercase
+
+    # Admin detection
     if 'admin' in email:
         return 'Admin'
-    elif 'edprovider' in email:
+
+    # Education Provider (University) detection
+    university_domains = ['swinburne.edu.au', 'monash.edu.au', 'latrobe.edu.au']  # Add all university domains here
+    if email_domain in university_domains:
         return 'Education Provider'
+
+    # Agent detection
     elif 'agent' in email:
         return 'Agent'
-    else:
-        return 'Migrant'
+    
+    # Default to Migrant
+    return 'Migrant'
+
 
 @admin_bp.route('/adminlanding')
 def adminlanding():

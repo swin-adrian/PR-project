@@ -13,6 +13,7 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")  # Use email instead of username
         password = request.form.get("password")
+
         # Check if email and password are provided
         if not email or not password:
             login_error = "Email and password are required."
@@ -30,17 +31,17 @@ def login():
             # Extract domain from email
             email_domain = user.get('email').split('@')[-1]
 
-            # Redirect based on the email domain
+            # Redirect based on the email domain (migrant, agent, edprovider, admin)
             if email_domain == 'gmail.com':
                 return redirect(url_for('migrant.migrantlanding'))
             elif email_domain == 'agent.com':
                 return redirect(url_for('agent.agentlanding'))
-            elif email_domain == 'edprovider.com':
-                return redirect(url_for('edprovider.edproviderlanding'))
+            elif email_domain in ['swinburne.edu.au', 'monash.edu.au', 'latrobe.edu.au']:
+                return redirect(url_for('edprovider.edproviderlanding', university=user.get('university')))
             elif email_domain == 'admin.com':
                 return redirect(url_for('admin.adminlanding'))
             else:
-                return "Unsupported user type"
+                return "Unsupported user type."
 
         login_error = "Your password or email is incorrect."  # Set the login error message
 
@@ -68,26 +69,30 @@ def signup():
         # Hash the password for secure storage
         password_hash = generate_password_hash(password)
 
+        # Detect the role based on the email (including university detection)
+        role = detect_role(email)
+
         # Insert the new user into the database
         user_id = mongo.db.users.insert_one({
             "email": email,  # Use email as the unique identifier
-            "password_hash": password_hash
+            "password_hash": password_hash,
+            "role": role,  # Store the role based on email
+            "created_at": datetime.now()
         }).inserted_id
 
-        # Set the session to the new user's ID and email
+        # Set the session to the new user's ID, email, and role
         session['user_id'] = str(user_id)
         session['email'] = email
+        session['role'] = role
 
-        # Extract the domain from the email and redirect accordingly
-        email_domain = email.split('@')[-1]
-
-        if email_domain == 'gmail.com':
+        # Redirect based on the role
+        if role == 'Migrant':
             return redirect(url_for('migrant.migrantlanding'))
-        elif email_domain == 'agent.com':
+        elif role == 'Agent':
             return redirect(url_for('agent.agentlanding'))
-        elif email_domain == 'edprovider.com':
-            return redirect(url_for('edprovider.edproviderlanding'))
-        elif email_domain == 'admin.com':
+        elif role == 'Education Provider':
+            return redirect(url_for('edprovider.edproviderlanding'))  # Redirect for university staff
+        elif role == 'Admin':
             return redirect(url_for('admin.adminlanding'))
         else:
             flash("Unsupported email domain", "danger")
