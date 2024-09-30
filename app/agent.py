@@ -7,7 +7,6 @@ agent_bp = Blueprint('agent', __name__)
 
 @agent_bp.route('/agentlanding')
 def agentlanding():
-<<<<<<< HEAD
     user_id = session.get('user_id')  # Get the current agent's user_id from session
     mongo = PyMongo(current_app)
     # Query the 'agent_migrant' collection for the document where agentid matches the current user_id
@@ -18,7 +17,6 @@ def agentlanding():
 
     # Render the agent landing page and pass the total_migrants count to the template
     return render_template('agentlanding.html', total_migrants=total_migrants)
-=======
     # Get the agent's email from the session
     agent_email = session.get('email')
 
@@ -57,4 +55,3 @@ def agentlanding():
 
     # Render the agent landing template with connections
     return render_template('agentlanding.html', agent=agent, connections=connections_list)
->>>>>>> a48f1bb36be0c4025dba1ae8ba3f22b66333d25d
