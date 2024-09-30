@@ -6,6 +6,7 @@ from edprovider import edprovider_bp  # Import the education provider blueprint
 from auth import auth_bp 
 from migrant import migrant_bp
 from admin import admin_bp
+from agent import agent_bp
 
 app = Flask(__name__)
 
@@ -30,6 +31,7 @@ app.register_blueprint(edprovider_bp)
 app.register_blueprint(auth_bp)   
 app.register_blueprint(migrant_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(agent_bp)
 
 
 
