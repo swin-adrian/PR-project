@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session, current_app
 from bson.objectid import ObjectId
 from datetime import datetime
+from flask_pymongo import PyMongo
 
 # Define the blueprint
 edprovider_bp = Blueprint('edprovider', __name__)
@@ -37,6 +38,7 @@ def edproviderlanding():
             "CourseStructure": course_structure,
             "KeyLearnings": key_learnings,
             "cost": cost,
+            "university": session.get('university'),  # Save the course under the university in session
             "created_at": datetime.now()
         }
 
@@ -47,7 +49,7 @@ def edproviderlanding():
         # Flash a success message
         flash("Course added successfully!", "success")
 
-        # Redirect to the add_course page to view the course table
+        # Redirect to the view_courses page to view the course table
         return redirect(url_for('edprovider.view_courses'))
 
     return render_template('edproviderlanding.html')
@@ -84,7 +86,7 @@ def view_courses():
     )
 
 
-# Route for searching courses in registrations collection
+# Route for searching courses by first name, last name, or course name
 @edprovider_bp.route('/search_courses', methods=['GET', 'POST'])
 def search_courses():
     page = request.args.get('page', 1, type=int)  # Get the current page or default to 1
@@ -98,13 +100,14 @@ def search_courses():
     if not user_university:
         return jsonify({"error": "User session not found or university not specified."}), 400
 
-    # Search registrations by course_name or key_learnings for the user's university
+    # Search registrations by first_name, last_name, or course_name for the user's university
     search_filter = {
         "$and": [
             {"university": user_university},  # Filter by university
             {"$or": [
-                {"course_name": {"$regex": query, "$options": "i"}},
-                {"key_learnings": {"$regex": query, "$options": "i"}}
+                {"first_name": {"$regex": query, "$options": "i"}},
+                {"last_name": {"$regex": query, "$options": "i"}},
+                {"course_name": {"$regex": query, "$options": "i"}}
             ]}
         ]
     }
@@ -143,7 +146,8 @@ def modify_registration_ajax(registration_id):
         "email": request.form.get('email'),
         "cost": float(cost),
         "key_learnings": request.form.get('key_learnings'),
-        "registration_date": datetime.now()
+        "registration_date": datetime.now(),
+        "university": session.get('university')  # Ensure that the university is updated as well
     }
 
     result = mongo.db.registrations.update_one({"_id": ObjectId(registration_id)}, {"$set": updated_registration})
