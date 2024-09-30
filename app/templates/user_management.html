@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../static/css/admin_style.css">
     <link rel="stylesheet" type="text/css" href="../static/css/user_management.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
-    <script src="../static/js/user_management.js" defer></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='css/images/logo.png') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/user_management.js') }}" defer></script>
     <title>Smart Track | PR Pathway</title>
 </head>
 
@@ -26,45 +27,43 @@
     <button id="openModalBtn">Add New User</button>
 
     <!-- Add User Modal -->
-<div id="userModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 style="text-align: center; color: #333;">Add New User</h2>
-        <form action="{{ url_for('admin.user_management') }}" method="POST">
-            <div>
-                <label for="email" style="display: block; margin-bottom: 5px;">Email:</label>
-                <input type="email" name="email" required>
-            </div>
-            <div>
-                <label for="password_hash" style="display: block; margin-bottom: 5px;">Password:</label>
-                <input type="password" name="password_hash" required>
-            </div>
-            <button type="submit">Add User</button>
-        </form>
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 style="text-align: center; color: #333;">Add New User</h2>
+            <form action="{{ url_for('admin.user_management') }}" method="POST">
+                <div>
+                    <label for="email" style="display: block; margin-bottom: 5px;">Email:</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div>
+                    <label for="password_hash" style="display: block; margin-bottom: 5px;">Password:</label>
+                    <input type="password" name="password_hash" required>
+                </div>
+                <button type="submit">Add User</button>
+            </form>
+        </div>
     </div>
-</div>
-
 
     <!-- Modify User Modal -->
-<div id="modifyModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Modify User</h2>
-        <form id="modifyUserForm">
-            <input type="hidden" name="user_id" id="modifyUserId">
-            <div>
-                <label for="modifyEmail">Email:</label>
-                <input type="email" name="email" id="modifyEmail" required>
-            </div>
-            <div>
-                <label for="modifyPassword">New Password (Optional):</label>
-                <input type="password" name="password" id="modifyPassword">
-            </div>
-            <button type="submit">Modify User</button>
-        </form>
+    <div id="modifyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Modify User</h2>
+            <form id="modifyUserForm">
+                <input type="hidden" name="user_id" id="modifyUserId">
+                <div>
+                    <label for="modifyEmail">Email:</label>
+                    <input type="email" name="email" id="modifyEmail" required>
+                </div>
+                <div>
+                    <label for="modifyPassword">New Password (Optional):</label>
+                    <input type="password" name="password" id="modifyPassword">
+                </div>
+                <button type="submit">Modify User</button>
+            </form>
+        </div>
     </div>
-</div>
-
 
     <!-- Flash message for success/failure -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -88,6 +87,14 @@
     <!-- User List with Pagination -->
     <div class="container">
         <h2>User Management</h2>
+        <div class="role-overview" id="user-role-summary">
+            <!-- This will be dynamically updated by AJAX -->
+            <p><strong>Total Users:</strong> {{ total_users }}</p>
+            <p><strong>Admin:</strong> {{ user_counts['Admin'] }}</p>
+            <p><strong>Education Provider:</strong> {{ user_counts['Education Provider'] }}</p>
+            <p><strong>Migrant:</strong> {{ user_counts['Migrant'] }}</p>
+            <p><strong>Agent:</strong> {{ user_counts['Agent'] }}</p>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -143,5 +150,109 @@
             {% endif %}
         </ul>
     </div>
+
+    <!-- Include AJAX functions to handle user management actions -->
+    <script>
+        // Function to update user role summary
+        function updateUserSummary() {
+            $.ajax({
+                url: "{{ url_for('admin.get_user_summary') }}",  // Ensure this endpoint is defined in admin.py
+                method: "GET",
+                success: function(data) {
+                    $("#user-role-summary").html(`
+                        <p><strong>Total Users:</strong> ${data.total_users}</p>
+                        <p><strong>Admin:</strong> ${data.admin_count}</p>
+                        <p><strong>Education Provider:</strong> ${data.education_provider_count}</p>
+                        <p><strong>Migrant:</strong> ${data.migrant_count}</p>
+                        <p><strong>Agent:</strong> ${data.agent_count}</p>
+                    `);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Failed to fetch user summary:", error);
+                }
+            });
+        }
+
+        // Update user summary when the page loads
+        $(document).ready(function() {
+            updateUserSummary();
+
+            // Open Modify User Modal and populate fields
+            $(".modify-button").click(function() {
+                var userId = $(this).data('user-id');
+                var userEmail = $(this).data('user-email');
+                $("#modifyUserId").val(userId);
+                $("#modifyEmail").val(userEmail);
+                $("#modifyModal").css("display", "block");
+            });
+
+            // Close Modals
+            $(".close").click(function() {
+                $(".modal").css("display", "none");
+            });
+
+            // AJAX call to modify user
+            $("#modifyUserForm").submit(function(event) {
+                event.preventDefault();  // Prevent default form submission
+                var userId = $("#modifyUserId").val();
+                var email = $("#modifyEmail").val();
+                var password = $("#modifyPassword").val(); // New password (if provided)
+
+                $.ajax({
+                    url: `/modify_user/${userId}`,
+                    method: "POST",
+                    data: { email: email, password: password },
+                    success: function(response) {
+                        if (response.success) {
+                            alert("User modified successfully!");
+                            updateUserSummary(); // Update the summary
+                            $(".modal").css("display", "none");
+                            location.reload(); // Reload to see changes
+                        } else {
+                            alert("Failed to modify user.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error modifying user:", error);
+                    }
+                });
+            });
+
+            // Delete user
+            $(".delete-button").click(function() {
+                var userId = $(this).data('user-id');
+                if (confirm("Are you sure you want to delete this user?")) {
+                    $.ajax({
+                        url: `/delete_user/${userId}`,
+                        method: "POST",
+                        success: function(response) {
+                            if (response.success) {
+                                alert("User deleted successfully!");
+                                updateUserSummary(); // Update the summary
+                                location.reload(); // Reload to see changes
+                            } else {
+                                alert("Failed to delete user.");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error deleting user:", error);
+                        }
+                    });
+                }
+            });
+
+            // Open Add User Modal
+            $("#openModalBtn").click(function() {
+                $("#userModal").css("display", "block");
+            });
+
+            // Close Modal on clicking outside
+            $(window).click(function(event) {
+                if ($(event.target).hasClass('modal')) {
+                    $(".modal").css("display", "none");
+                }
+            });
+        });
+    </script>
 </body>
 </html>

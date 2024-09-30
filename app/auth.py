@@ -126,3 +126,10 @@ def signup():
         return redirect(url_for('edprovider.edproviderlanding'))
 
     return render_template('signup.html')
+
+@auth_bp.route('/logout')
+def logout():
+    # Clear the session
+    session.clear()
+    flash("You have been logged out successfully.", "success")
+    return redirect(url_for('auth.login'))

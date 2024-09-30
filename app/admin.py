@@ -69,6 +69,14 @@ def user_management():
     total_pages = (total_users + per_page - 1) // per_page
 
     users = list(mongo.db.users.find().skip((page - 1) * per_page).limit(per_page))
+
+    # Calculate user counts for each role
+    user_counts = {
+        'Admin': mongo.db.users.count_documents({'role': 'Admin'}),
+        'Migrant': mongo.db.users.count_documents({'role': 'Migrant'}),
+        'Education Provider': mongo.db.users.count_documents({'role': 'Education Provider'}),
+        'Agent': mongo.db.users.count_documents({'role': 'Agent'})
+    }
     
     # Ensure every user has a role, even older records
     for user in users:
@@ -86,7 +94,8 @@ def user_management():
         page=page,
         per_page=per_page,
         total_users=total_users,
-        total_pages=total_pages
+        total_pages=total_pages,
+        user_counts=user_counts
     )
 
 @admin_bp.route('/search_users', methods=['GET', 'POST'])
@@ -184,3 +193,69 @@ def update_all_roles():
         )
         updated_count += 1
     return f"Updated roles for {updated_count} users."
+
+@admin_bp.route('/manage_connections', methods=['GET', 'POST'])
+def manage_connections():
+    from main import mongo
+    
+    # Handle form submission for adding a new connection
+    if request.method == 'POST':
+        migrant_id = request.form.get('migrant_id')
+        agent_id = request.form.get('agent_id')
+        
+        # Create the connection object
+        connection = {
+            'migrant_id': ObjectId(migrant_id),
+            'agent_id': ObjectId(agent_id)
+        }
+        
+        # Insert into the connections collection
+        mongo.db.connections.insert_one(connection)
+        
+        flash("Connection added successfully!", "success")
+        return redirect(url_for('admin.manage_connections'))
+    
+    # Fetch all migrants and agents
+    migrants = list(mongo.db.users.find({'role': 'Migrant'}))
+    agents = list(mongo.db.users.find({'role': 'Agent'}))
+    
+    # Fetch all connections with populated data
+    connections = mongo.db.connections.aggregate([
+        {
+            '$lookup': {
+                'from': 'users',
+                'localField': 'migrant_id',
+                'foreignField': '_id',
+                'as': 'migrant'
+            }
+        },
+        {
+            '$lookup': {
+                'from': 'users',
+                'localField': 'agent_id',
+                'foreignField': '_id',
+                'as': 'agent'
+            }
+        },
+        {
+            '$unwind': '$migrant'
+        },
+        {
+            '$unwind': '$agent'
+        }
+    ])
+    
+    return render_template(
+        'manage_connections.html',
+        migrants=migrants,
+        agents=agents,
+        connections=connections
+    )
+
+
+@admin_bp.route('/delete_connection/<connection_id>', methods=['POST'])
+def delete_connection(connection_id):
+    from main import mongo
+    mongo.db.connections.delete_one({'_id': ObjectId(connection_id)})
+    flash("Connection deleted successfully!", "success")
+    return redirect(url_for('admin.manage_connections'))

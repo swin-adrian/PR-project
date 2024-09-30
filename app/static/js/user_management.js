@@ -106,3 +106,28 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+// Function to update user role summary
+function updateUserSummary() {
+    $.ajax({
+        url: "/get_user_summary",
+        method: "GET",
+        success: function(data) {
+            $("#user-role-summary").html(`
+                <p>Total Users: ${data.total_users}</p>
+                <p>Admin: ${data.admin_count}</p>
+                <p>Education Provider: ${data.education_provider_count}</p>
+                <p>Migrant: ${data.migrant_count}</p>
+                <p>Agent: ${data.agent_count}</p>
+            `);
+        },
+        error: function(xhr, status, error) {
+            console.error("Failed to fetch user summary:", error);
+        }
+    });
+}
+
+$(document).ready(function() {
+    updateUserSummary();
+});
+

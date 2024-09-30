@@ -2,34 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="Smart Migrate">
-    <meta name="keywords" content="Smart migrate, migration to Australia, PR Pathway">
-    <meta name="author" content="Adrian Soe Myint">
-    <!--accessibility setting-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--stylesheet-->
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
-    <title>Smart Track | PR Pathway</title>
+    <title>Agent Dashboard</title>
 </head>
-
-
 <body>
     <header>
         <nav>
-            <!--Navigation menu in header as a list to apply more styles-->
             <div class="navi_menu">
                 <a class="active" href="/"><strong>Home</strong></a>
-                <!-- <a href="product.html"><strong>Products</strong></a>
-                <a href="enquire.html"><strong>Enquire</strong></a>
-                <a href="about.html"><strong>About</strong></a>
-                <a href="/"><strong>Enhancements</strong></a> !-->
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
             </div>
         </nav>
     </header>
-<h1>Welcome Agent</h1>
+    <div class="container">
+        <h1>Welcome, {{ agent.email }}</h1>
+        <h2>Your Migrants</h2>
+        {% if connections %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Migrant Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for connection in connections %}
+                    <tr>
+                        <td>{{ connection.migrant_email }}</td>
+                        <td>
+                            <!-- Actions such as sending a message, viewing profile, etc. -->
+                            <a href="#" class="btn">View Profile</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No migrants are connected to you yet.</p>
+        {% endif %}
+    </div>
 </body>
-
-
-
 </html>
