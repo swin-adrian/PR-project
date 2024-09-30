@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdProvider Visuals</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/edprovider_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script> <!-- Plugin to add data labels -->
+
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="navi_menu">
+                <a class="active" href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
+                <a class="active" href="{{ url_for('edprovider.view_courses') }}" class="view-courses-btn">Potential Student</a>
+            </div>
+        </nav>
+    </header>
+
+    <h1>Analytics for Registered Courses and Costs</h1>
+
+    <div class="chart-container">
+        <!-- Left chart for Number of Students per Course -->
+        <div class="chart-box chart-background">
+            <canvas id="studentsPerCourseChart"></canvas>
+        </div>
+
+        <!-- Right chart for Costs per Course -->
+        <div class="chart-box chart-background">
+            <canvas id="costsPerCourseChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Fetch data from the Flask backend
+        fetch('/view_courses_data')
+            .then(response => response.json())
+            .then(data => {
+                const courseCounts = data.courses;
+                const totalCosts = data.costs;
+
+                // Get course names and corresponding data
+                const courseNames = Object.keys(courseCounts);
+                const studentCounts = Object.values(courseCounts);
+                const courseCosts = Object.values(totalCosts);
+
+                // Create the charts with the real data
+                createStudentsChart(courseNames, studentCounts);
+                createCostsChart(courseNames, courseCosts);
+            });
+
+        // Function to create the Students Bar Chart (Vertical)
+        function createStudentsChart(courseNames, studentCounts) {
+            const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: courseNames,
+                    datasets: [{
+                        label: 'Number of Students',
+                        data: studentCounts,
+                        backgroundColor: '#4E79A7',
+                        borderColor: '#4E79A7',
+                        borderWidth: 1,
+                        hoverBackgroundColor: '#2E5B91',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#4E79A7',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                            cornerRadius: 5,
+                        },
+                        datalabels: {
+                            color: 'white',
+                            align: 'center',
+                            anchor: 'center',
+                            font: {
+                                weight: 'bold',
+                                size: 14
+                            },
+                            formatter: function(value) {
+                                return value + ' students';
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Students'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Courses'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to create the Costs Bar Chart (Horizontal)
+        function createCostsChart(courseNames, courseCosts) {
+            const ctx = document.getElementById('costsPerCourseChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: courseNames,
+                    datasets: [{
+                        label: 'Total Cost (USD)',
+                        data: courseCosts,
+                        backgroundColor: '#E15759',
+                        borderColor: '#E15759',
+                        borderWidth: 1,
+                        hoverBackgroundColor: '#C94648',
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Make it horizontal
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#E15759',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                            cornerRadius: 5,
+                        },
+                        datalabels: {
+                            color: 'white',
+                            align: 'right',
+                            anchor: 'end',
+                            font: {
+                                weight: 'bold',
+                                size: 14
+                            },
+                            formatter: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Total Cost (USD)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Courses'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

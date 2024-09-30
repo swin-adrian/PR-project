@@ -31,91 +31,91 @@ def login():
     mongo = PyMongo(current_app)
     login_error = None  # Initialize a variable for login error
 
-    if request.method == "POST":  # Fix indentation here
-        # Get the email and password, and convert the email to lowercase
-        email = request.form.get('email').strip().lower()  # Ensure email is lowercase and trimmed
-        password = request.form.get('password')  # Match the form's input name, possibly 'password' instead of 'pwd'
+    if request.method == "POST":
+        email = request.form.get('email').strip().lower()
+        password = request.form.get('password')
 
-        # Check if email and password are provided
         if not email or not password:
             login_error = "Email and password are required."
             return render_template('login_error.html', error=login_error)
 
-        # Access the "users" collection using the "mongo" object and query by email
+        # Query the user from the database
         user = mongo.db.users.find_one({"email": email})
 
-        # Check if the user exists and verify the password
         if user and check_password_hash(user["password_hash"], password):
-            # Set the session with the user's email or ID
-            session['user_id'] = str(user['_id'])  # Store user ID in the session
-            session['email'] = user.get('email')  # Store email for easier use
+            session['user_id'] = str(user['_id'])
+            session['email'] = user.get('email')
 
-            # Extract domain from email
-            email_domain = user.get('email').split('@')[-1]
+            # Set the session for university if the user is an Education Provider
+            if user.get('role') == 'Education Provider':
+                session['university'] = user.get('university')  # Store university in session
 
-            # Redirect based on the email domain (migrant, agent, edprovider, admin)
-            if email_domain == 'gmail.com':
+            # Redirect based on the email domain or role
+            if email.endswith('gmail.com'):
                 return redirect(url_for('migrant.migrantlanding'))
-            elif email_domain == 'agent.com':
+            elif email.endswith('agent.com'):
                 return redirect(url_for('agent.agentlanding'))
-            elif email_domain in ['swinburne.edu.au', 'monash.edu.au', 'latrobe.edu.au']:
+            elif email.endswith(('swinburne.edu.au', 'monash.edu.au', 'latrobe.edu.au')):
                 return redirect(url_for('edprovider.edproviderlanding', university=user.get('university')))
-            elif email_domain == 'admin.com':
+            elif email.endswith('admin.com'):
                 return redirect(url_for('admin.adminlanding'))
             else:
                 return "Unsupported user type."
 
-        login_error = "Your password or email is incorrect."  # Set the login error message
+        login_error = "Your password or email is incorrect."
 
-    return render_template('login_error.html', error=login_error)  # Pass the login error to the template
-
+    return render_template('login_error.html', error=login_error)
 
 # Signup route
+@auth_bp.route('/signup', methods=["GET", "POST"])
 @auth_bp.route('/signup', methods=["GET", "POST"])
 def signup():
     mongo = PyMongo(current_app)
 
-    if request.method == "POST": 
-        # Get the email and password, and convert the email to lowercase
-        email = request.form.get('email').strip().lower()  # Ensure email is lowercase and trimmed
+    if request.method == "POST":
+        email = request.form.get('email').strip().lower()
         password = request.form.get('pwd')
 
-        # Check if email and password are provided
         if not email or not password:
             flash("Email and password are required", "danger")
             return redirect(url_for('auth.signup'))
 
-        # Check if the email already exists in the database
         existing_user = mongo.db.users.find_one({"email": email})
         if existing_user:
             flash("Email already exists", "danger")
             return redirect(url_for('auth.signup'))
 
-        # Hash the password for secure storage
         password_hash = generate_password_hash(password)
 
         # Detect the role based on the email (including university detection)
         role = detect_role(email)
 
-        # Insert the new user into the database
+        # Store university for Education Providers if applicable
+        university = None
+        if role == 'Education Provider':
+            university = 'University Name'  # Set this dynamically based on logic or input
+
         user_id = mongo.db.users.insert_one({
-            "email": email,  # Use email as the unique identifier
+            "email": email,
             "password_hash": password_hash,
-            "role": role,  # Store the role based on email
+            "role": role,
+            "university": university  # Store university if applicable
         }).inserted_id
 
-        # Set the session to the new user's ID, email, and role
         session['user_id'] = str(user_id)
         session['email'] = email
         session['role'] = role
 
-        # Redirect based on the role
+        # Store university in session for Education Providers
+        if role == 'Education Provider':
+            session['university'] = university
+
         if role == 'Migrant':
             return redirect(url_for('migrant.migrantlanding'))
         elif role == 'Agent':
             return redirect(url_for('agent.agentlanding'))
         elif role == 'Education Provider':
-            return redirect(url_for('edprovider.edproviderlanding'))  # Redirect for university staff
+            return redirect(url_for('edprovider.edproviderlanding'))
         elif role == 'Admin':
             return redirect(url_for('admin.adminlanding'))
         else:

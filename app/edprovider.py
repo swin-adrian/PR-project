@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 from bson.objectid import ObjectId
 from datetime import datetime
 
@@ -10,7 +10,6 @@ edprovider_bp = Blueprint('edprovider', __name__)
 def edproviderlanding():
     if request.method == 'POST':
         # Capture form data
-        
         industry = request.form.get('industry')
         course_name = request.form.get('course_name')
         course_type = request.form.get('course_type')
@@ -37,7 +36,7 @@ def edproviderlanding():
             "Duration": duration,
             "CourseStructure": course_structure,
             "KeyLearnings": key_learnings,
-             "cost": Cost,
+            "cost": cost,
             "created_at": datetime.now()
         }
 
@@ -52,21 +51,29 @@ def edproviderlanding():
         return redirect(url_for('edprovider.view_courses'))
 
     return render_template('edproviderlanding.html')
+
+
 # Route for viewing courses (from registrations collection) with pagination
 @edprovider_bp.route('/view_courses', methods=['GET'])
 def view_courses():
+    # Get the user's university from the session
+    user_university = session.get('university')
+
+    if not user_university:
+        return jsonify({"error": "User session not found or university not specified."}), 400
+
     page = request.args.get('page', 1, type=int)  # Get the current page, default to 1
     per_page = 6  # Set how many registrations you want to display per page
     
     from main import mongo
-    # Count total number of registrations for pagination
-    total_registrations = mongo.db.registrations.count_documents({})
+    # Count total number of registrations for the user's university
+    total_registrations = mongo.db.registrations.count_documents({"university": user_university})
     total_pages = (total_registrations + per_page - 1) // per_page  # Calculate total number of pages
     
-    # Fetch registrations for the current page
-    registrations = mongo.db.registrations.find().skip((page - 1) * per_page).limit(per_page)
+    # Fetch registrations for the current page, filtering by university
+    registrations = mongo.db.registrations.find({"university": user_university}).skip((page - 1) * per_page).limit(per_page)
     
-    # Pass the page, per_page, total_pages, and registrations to the template
+    # Pass the page, per_page, total_pages, and filtered registrations to the template
     return render_template(
         'add_course.html',
         registrations=registrations,
@@ -85,11 +92,20 @@ def search_courses():
     query = request.form.get('search_query') if request.method == 'POST' else request.args.get('search_query', '')
 
     from main import mongo
-    # Search registrations by course_name or key_learnings
+    # Get the user's university from the session
+    user_university = session.get('university')
+
+    if not user_university:
+        return jsonify({"error": "User session not found or university not specified."}), 400
+
+    # Search registrations by course_name or key_learnings for the user's university
     search_filter = {
-        "$or": [
-            {"course_name": {"$regex": query, "$options": "i"}},
-            {"key_learnings": {"$regex": query, "$options": "i"}}
+        "$and": [
+            {"university": user_university},  # Filter by university
+            {"$or": [
+                {"course_name": {"$regex": query, "$options": "i"}},
+                {"key_learnings": {"$regex": query, "$options": "i"}}
+            ]}
         ]
     }
 
@@ -147,3 +163,40 @@ def delete_registration(registration_id):
         return jsonify({"success": True})
     else:
         return jsonify({"success": False})
+    
+
+# Route for displaying the EdProvider visuals page
+@edprovider_bp.route('/edprovidervisuals', methods=['GET'])
+def edprovidervisuals():
+    return render_template('edprovidervisuals.html')
+
+
+# Route for viewing courses data (used by the charts)
+@edprovider_bp.route('/view_courses_data', methods=['GET'])
+def view_courses_data():
+    from main import mongo
+
+    # Get the user's university from the session
+    user_university = session.get('university')
+
+    if not user_university:
+        return jsonify({"error": "User session not found or university not specified."}), 400
+
+    # Fetch all registrations for the user's university
+    registrations = list(mongo.db.registrations.find({"university": user_university}))
+
+    course_counts = {}
+    total_costs = {}
+    
+    # Aggregate data for courses and cost associated with the university
+    for registration in registrations:
+        course_list = registration.get('course_name', 'Unknown Course').split(', ')  # Handle multiple courses
+        cost = registration.get('cost', 0)
+
+        # Count students and costs per course
+        for course in course_list:
+            course_counts[course] = course_counts.get(course, 0) + 1
+            total_costs[course] = total_costs.get(course, 0) + cost
+
+    # Return the aggregated data as JSON
+    return jsonify({"courses": course_counts, "costs": total_costs})

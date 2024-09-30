@@ -519,3 +519,77 @@ tr:hover {
 .cancel-button:hover {
     background-color: #bbb;
 }
+
+        /* Flexbox layout for the charts */
+        .chart-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        /* Chart box styles */
+        .chart-box {
+            width: 45%;
+            min-width: 300px;
+        }
+
+        /* Styling the title and layout */
+        h1 {
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            margin-top: 20px;
+        }
+
+        /* Custom chart colors */
+        .chart-background {
+            background-color: #f4f7f6;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Center the charts with better spacing */
+        .chart-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 30px;
+            margin: 50px 20px;
+            padding: 30px;
+        }
+
+        /* Chart box styling with rounded corners and soft shadow */
+        .chart-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            width: 45%;
+            min-width: 300px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Styling for canvas to ensure responsiveness */
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
