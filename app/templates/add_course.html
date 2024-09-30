@@ -7,21 +7,22 @@
     <title>Course Information</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
     <script src="{{ url_for('static', filename='../static/js/edprovider.js') }}"></script>
-
 </head>
 <body>
     <header>
         <nav>
             <div class="navi_menu">
-                <a class="active" href="index.html"><strong>Home</strong></a>
-                <a class="active" href="{{ url_for('edprovider.edproviderlanding') }}" class="view-courses-btn">Add Course</a>
+
+                <a class="active" href="{{ url_for('edprovider.edproviderlanding') }}" class="view-courses-btn">Add course</a>
+                <a class="active" href="{{ url_for('edprovider.edprovidervisuals') }}" class="view-courses-btn">EdProvider Visuals</a>
+                
             </div>
         </nav>
     </header>
 
     <div class="container">
         <form action="{{ url_for('edprovider.search_courses') }}" method="POST" class="search-container">
-            <input type="text" name="search_query" placeholder="Search by Course Name or Industry" value="{{ search_query }}">
+            <input type="text" name="search_query" placeholder="Search by Course Name or Key Learnings" value="{{ search_query }}">
             <button type="submit">Search</button>
         </form>
     </div>
@@ -31,115 +32,66 @@
         <table>
             <thead>
                 <tr>
-                    <th>Industry</th>
                     <th>Course Name</th>
-                    <th>Course Type</th>
-                    <th>Duration</th>
-                    <th>Course Structure</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Cost (AUD)</th>
                     <th>Key Learnings</th>
+                    <th>Registration Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for course in courses %}
-                <tr id="course-row-{{ course._id }}">
-                    <td>{{ course.Industry }}</td>
-                    <td>{{ course.CourseName }}</td>
-                    <td>{{ course.CourseType }}</td>
-                    <td>{{ course.Duration }}</td>
-                    <td>{{ course.CourseStructure }}</td>
-                    <td>{{ course.KeyLearnings }}</td>
+                {% for registration in registrations %}
+                <tr id="registration-row-{{ registration._id }}">
+                    <td>{{ registration.course_name }}</td>
+                    <td>{{ registration.first_name }}</td>
+                    <td>{{ registration.last_name }}</td>
+                    <td>{{ registration.email }}</td>
+                    <td>${{ "%.2f"|format(registration.get('cost', 0.00)) }}</td>
+                    <td>{{ registration.key_learnings }}</td>
+                    <td>{{ registration.registration_date }}</td>
                     <td>
                         <div class="button-container">
-                            <button type="button" class="form-button modify-button" data-course-id="{{ course._id }}">Modify</button>
-                            <button type="button" class="form-button delete-button" data-course-id="{{ course._id }}">Delete</button>
+                            <button type="button" class="form-button modify-button" data-registration-id="{{ registration._id }}">Modify</button>
+                            <button type="button" class="form-button delete-button" data-registration-id="{{ registration._id }}">Delete</button>
                         </div>
                     </td>                   
                 </tr>
                 
                 <!-- Hidden edit form when modifying -->
-                <tr id="edit-row-{{ course._id }}" style="display:none;">
+                <tr id="edit-row-{{ registration._id }}" style="display:none;">
                     <td colspan="7">
-                        <form id="edit-course-form-{{ course._id }}" class="edit-course-form" data-course-id="{{ course._id }}">
-                            <!-- Industry Dropdown -->
-                            <select id="industry" name="industry" class="form-select" required>
-                                <option value="Engineering" {% if course.Industry == 'Engineering' %}selected{% endif %}>Engineering</option>
-                                <option value="Community and Personal Care" {% if course.Industry == 'Community and Personal Care' %}selected{% endif %}>Community and Personal Care</option>
-                                <option value="Arts" {% if course.Industry == 'Arts' %}selected{% endif %}>Arts</option>
-                                <option value="Finance and Accounting" {% if course.Industry == 'Finance and Accounting' %}selected{% endif %}>Finance and Accounting</option>
-                                <option value="Agriculture and Environmental" {% if course.Industry == 'Agriculture and Environmental' %}selected{% endif %}>Agriculture and Environmental</option>
-                                <option value="Education" {% if course.Industry == 'Education' %}selected{% endif %}>Education</option>
-                                <option value="ICT and Computer Science" {% if course.Industry == 'ICT and Computer Science' %}selected{% endif %}>ICT and Computer Science</option>
-                                <option value="Trade" {% if course.Industry == 'Trade' %}selected{% endif %}>Trade</option>
-                                <option value="Business" {% if course.Industry == 'Business' %}selected{% endif %}>Business</option>
-                                <option value="Social Science" {% if course.Industry == 'Social Science' %}selected{% endif %}>Social Science</option>
-                                <option value="Health and Fitness" {% if course.Industry == 'Health and Fitness' %}selected{% endif %}>Health and Fitness</option>
-                                <option value="Culinary" {% if course.Industry == 'Culinary' %}selected{% endif %}>Culinary</option>
-                                <option value="Hospitality" {% if course.Industry == 'Hospitality' %}selected{% endif %}>Hospitality</option>
-                                <option value="Law" {% if course.Industry == 'Law' %}selected{% endif %}>Law</option>
-                                <option value="Medicine" {% if course.Industry == 'Medicine' %}selected{% endif %}>Medicine</option>
-                                <option value="Transport" {% if course.Industry == 'Transport' %}selected{% endif %}>Transport</option>
-                                <option value="Arts and Design" {% if course.Industry == 'Arts and Design' %}selected{% endif %}>Arts and Design</option>
-                                <option value="Environmental Health" {% if course.Industry == 'Environmental Health' %}selected{% endif %}>Environmental Health</option>
-                                <option value="Sport" {% if course.Industry == 'Sport' %}selected{% endif %}>Sport</option>
-                            </select>
-                
-                            <!-- Course Name Dropdown -->
-                            <select id="course_name" name="course_name" class="form-select" required>
-                                <option value="Mechanical, Civil, Electrical" {% if course.CourseName == 'Mechanical, Civil, Electrical' %}selected{% endif %}>Mechanical, Civil, Electrical</option>
-                                <option value="Aged Care, Disability Care" {% if course.CourseName == 'Aged Care, Disability Care' %}selected{% endif %}>Aged Care, Disability Care</option>
-                                <option value="Music, Fine Arts, Digital Arts" {% if course.CourseName == 'Music, Fine Arts, Digital Arts' %}selected{% endif %}>Music, Fine Arts, Digital Arts</option>
-                                <option value="Accounting, Financial Planning" {% if course.CourseName == 'Accounting, Financial Planning' %}selected{% endif %}>Accounting, Financial Planning</option>
-                                <option value="Environmental Science, Agriculture" {% if course.CourseName == 'Environmental Science, Agriculture' %}selected{% endif %}>Environmental Science, Agriculture</option>
-                                <option value="Programming, Networking" {% if course.CourseName == 'Programming, Networking' %}selected{% endif %}>Programming, Networking</option>
-                                <option value="Earlychildhoodlearning" {% if course.CourseName == 'Earlychildhoodlearning' %}selected{% endif %}>Early Childhood, Teaching</option>
-                                <option value="Plumbing, Carpentry, Electrician" {% if course.CourseName == 'Plumbing, Carpentry, Electrician' %}selected{% endif %}>Plumbing, Carpentry, Electrician</option> 
-                                <option value="Business Management, Marketing" {% if course.CourseName == 'Business Management, Marketing' %}selected{% endif %}>Business Management, Marketing</option> 
-                                <option value="Sociology, Psychology" {% if course.CourseName == 'Sociology, Psychology' %}selected{% endif %}>Sociology, Psychology</option> 
-                                <option value="Fitness Trainer, Nutrition" {% if course.CourseName == 'Fitness Trainer, Nutrition' %}selected{% endif %}>Fitness Trainer, Nutrition</option> 
-                                <option value="Culinary Arts, Pastry Chef" {% if course.CourseName == 'Culinary Arts, Pastry Chef' %}selected{% endif %}>Culinary Arts, Pastry Chef</option> 
-                                <option value="Hotel Management, Event Planning" {% if course.CourseName == 'Hotel Management, Event Planning' %}selected{% endif %}>Hotel Management, Event Planning</option> 
-                                <option value="Legal Studies, Paralegal" {% if course.CourseName == 'Legal Studies, Paralegal' %}selected{% endif %}>Legal Studies, Paralegal</option> 
-                                <option value="Nursing, Radiology" {% if course.CourseName == 'Nursing, Radiology' %}selected{% endif %}>Nursing, Radiology</option> 
-                                <option value="Aviation, Maritime" {% if course.CourseName == 'Aviation, Maritime' %}selected{% endif %}>Aviation, Maritime</option> 
-                                <option value="Graphic Design, Fashion Design" {% if course.CourseName == 'Graphic Design, Fashion Design' %}selected{% endif %}>Graphic Design, Fashion Design</option> 
-                                <option value="Public Health, Environmental Safety" {% if course.CourseName == 'Public Health, Environmental Safety' %}selected{% endif %}>Public Health, Environmental Safety</option> 
-                                <option value="Coaching, Sports Management" {% if course.CourseName == 'Coaching, Sports Management' %}selected{% endif %}>Coaching, Sports Management</option>
-                            </select>
-                
-                            <!-- Course Type Dropdown -->
-                            <select id="course_type" name="course_type" class="form-select" required>
-                                <option value="Bachelors" {% if course.CourseType == 'Bachelors' %}selected{% endif %}>Bachelors</option>
-                                <option value="Diploma" {% if course.CourseType == 'Diploma' %}selected{% endif %}>Diploma</option>
-                                <option value="Certificate" {% if course.CourseType == 'Certificate' %}selected{% endif %}>Certificate</option>
-                            </select>
-                
-                            <!-- Duration Dropdown -->
-                            <select id="duration" name="duration" class="form-select" required>
-                                <option value="1 year" {% if course.Duration == '1 year' %}selected{% endif %}>1 year</option>
-                                <option value="2 years" {% if course.Duration == '2 years' %}selected{% endif %}>2 years</option>
-                                <option value="3 years" {% if course.Duration == '3 years' %}selected{% endif %}>3 years</option>
-                                <option value="4 years" {% if course.Duration == '4 years' %}selected{% endif %}>4 years</option>
-                                <option value="6-12 months" {% if course.Duration == '6-12 months' %}selected{% endif %}>6-12 months</option>
-                            </select>
-                
-                            <!-- Course Structure Textarea -->
-                            <textarea name="course_structure" class="form-input" required>{{ course.CourseStructure }}</textarea>
-                
-                            <!-- Key Learnings Textarea -->
-                            <textarea name="key_learnings" class="form-input" required>{{ course.KeyLearnings }}</textarea>
-                
+                        <form id="edit-registration-form-{{ registration._id }}" class="edit-registration-form" data-registration-id="{{ registration._id }}">
+                            <!-- Course Name -->
+                            <input type="text" name="course_name" class="form-input" value="{{ registration.course_name }}" required>
+
+                            <!-- First Name -->
+                            <input type="text" name="first_name" class="form-input" value="{{ registration.first_name }}" required>
+
+                            <!-- Last Name -->
+                            <input type="text" name="last_name" class="form-input" value="{{ registration.last_name }}" required>
+
+                            <!-- Email -->
+                            <input type="email" name="email" class="form-input" value="{{ registration.email }}" required>
+
+                            <!-- Cost -->
+                            <input type="number" name="cost" class="form-input" value="{{ registration.get('cost', 0.00) }}" required min="0" step="0.01">
+
+                            <!-- Key Learnings -->
+                            <textarea name="key_learnings" class="form-input" required>{{ registration.key_learnings }}</textarea>
+
                             <button type="submit" class="form-button">Save Changes</button>
                         </form>
                     </td>
                 </tr>
-                              
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <!-- Pagination Controls with numbered links and arrows -->
+    <!-- Pagination Controls -->
     <div class="pagination">
         <ul style="list-style-type:none; display:flex; justify-content: center; align-items: center;">
             {% if page > 1 %}
@@ -152,13 +104,9 @@
             <li style="margin-right:10px;">
                 <span class="current-page">{{ num }}</span>
             </li>
-            {% elif num <= 5 or num > total_pages - 5 or (page - 2 <= num <= page + 2) %}
+            {% else %}
             <li style="margin-right:10px;">
                 <a href="{{ url_for('edprovider.view_courses', page=num) }}" class="pagination-number">{{ num }}</a>
-            </li>
-            {% elif num == 6 or num == total_pages - 5 %}
-            <li style="margin-right:10px;">
-                <span class="pagination-dots">...</span>
             </li>
             {% endif %}
             {% endfor %}
@@ -173,6 +121,5 @@
     <div class="container">
         <a href="{{ url_for('edprovider.edproviderlanding') }}" class="form-button">Back to Add Course</a>
     </div>
-
 </body>
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Connections</title>
+    <link rel="stylesheet" href="../static/css/admin_style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="navi_menu">
+                <a href="/">Home</a>
+                <a href="{{ url_for('admin.adminlanding') }}">Dashboard</a>
+                <a href="{{ url_for('admin.user_management') }}">User Management</a>
+                <a class="active" href="{{ url_for('admin.manage_connections') }}">Manage Connections</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Manage Migrant-Agent Connections</h2>
+
+        <!-- Add Connection Form -->
+        <h3>Add New Connection</h3>
+        <form action="{{ url_for('admin.manage_connections') }}" method="POST">
+            <label for="migrant_id">Select Migrant:</label>
+            <select name="migrant_id" required>
+                {% for migrant in migrants %}
+                    <option value="{{ migrant._id }}">{{ migrant.email }}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="agent_id">Select Agent:</label>
+            <select name="agent_id" required>
+                {% for agent in agents %}
+                    <option value="{{ agent._id }}">{{ agent.email }}</option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit">Add Connection</button>
+        </form>
+        
+        <!-- Connections Table -->
+        <h3>Current Connections</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Migrant Email</th>
+                    <th>Agent Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for connection in connections %}
+                <tr>
+                    <td>{{ connection.migrant.email }}</td>
+                    <td>{{ connection.agent.email }}</td>
+                    <td>
+                        <form action="{{ url_for('admin.delete_connection', connection_id=connection._id) }}" method="POST" style="display: inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

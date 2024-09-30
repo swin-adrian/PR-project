@@ -25,7 +25,7 @@ body {
     padding: 50px;
     background: linear-gradient(135deg, #ffffff, #ffffff);
     border-radius: 15px;
-    border: 3px solid #B76D68; /* Updated to Main Pink */
+    border: 3px solid #B76D68;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     text-align: left;
 }
@@ -57,9 +57,9 @@ body {
 .form-input,
 .form-select,
 .form-textarea {
-    width: 98%;
+    width: 100%;
     padding: 15px;
-    border: 3px solid #B76D68; /* Updated to Main Pink */
+    border: 3px solid #B76D68;
     border-radius: 8px;
     font-size: 18px;
     background-color: #ffffff;
@@ -71,15 +71,15 @@ body {
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-    border-color: #b8837f; /* Updated to Soft Pink */
-    box-shadow: 0 0 10px rgba(183, 131, 127, 0.3); /* Updated to Soft Pink */
+    border-color: #b8837f;
+    box-shadow: 0 0 10px rgba(183, 131, 127, 0.3);
 }
 
 /* Button styles with gradient background */
 .form-button,
 button[type="submit"] {
     padding: 14px;
-    background: linear-gradient(135deg, #B76D68, #b8837f); /* Updated to Main and Soft Pink */
+    background: linear-gradient(135deg, #B76D68, #b8837f);
     color: white;
     font-size: 18px;
     font-weight: 700;
@@ -93,13 +93,13 @@ button[type="submit"] {
 
 .form-button:hover,
 button[type="submit"]:hover {
-    background: linear-gradient(135deg, #b8837f, #B76D68); /* Updated to Soft and Main Pink */
+    background: linear-gradient(135deg, #b8837f, #B76D68);
     transform: translateY(-2px);
 }
 
 /* Button for table actions */
 button[style="background-color: red;"] {
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     border: none;
     padding: 12px 20px;
     border-radius: 8px;
@@ -110,16 +110,16 @@ button[style="background-color: red;"] {
 }
 
 button[style="background-color: red;"]:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
     transform: translateY(-2px);
 }
 
 /* Adjusting the form-input for textareas specifically */
 textarea.form-input {
-    width: 98%;
+    width: 95%;
     height: 150px;
     padding: 16px;
-    border: 3px solid #B76D68; /* Updated to Main Pink */
+    border: 3px solid #B76D68;
     border-radius: 8px;
     font-size: 18px;
     background-color: #f9f9f9;
@@ -130,8 +130,8 @@ textarea.form-input {
 
 /* Soft focus effect */
 textarea.form-input:focus {
-    border-color: #b8837f; /* Updated to Soft Pink */
-    box-shadow: 0 0 10px rgba(183, 131, 127, 0.3); /* Updated to Soft Pink */
+    border-color: #b8837f;
+    box-shadow: 0 0 10px rgba(183, 131, 127, 0.3);
 }
 
 /* Table styling with subtle lines and soft shadows */
@@ -151,16 +151,16 @@ th, td {
 }
 
 th {
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     color: white;
     padding: 16px;
     text-align: left;
     font-size: 16px;
-    border-right: 1px solid #ffffff; /* Adds a division line between headers */
+    border-right: 1px solid #ffffff;
 }
 
 th:last-child {
-    border-right: none; /* Removes the right border from the last header cell */
+    border-right: none;
 }
 
 tr:hover {
@@ -191,7 +191,7 @@ tr:hover {
 /* Search button */
 .search-container button {
     padding: 10px 20px;
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     color: white;
     border: none;
     border-radius: 8px;
@@ -201,7 +201,7 @@ tr:hover {
 
 /* Hover effect for search button */
 .search-container button:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 /* Center the icons and the view course button */
@@ -218,7 +218,7 @@ tr:hover {
 .view-courses-btn {
     display: inline-block;
     padding: 12px 24px;
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     color: white;
     border: none;
     border-radius: 5px;
@@ -230,7 +230,7 @@ tr:hover {
 }
 
 .view-courses-btn:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 /* To ensure icons are centered and displayed correctly */
@@ -243,17 +243,17 @@ tr:hover {
 
 .icon {
     font-size: 32px;
-    color: #B76D68; /* Updated to Main Pink */
+    color: #B76D68;
 }
 
 .icon:hover {
-    color: #b8837f; /* Updated to Soft Pink */
+    color: #b8837f;
 }
 
 /* Basic styling for the navigation menu */
 .navi_menu {
     overflow: hidden;
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     z-index: 1001;
     display: flex;
     justify-content: center;
@@ -275,7 +275,7 @@ tr:hover {
 }
 
 .navi_menu a:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 /* Responsive styling for the navigation menu */
@@ -337,7 +337,7 @@ tr:hover {
 /* Numbered page links */
 .pagination-number {
     padding: 8px 14px;
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     color: white;
     border-radius: 5px;
     font-size: 18px;
@@ -346,7 +346,7 @@ tr:hover {
 }
 
 .pagination-number:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 /* Current page styling */
@@ -354,13 +354,13 @@ tr:hover {
     font-weight: bold;
     padding: 8px 14px;
     font-size: 18px;
-    color: #B76D68; /* Updated to Main Pink */
+    color: #B76D68;
 }
 
 /* Pagination arrows */
 .pagination-arrow {
     padding: 8px 14px;
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     color: white;
     border-radius: 50%;
     font-size: 18px;
@@ -369,13 +369,13 @@ tr:hover {
 }
 
 .pagination-arrow:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 /* Ellipsis dots */
 .pagination-dots {
     font-size: 16px;
-    color: #B76D68; /* Updated to Main Pink */
+    color: #B76D68;
     padding: 8px 12px;
 }
 
@@ -393,13 +393,13 @@ tr:hover {
 /* Style for the pagination arrows (smaller size and rounded corners) */
 .pagination-arrow {
     font-size: 18px;
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     padding: 5px 10px;
     border-radius: 50%;
 }
 
 .pagination-arrow:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 .button-container {
@@ -420,19 +420,19 @@ tr:hover {
 }
 
 .modify-button {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 .modify-button:hover {
-    background-color: #a07875; /* Darkened Soft Pink */
+    background-color: #a07875;
 }
 
 .delete-button {
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
 }
 
 .delete-button:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 /* Style form inputs inside table rows */
@@ -460,7 +460,7 @@ tr:hover {
 /* Consistent padding and button appearance */
 .edit-course-form button {
     padding: 8px 14px;
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     color: white;
     font-size: 14px;
     border: none;
@@ -471,7 +471,7 @@ tr:hover {
 }
 
 .edit-course-form button:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 /* Ensure form inputs are aligned within table cells */
@@ -484,7 +484,7 @@ tr:hover {
     margin-top: 10px;
     padding: 8px 14px;
     font-size: 14px;
-    background-color: #B76D68; /* Updated to Main Pink */
+    background-color: #B76D68;
     color: white;
     border: none;
     border-radius: 5px;
@@ -492,7 +492,7 @@ tr:hover {
 }
 
 .edit-course-form button:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
+    background-color: #b8837f;
 }
 
 /* Style the select dropdown to match input fields */
@@ -520,76 +520,50 @@ tr:hover {
     background-color: #bbb;
 }
 
-        /* Flexbox layout for the charts */
-        .chart-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-top: 20px;
-        }
+/* Styles for the modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
 
-        /* Chart box styles */
-        .chart-box {
-            width: 45%;
-            min-width: 300px;
-        }
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+}
 
-        /* Styling the title and layout */
-        h1 {
-            text-align: center;
-            font-family: 'Arial', sans-serif;
-            margin-top: 20px;
-        }
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
 
-        /* Custom chart colors */
-        .chart-background {
-            background-color: #f4f7f6;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-        canvas {
-            width: 100% !important;
-            height: 400px !important;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f7f9fc;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Center the charts with better spacing */
-        .chart-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            gap: 30px;
-            margin: 50px 20px;
-            padding: 30px;
-        }
-
-        /* Chart box styling with rounded corners and soft shadow */
-        .chart-box {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            width: 45%;
-            min-width: 300px;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 36px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        /* Styling for canvas to ensure responsiveness */
-        canvas {
-            width: 100% !important;
-            height: 400px !important;
-        }
+/* Styles for the header */
+h1 {
+    font-size: 2.5em;
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}

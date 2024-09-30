@@ -10,6 +10,8 @@ from sklearn.preprocessing import StandardScaler
 from bson import ObjectId
 
 
+
+
 # Define the Blueprint before using it
 migrant_bp = Blueprint('migrant', __name__)
 @migrant_bp.route('/recommendcourse', methods=['GET'])
@@ -389,3 +391,60 @@ def results_page():
     
     # Render the template and pass the parameters
     return render_template('prscore.html', total_score=total_score, pr_prob=pr_prob)
+
+
+@migrant_bp.route('/register_course', methods=['POST'])
+def register_course():
+    mongo = PyMongo(current_app)
+
+    try:
+        # Get the user_id from the session
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 403
+
+        user_object_id = ObjectId(user_id)
+
+        # Get data from the request
+        course_name = request.form.get('courseName')
+        first_name = request.form.get('firstName')
+        last_name = request.form.get('lastName')
+        email = request.form.get('email')
+        university = request.form.get('university')  # Capture the university from the form
+
+        # Validate the data
+        if not all([course_name, first_name, last_name, email, university]):
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Find the corresponding course in the "courses" collection by course_name
+        course_data = mongo.db.courses.find_one({"CourseName": course_name})
+
+        # If course is found, fetch the cost and key_learnings, otherwise set defaults
+        if course_data:
+            cost = course_data.get('Cost', 0.00)  # Default to 0.00 if cost is not available
+            key_learnings = course_data.get('KeyLearnings', "Not available")
+        else:
+            cost = 0.00
+            key_learnings = "Not available"
+
+        # Store the registration data along with the course cost, key_learnings, and university
+        registration_data = {
+            "user_id": user_object_id,
+            "course_name": course_name,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "university": university,  # Store the university information
+            "cost": cost,  # Include the cost from the course
+            "key_learnings": key_learnings,  # Include the key learnings from the course
+            "registration_date": datetime.utcnow()
+        }
+
+        # Insert the registration data into the "registrations" collection
+        mongo.db.registrations.insert_one(registration_data)
+
+        return jsonify({"message": "Registration successful", "cost": cost, "key_learnings": key_learnings}), 200
+
+    except Exception as e:
+        print(f"Error occurred during registration: {e}")
+        return jsonify({"error": "An error occurred while processing your registration."}), 500

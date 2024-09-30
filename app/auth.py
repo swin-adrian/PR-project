@@ -4,54 +4,89 @@ from flask_pymongo import PyMongo
 
 auth_bp = Blueprint('auth', __name__)
 
+# Detect role function must be defined before being used in signup and login
+def detect_role(email):
+    """Detects the role based on the email with the new naming convention."""
+    email_domain = email.split('@')[-1].strip().lower()  # Clean up the email domain
 
+    # Admin detection
+    if 'admin' in email:
+        return 'Admin'
+
+    # Education Provider (University) detection
+    university_domains = ['swinburne.edu.au', 'monash.edu.au', 'latrobe.edu.au']
+    if email_domain in university_domains:
+        return 'Education Provider'
+
+    # Agent detection
+    elif 'agent' in email:
+        return 'Agent'
+
+    # Default to Migrant
+    return 'Migrant'
+
+# Login route
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     mongo = PyMongo(current_app)
     login_error = None  # Initialize a variable for login error
 
     if request.method == "POST":
-        email = request.form.get("email")  # Use email instead of username
-        password = request.form.get("password")
-        # Check if email and password are provided
+        email = request.form.get('email').strip().lower()
+        password = request.form.get('password')
+
         if not email or not password:
             login_error = "Email and password are required."
             return render_template('login_error.html', error=login_error)
 
-        # Access the "users" collection using the "mongo" object and query by email
+        # Query the user from the database
         user = mongo.db.users.find_one({"email": email})
 
-        # Check if the user exists and verify the password
         if user and check_password_hash(user["password_hash"], password):
-            # Set the session with the user's email or ID
-            session['user_id'] = str(user['_id'])  # Store user ID in the session
-            session['email'] = user.get('email')  # Store email for easier use
+            session['user_id'] = str(user['_id'])
+            session['email'] = user.get('email')
 
-            # Extract domain from email
-            email_domain = user.get('email').split('@')[-1]
+            # Set the session for university if the user is an Education Provider
+            if user.get('role') == 'Education Provider':
+                session['university'] = user.get('university')  # Store university in session
 
-            # Redirect based on the email domain
-            if email_domain == 'gmail.com':
+            # Redirect based on the email domain or role
+            if email.endswith('gmail.com'):
                 return redirect(url_for('migrant.migrantlanding'))
-            elif email_domain == 'agent.com':
+            elif email.endswith('agent.com'):
                 return redirect(url_for('agent.agentlanding'))
-            elif email_domain == 'edprovider.com':
-                return redirect(url_for('edprovider.edproviderlanding'))
-            elif email_domain == 'admin.com':
+            elif email.endswith(('swinburne.edu.au', 'monash.edu.au', 'latrobe.edu.au')):
+                return redirect(url_for('edprovider.edproviderlanding', university=user.get('university')))
+            elif email.endswith('admin.com'):
                 return redirect(url_for('admin.adminlanding'))
             else:
-                return "Unsupported user type"
+                return "Unsupported user type."
 
-        login_error = "Your password or email is incorrect."  # Set the login error message
+        login_error = "Your password or email is incorrect."
 
-    return render_template('login_error.html', error=login_error)  # Pass the login error to the template
+    return render_template('login_error.html', error=login_error)
 
+# Function to detect the university based on the email domain
+def detect_university(email):
+    email_domain = email.split('@')[-1].lower().strip()
+
+    if email_domain == 'latrobe.edu.au':
+        return 'La Trobe'
+    elif email_domain == 'swinburne.edu.au':
+        return 'Swinburne'
+    elif email_domain == 'monash.edu.au':
+        return 'Monash'
+    else:
+        return None  # If the email doesn't match a known university
+
+# Signup route
 @auth_bp.route('/signup', methods=["GET", "POST"])
 def signup():
     mongo = PyMongo(current_app)
 
-    if request.method == "POST":
-        email = request.form.get('email')
+    if request.method == "POST": 
+        # Get the email and password, and convert the email to lowercase
+        email = request.form.get('email').strip().lower()  # Ensure email is lowercase and trimmed
         password = request.form.get('pwd')
 
         # Check if email and password are provided
@@ -65,32 +100,36 @@ def signup():
             flash("Email already exists", "danger")
             return redirect(url_for('auth.signup'))
 
+        # Detect the university based on the email domain
+        university = detect_university(email)
+        if not university:
+            flash("Email domain not recognized. Please use a university email.", "danger")
+            return redirect(url_for('auth.signup'))
+
         # Hash the password for secure storage
         password_hash = generate_password_hash(password)
 
-        # Insert the new user into the database
+        # Insert the new user into the database with their university
         user_id = mongo.db.users.insert_one({
             "email": email,  # Use email as the unique identifier
-            "password_hash": password_hash
+            "password_hash": password_hash,
+            "role": "Education Provider",  # Assign the role based on email domain
+            "university": university,  # Store the detected university
         }).inserted_id
 
-        # Set the session to the new user's ID and email
+        # Set the session to the new user's ID, email, and university
         session['user_id'] = str(user_id)
         session['email'] = email
+        session['university'] = university  # Store the detected university in the session
 
-        # Extract the domain from the email and redirect accordingly
-        email_domain = email.split('@')[-1]
-
-        if email_domain == 'gmail.com':
-            return redirect(url_for('migrant.migrantlanding'))
-        elif email_domain == 'agent.com':
-            return redirect(url_for('agent.agentlanding'))
-        elif email_domain == 'edprovider.com':
-            return redirect(url_for('edprovider.edproviderlanding'))
-        elif email_domain == 'admin.com':
-            return redirect(url_for('admin.adminlanding'))
-        else:
-            flash("Unsupported email domain", "danger")
-            return redirect(url_for('auth.signup'))
+        # Redirect the user to the education provider landing page
+        return redirect(url_for('edprovider.edproviderlanding'))
 
     return render_template('signup.html')
+
+@auth_bp.route('/logout')
+def logout():
+    # Clear the session
+    session.clear()
+    flash("You have been logged out successfully.", "success")
+    return redirect(url_for('auth.login'))

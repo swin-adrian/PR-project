@@ -1,65 +1,4 @@
-* {
-    font-family: Arial, Helvetica, sans-serif;
-}
 
-body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #FFFF;
-}
-
-/* Navigation Bar */
-.navi_menu {
-    background-color: #B76D68;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    overflow: hidden;
-    z-index: 1001;
-    padding: 10px 0;
-}
-
-.navi_menu a {
-    font-size: 8px;
-    color: white;
-    padding: 20px 25px;
-    text-decoration: none;
-    text-align: center;
-}
-
-.navi_menu a:hover {
-    background-color: #B76D68;
-}
-
-.navi_menu a.active {
-    background-color: #403F4C;
-}
-
-/* Responsive Navigation Bar */
-@media screen and (max-width: 768px) {
-    .navi_menu {
-        flex-direction: column;
-        padding: 0;
-    }
-
-    .navi_menu a {
-        float: none;
-        display: block;
-        width: 100%;
-        text-align: center;
-        padding: 15px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .navi_menu a {
-        font-size: 14px;
-        padding: 10px;
-    }
-}
 
 /* Main Container */
 .container {
@@ -78,11 +17,19 @@ body {
     text-align: center;
 }
 
-h1 {
+h1, h2 {
     color: #403f4c;
-    font-size: 20px;
     text-align: center;
     margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+h2 {
+    font-size: 20px;
+    margin-top: 40px;
 }
 
 fieldset {
@@ -128,92 +75,8 @@ button:hover {
 }
 
 /* Course Section */
-.course-section {
-    margin-top: 40px;
-}
-
-h2 {
-    color: #403F4C;
-    font-size: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Course Cards */
 .course-card {
-    background-color: #FFE6CC; /* Lighter version of #FF9933 */
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.course-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.course-title {
-    font-size: 14px;
-    font-weight: bold;
-    color: #403f4c;
-    margin-bottom: 10px;
-}
-
-.course-info {
-    font-size: 14px;
-    color: #666;
-}
-
-.course-points {
-    font-size: 14px;
-    color: #403f4c;
-    font-weight: bold;
-}
-
-/* Feedback */
-#feedback {
-    color: red;
-    margin-top: 20px;
-}
-
-/* Footer */
-footer {
-    bottom: 10px;
-    left: 0;
-    width: 100%;
-    font: 10px Arial, sans-serif;
-    color: black;
-    text-align: center;
-    background-color: white;
-    padding-bottom: 10px;
-}
-
-/* Responsive Design */
-@media screen and (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-
-    h1, h2 {
-        font-size: 18px;
-    }
-
-    .course-card {
-        padding: 15px;
-    }
-
-    .navi_menu a {
-        font-size: 14px;
-        padding: 10px;
-    }
-}
-
-
-/* Course Cards with */
-.course-card {
-    background-color: #f3e6e6; /* Lighter version of #FF9933 */
+    background-color: #f3e6e6;
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
@@ -233,15 +96,9 @@ footer {
     margin-bottom: 10px;
 }
 
-.course-info {
+.course-info, .course-points {
     font-size: 16px;
     color: #666;
-}
-
-.course-points {
-    font-size: 14px;
-    color: #403f4c;
-    font-weight: bold;
 }
 
 /* Feedback */
@@ -250,12 +107,15 @@ footer {
     margin-top: 20px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .main-container {
-        width: 90%;
-        padding: 15px;
-    }
+/* Footer */
+footer {
+    bottom: 10px;
+    width: 100%;
+    font: 10px Arial, sans-serif;
+    color: black;
+    text-align: center;
+    background-color: white;
+    padding-bottom: 10px;
 }
 
 .container {
@@ -324,4 +184,111 @@ footer {
     font-size: 48px;
     font-weight: bold;
     color: #333;  /* Adjust color if needed */
+}/* Modal container */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Modal container */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal content box */
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+}
+
+/* Close button */
+.close-button {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form fields */
+#registerForm label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+#registerForm input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#submitRegistration {
+    background-color: #B76D68;
+    color: white;
+    padding: 12px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+#submitRegistration:hover {
+    background-color: #b8837f;
+}
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; 
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
 }
