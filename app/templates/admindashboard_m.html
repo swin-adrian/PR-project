@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+    <title>Smart Track | PR Pathway</title>
+    <!-- Include Chart.js library -->
+    <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script> <!-- Correct path to chart.min.js -->
+    <!-- Include your custom JavaScript file -->
+    <script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script> <!-- Correct path to admin_dashboard.js -->
+</head>
+
+
+<body>
+    <header>
+        <nav>
+            <div class="navi_menu">
+                <a href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
+                <a href="{{ url_for('admin.adminlanding') }}"><strong>Admin Landing</strong></a>
+            </div>
+        </nav>
+    </header>
+    <h1>Welcome Administrator</h1>
+    <h2 style="text-align: center;">Migrant Details</h2>
+    <!-- Grid container for organizing 9 charts into 3 columns -->
+    <div class="charts-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+
+        <!-- Column 1: Migrant Details -->
+        <div>
+            
+            <h3>Top 5 Countries (Migrant Users)</h3>
+            <canvas id="topCountriesChart" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+            
+            <h3>Number of Users by Age</h3>
+            <canvas id="ageChart" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+            
+            <h3>Number of Users by Type of English Test</h3>
+            <canvas id="testChart" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+        </div>
+
+        
+        <div>
+            
+            <h3>Visualization 4</h3>
+            <canvas id="chart4" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+            
+            <h3>Visualization 5</h3>
+            <canvas id="chart5" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+            
+            <h3>Visualization 6</h3>
+            <canvas id="chart6" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+        </div>
+
+        
+        <div>
+            
+            <h3>Visualization 7</h3>
+            <canvas id="chart7" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+            
+            <h3>Visualization 8</h3>
+            <canvas id="chart8" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+            
+            <h3>Visualization 9</h3>
+            <canvas id="chart9" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+        </div>
+
+    </div>
+</body>
+
+    
+
+
+</html>
+
+
+
+

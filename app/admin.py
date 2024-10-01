@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from bson import ObjectId
 from flask_pymongo import PyMongo
 from datetime import datetime
@@ -285,3 +285,59 @@ def get_user_summary():
         "migrant_count": migrant_count,
         "agent_count": agent_count
     })
+
+
+# 1. Endpoint to get the top 5 countries of Migrant users
+@admin_bp.route('/api/top-countries', methods=['GET'])
+def get_top_countries():
+
+    # Initialize MongoDB
+    mongo = PyMongo(current_app)
+
+    try:
+        # Use the shared mongo instance from db.py
+        top_countries = list(mongo.db.users.aggregate([
+            {"$match": {"role": "Migrant"}},
+            {"$group": {"_id": "$current_country", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}},
+            {"$limit": 5}
+        ]))
+        return jsonify(top_countries)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# 2. Endpoint to get the number of users by age
+@admin_bp.route('/api/users-by-age', methods=['GET'])
+def get_users_by_age():
+    mongo = PyMongo(current_app)
+    try:
+        # Calculate the age of users and count the number of users by age
+        users_by_age = list(mongo.db.users.aggregate([
+            {"$match": {"role": "Migrant"}},
+            {"$addFields": {"age": {"$subtract": [{"$year": {"$dateFromString": {"dateString": "$dob"}}}, 1970]}}},
+            {"$group": {"_id": "$age", "count": {"$sum": 1}}},
+            {"$sort": {"_id": 1}}
+        ]))
+        return jsonify(users_by_age)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# 3. Endpoint to get the number of users by type of English test
+@admin_bp.route('/api/users-by-test', methods=['GET'])
+def get_users_by_test():
+    mongo = PyMongo(current_app)
+    try:
+        # Group by the type of English test and count the number of users for each test type
+        users_by_test = list(mongo.db.users.aggregate([
+            {"$match": {"role": "Migrant"}},
+            {"$group": {"_id": "$english_test", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]))
+        return jsonify(users_by_test)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@admin_bp.route('/admin_dashboard_m')
+def admin_dashboard_m():
+    #tutor_id = session['user_id']
+    return render_template('admindashboard_m.html')
