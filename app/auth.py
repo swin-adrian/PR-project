@@ -84,7 +84,7 @@ def detect_university(email):
 def signup():
     mongo = PyMongo(current_app)
 
-    if request.method == "POST": 
+    if request.method == "POST":
         # Get the email and password, and convert the email to lowercase
         email = request.form.get('email').strip().lower()  # Ensure email is lowercase and trimmed
         password = request.form.get('pwd')
@@ -100,30 +100,51 @@ def signup():
             flash("Email already exists", "danger")
             return redirect(url_for('auth.signup'))
 
-        # Detect the university based on the email domain
-        university = detect_university(email)
-        if not university:
-            flash("Email domain not recognized. Please use a university email.", "danger")
-            return redirect(url_for('auth.signup'))
+        # Detect the role based on the email using the detect_role() function
+        role = detect_role(email)
+        university = None
+
+        # If the role is Education Provider, detect the university
+        if role == "Education Provider":
+            university = detect_university(email)
+            if not university:
+                flash("Email domain not recognized for university. Please use a valid university email.", "danger")
+                return redirect(url_for('auth.signup'))
 
         # Hash the password for secure storage
         password_hash = generate_password_hash(password)
 
-        # Insert the new user into the database with their university
-        user_id = mongo.db.users.insert_one({
+        # Insert the new user into the database with the detected role and optional university
+        user_data = {
             "email": email,  # Use email as the unique identifier
             "password_hash": password_hash,
-            "role": "Education Provider",  # Assign the role based on email domain
-            "university": university,  # Store the detected university
-        }).inserted_id
+            "role": role,
+        }
 
-        # Set the session to the new user's ID, email, and university
+        if university:
+            user_data['university'] = university  # Add university if the user is an Education Provider
+
+        # Insert the new user
+        user_id = mongo.db.users.insert_one(user_data).inserted_id
+
+        # Set the session to the new user's ID and email, store university if applicable
         session['user_id'] = str(user_id)
         session['email'] = email
-        session['university'] = university  # Store the detected university in the session
 
-        # Redirect the user to the education provider landing page
-        return redirect(url_for('edprovider.edproviderlanding'))
+        if university:
+            session['university'] = university
+
+        # Redirect based on the detected role
+        if role == 'Migrant':
+            return redirect(url_for('migrant.migrantlanding'))
+        elif role == 'Agent':
+            return redirect(url_for('agent.agentlanding'))
+        elif role == 'Education Provider':
+            return redirect(url_for('edprovider.edproviderlanding', university=university))
+        elif role == 'Admin':
+            return redirect(url_for('admin.adminlanding'))
+        else:
+            return "Unsupported user type."
 
     return render_template('signup.html')
 
