@@ -203,14 +203,14 @@ def manage_connections():
         migrant_id = request.form.get('migrant_id')
         agent_id = request.form.get('agent_id')
         
-        # Create the connection object
-        connection = {
-            'migrant_id': ObjectId(migrant_id),
-            'agent_id': ObjectId(agent_id)
-        }
-        
-        # Insert into the connections collection
-        mongo.db.connections.insert_one(connection)
+        # Update the existing document or insert a new one
+        mongo.db.connections.update_one(
+            {'agentid': ObjectId(agent_id)},  # Match based on agent_id
+            {
+                '$addToSet': {'migrantids': ObjectId(migrant_id)}  # Add migrant_id to array if not present
+            },
+            upsert=True  # If document doesn't exist, insert a new one
+        )
         
         flash("Connection added successfully!", "success")
         return redirect(url_for('admin.manage_connections'))
@@ -224,21 +224,18 @@ def manage_connections():
         {
             '$lookup': {
                 'from': 'users',
-                'localField': 'migrant_id',
+                'localField': 'migrantids',
                 'foreignField': '_id',
-                'as': 'migrant'
+                'as': 'migrants'
             }
         },
         {
             '$lookup': {
                 'from': 'users',
-                'localField': 'agent_id',
+                'localField': 'agentid',
                 'foreignField': '_id',
                 'as': 'agent'
             }
-        },
-        {
-            '$unwind': '$migrant'
         },
         {
             '$unwind': '$agent'
@@ -252,10 +249,39 @@ def manage_connections():
         connections=connections
     )
 
-
-@admin_bp.route('/delete_connection/<connection_id>', methods=['POST'])
-def delete_connection(connection_id):
+@admin_bp.route('/delete_connection/<agent_id>/<migrant_id>', methods=['POST'])
+def delete_connection(agent_id, migrant_id):
     from main import mongo
-    mongo.db.connections.delete_one({'_id': ObjectId(connection_id)})
+    
+    # Remove the specific migrant_id from the migrantids array of the agent document
+    mongo.db.connections.update_one(
+        {'agentid': ObjectId(agent_id)},
+        {'$pull': {'migrantids': ObjectId(migrant_id)}}
+    )
+    
+    # Optionally, you can delete the document if there are no more migrantids left
+    mongo.db.connections.delete_one({'agentid': ObjectId(agent_id), 'migrantids': {'$size': 0}})
+    
     flash("Connection deleted successfully!", "success")
     return redirect(url_for('admin.manage_connections'))
+
+
+@admin_bp.route('/get_user_summary', methods=['GET'])
+def get_user_summary():
+    from main import mongo
+    
+    # Get counts of users by role
+    total_users = mongo.db.users.count_documents({})
+    admin_count = mongo.db.users.count_documents({"role": "Admin"})
+    education_provider_count = mongo.db.users.count_documents({"role": "Education Provider"})
+    migrant_count = mongo.db.users.count_documents({"role": "Migrant"})
+    agent_count = mongo.db.users.count_documents({"role": "Agent"})
+
+    # Return the counts as a JSON response
+    return jsonify({
+        "total_users": total_users,
+        "admin_count": admin_count,
+        "education_provider_count": education_provider_count,
+        "migrant_count": migrant_count,
+        "agent_count": agent_count
+    })

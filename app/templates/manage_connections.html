@@ -46,22 +46,24 @@
         <table>
             <thead>
                 <tr>
-                    <th>Migrant Email</th>
                     <th>Agent Email</th>
+                    <th>Migrant Email</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for connection in connections %}
-                <tr>
-                    <td>{{ connection.migrant.email }}</td>
-                    <td>{{ connection.agent.email }}</td>
-                    <td>
-                        <form action="{{ url_for('admin.delete_connection', connection_id=connection._id) }}" method="POST" style="display: inline;">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
+                    {% for migrant in connection.migrants %}
+                    <tr>
+                        <td>{{ connection.agent.email }}</td> <!-- Display agent's email -->
+                        <td>{{ migrant.email }}</td>         <!-- Display one migrant per row -->
+                        <td>
+                            <form action="{{ url_for('admin.delete_connection', agent_id=connection.agent._id, migrant_id=migrant._id) }}" method="POST" style="display: inline;">
+                                <button type="submit">Delete {{ migrant.email }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>

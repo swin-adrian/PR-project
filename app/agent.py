@@ -2,21 +2,13 @@ from flask import Blueprint, render_template, session, redirect, url_for, flash,
 from flask_pymongo import PyMongo
 from bson import ObjectId
 
-
 agent_bp = Blueprint('agent', __name__)
 
 @agent_bp.route('/agentlanding')
 def agentlanding():
     user_id = session.get('user_id')  # Get the current agent's user_id from session
     mongo = PyMongo(current_app)
-    # Query the 'agent_migrant' collection for the document where agentid matches the current user_id
-    agent = mongo.db.agent_migrant.find_one({'agentid': user_id})
 
-    # Count the total number of migrants by checking the length of 'migrantids' array
-    total_migrants = len(agent['migrantids']) if agent and 'migrantids' in agent else 0
-
-    # Render the agent landing page and pass the total_migrants count to the template
-    return render_template('agentlanding.html', total_migrants=total_migrants)
     # Get the agent's email from the session
     agent_email = session.get('email')
 
@@ -28,30 +20,27 @@ def agentlanding():
     mongo = PyMongo(current_app)
     
     # Find the agent's user data in the database
-    agent = mongo.db.users.find_one({'email': agent_email, 'role': 'Agent'})
+    agent = mongo.db.users.find_one({'_id': ObjectId(user_id), 'role': 'Agent'})
     if not agent:
         flash("Agent not found", "error")
         return redirect(url_for('auth.login'))
 
-    # Find all connections where the agent is the agent_id
-    connections = mongo.db.connections.aggregate([
-        {'$match': {'agent_id': agent['_id']}},
-        {
-            '$lookup': {
-                'from': 'users',  # Join with the users collection to get migrant details
-                'localField': 'migrant_id',
-                'foreignField': '_id',
-                'as': 'migrant_details'
-            }
-        },
-        {'$unwind': '$migrant_details'},  # Unwind to get individual migrant documents
-        {'$project': {
-            'migrant_email': '$migrant_details.email',  # Include only necessary fields
-            'migrant_id': '$migrant_details._id'
-        }}
-    ])
+    # Find the agent's connections document where the agentid matches the current agent's user_id
+    agent_connections = mongo.db.connections.find_one({'agentid': ObjectId(user_id)})
 
-    connections_list = list(connections)  # Convert cursor to list for easier handling
+    # Count the total number of migrants (migrantids array length)
+    total_migrants = len(agent_connections['migrantids']) if agent_connections and 'migrantids' in agent_connections else 0
 
-    # Render the agent landing template with connections
-    return render_template('agentlanding.html', agent=agent, connections=connections_list)
+    # Find all migrants' details based on the migrantids array
+    connections = mongo.db.users.find({
+        '_id': {'$in': agent_connections['migrantids']} if agent_connections and 'migrantids' in agent_connections else []
+    })
+
+    # Prepare a list of migrant connections
+    connections_list = [{
+        'migrant_email': migrant['email'],
+        'migrant_id': migrant['_id']
+    } for migrant in connections]
+
+    # Render the agent landing template with connections and total migrants count
+    return render_template('agentlanding.html', agent=agent, connections=connections_list, total_migrants=total_migrants)
