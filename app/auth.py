@@ -6,8 +6,8 @@ auth_bp = Blueprint('auth', __name__)
 
 # Detect role function must be defined before being used in signup and login
 def detect_role(email):
-    """Detects the role based on the email with the new naming convention."""
-    email_domain = email.split('@')[-1].strip().lower()  # Clean up the email domain
+    """Detects the role based on the email domain."""
+    email_domain = email.split('@')[-1].strip().lower()  # Get the email domain
 
     # Admin detection
     if 'admin' in email:
@@ -22,8 +22,9 @@ def detect_role(email):
     elif 'agent' in email:
         return 'Agent'
 
-    # Default to Migrant
+    # Default to Migrant for generic email domains
     return 'Migrant'
+
 
 # Login route
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -80,6 +81,7 @@ def detect_university(email):
         return None  # If the email doesn't match a known university
 
 # Signup route
+# Signup route
 @auth_bp.route('/signup', methods=["GET", "POST"])
 def signup():
     mongo = PyMongo(current_app)
@@ -100,32 +102,54 @@ def signup():
             flash("Email already exists", "danger")
             return redirect(url_for('auth.signup'))
 
-        # Detect the university based on the email domain
-        university = detect_university(email)
-        if not university:
-            flash("Email domain not recognized. Please use a university email.", "danger")
-            return redirect(url_for('auth.signup'))
+        # Detect the role based on the email using the detect_role function
+        role = detect_role(email)
+        university = None
+
+        # If the detected role is "Education Provider", detect the university
+        if role == "Education Provider":
+            university = detect_university(email)
+            if not university:
+                flash("Email domain not recognized for university. Please use a valid university email.", "danger")
+                return redirect(url_for('auth.signup'))
 
         # Hash the password for secure storage
         password_hash = generate_password_hash(password)
 
-        # Insert the new user into the database with their university
-        user_id = mongo.db.users.insert_one({
+        # Insert the new user into the database with their role and optional university
+        user_data = {
             "email": email,  # Use email as the unique identifier
             "password_hash": password_hash,
-            "role": "Education Provider",  # Assign the role based on email domain
-            "university": university,  # Store the detected university
-        }).inserted_id
+            "role": role,  # Assign the detected role
+        }
 
-        # Set the session to the new user's ID, email, and university
+        if university:
+            user_data['university'] = university  # Add university if the role is Education Provider
+
+        # Insert the new user
+        user_id = mongo.db.users.insert_one(user_data).inserted_id
+
+        # Set the session to the new user's ID, email, and role, store university if applicable
         session['user_id'] = str(user_id)
         session['email'] = email
-        session['university'] = university  # Store the detected university in the session
+        session['role'] = role  # Store the role in session
+        if university:
+            session['university'] = university  # Store the detected university in the session if applicable
 
-        # Redirect the user to the education provider landing page
-        return redirect(url_for('edprovider.edproviderlanding'))
+        # Redirect the user based on their role
+        if role == 'Migrant':
+            return redirect(url_for('migrant.migrantlanding'))
+        elif role == 'Agent':
+            return redirect(url_for('agent.agentlanding'))
+        elif role == 'Admin':
+            return redirect(url_for('admin.adminlanding'))
+        elif role == 'Education Provider':
+            return redirect(url_for('edprovider.edproviderlanding'))
+        else:
+            return "Unsupported user type."
 
     return render_template('signup.html')
+
 
 @auth_bp.route('/logout')
 def logout():

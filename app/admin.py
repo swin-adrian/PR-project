@@ -341,3 +341,86 @@ def get_users_by_test():
 def admin_dashboard_m():
     #tutor_id = session['user_id']
     return render_template('admindashboard_m.html')
+
+# Route to display the inquiries
+@admin_bp.route('/viewinquiries', methods=['GET'])
+def view_inquiries():
+    # Access the MongoDB instance
+    mongo = PyMongo(current_app)
+
+    # Fetch inquiries from the 'inquiries' collection
+    inquiries_cursor = mongo.db.inquiries.find()
+    inquiries = []
+
+    for inquiry in inquiries_cursor:
+        # Convert ObjectId fields to strings for JSON serialization
+        inquiry["_id"] = str(inquiry["_id"])
+        if "user_id" in inquiry:
+            inquiry["user_id"] = str(inquiry["user_id"])
+
+            # Fetch user email based on user_id
+            user = mongo.db.users.find_one({"_id": ObjectId(inquiry["user_id"])})
+            inquiry["user_email"] = user["email"] if user else "Unknown"
+        else:
+            inquiry["user_id"] = None
+            inquiry["user_email"] = "Unknown"
+
+        # Ensure 'inquiry' field exists
+        if "inquiry" not in inquiry:
+            inquiry["inquiry"] = "No inquiry provided"
+
+        # Ensure 'status' field exists
+        if "status" not in inquiry:
+            inquiry["status"] = "Pending"
+
+        # Format 'submitted_at' if necessary
+        if "submitted_at" in inquiry:
+            if isinstance(inquiry["submitted_at"], datetime):
+                inquiry["submitted_at"] = inquiry["submitted_at"].strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                inquiry["submitted_at"] = str(inquiry["submitted_at"])
+        else:
+            inquiry["submitted_at"] = "N/A"
+
+        inquiries.append(inquiry)
+
+    # Render the template and pass the inquiries data
+    return render_template('viewinquiries.html', inquiries=inquiries)
+
+# Route to modify an inquiry (update status)
+@admin_bp.route('/modify_inquiry/<inquiry_id>', methods=['POST'])
+def modify_inquiry(inquiry_id):
+    mongo = PyMongo(current_app)
+    status = request.form.get('status')
+    if not status:
+        return jsonify({"success": False, "message": "Status is required"}), 400
+
+    # Update the 'status' field of the specific inquiry
+    try:
+        result = mongo.db.inquiries.update_one(
+            {"_id": ObjectId(inquiry_id)},
+            {"$set": {"status": status}}
+        )
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    if result.modified_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False, "message": "Inquiry not found"}), 404
+
+# Route to delete an inquiry
+@admin_bp.route('/delete_inquiry/<inquiry_id>', methods=['POST'])
+def delete_inquiry(inquiry_id):
+    mongo = PyMongo(current_app)
+
+    # Delete the inquiry with the given _id
+    try:
+        result = mongo.db.inquiries.delete_one({"_id": ObjectId(inquiry_id)})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    if result.deleted_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False, "message": "Inquiry not found"}), 404

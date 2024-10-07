@@ -191,16 +191,51 @@ def view_courses_data():
 
     course_counts = {}
     total_costs = {}
-    
+
     # Aggregate data for courses and cost associated with the university
     for registration in registrations:
-        course_list = registration.get('course_name', 'Unknown Course').split(', ')  # Handle multiple courses
+        course_name = registration.get('course_name', 'Unknown Course')  # Don't split the course name
         cost = registration.get('cost', 0)
 
         # Count students and costs per course
-        for course in course_list:
-            course_counts[course] = course_counts.get(course, 0) + 1
-            total_costs[course] = total_costs.get(course, 0) + cost
+        course_counts[course_name] = course_counts.get(course_name, 0) + 1
+        total_costs[course_name] = total_costs.get(course_name, 0) + cost
 
     # Return the aggregated data as JSON
     return jsonify({"courses": course_counts, "costs": total_costs})
+
+@edprovider_bp.route('/submit_inquiry', methods=['POST'])
+def submit_inquiry():
+    mongo = PyMongo(current_app)
+
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Fetch role from the user document
+    user_role = user.get('role', 'Education Provider')
+
+    inquiry_content = request.form.get("inquiry")
+    if not inquiry_content:
+        return jsonify({"error": "Inquiry content is required."}), 400
+
+    inquiry_data = {
+        "user_id": ObjectId(user_id),
+        "role": user_role,
+        "inquiry": inquiry_content,
+        "submitted_at": datetime.utcnow(),
+        "status": "Pending"
+    }
+
+    mongo.db.inquiries.insert_one(inquiry_data)
+    return jsonify({"message": "Inquiry submitted successfully!"}), 200
+
+@edprovider_bp.route('/user_inquiry')
+def user_inquiry():
+    # Render the common inquiry page with the edprovider submit URL
+    return render_template('Userinquiry.html', submit_url=url_for('edprovider.submit_inquiry'))
+

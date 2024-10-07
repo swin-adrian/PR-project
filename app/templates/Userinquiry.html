@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Inquiry</title>
+</head>
+<body>
+    <h2>Submit Your Inquiry</h2>
+    <form id="inquiryForm" method="POST" action="{{ submit_url }}">
+        <label for="inquiry">Your Inquiry:</label>
+        <textarea id="inquiry" name="inquiry" required></textarea><br>
+        <button type="submit">Submit Inquiry</button>
+    </form>
+</body>
+</html>
+
+
+<script>
+    document.getElementById('inquiryForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const inquiryContent = document.getElementById('inquiry').value;
+        const roleSubmitURL = "{{ submit_url }}";  // Dynamically passed URL
+
+        fetch(roleSubmitURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                inquiry: inquiryContent
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                document.getElementById('inquiryForm').reset(); // Clear the form after submission
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting inquiry:', error);
+        });
+    });
+</script>
+

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Inquiries</title>
+    <!-- Include CSS and JS files as needed -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/admin_style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Reference the correct JavaScript file -->
+    <script src="{{ url_for('static', filename='js/admin_inquiries.js') }}"></script>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="navi_menu">
+            <div class="navi_menu">
+                <a class="active" href="{{ url_for('admin.adminlanding') }}" class="view-courses-btn">Dashboard</a>
+                <a class="active" href="{{ url_for('admin.user_management') }}" class="view-courses-btn">User Management</a>
+                <a class="active"href="{{ url_for('admin.manage_connections') }}">View Connections</a>
+                <a class="active" href="{{ url_for('auth.logout') }}" class="view-courses-btn">Logout</a>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <h1>User Inquiries</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>User Email</th>
+                <th>Inquiry</th>
+                <th>Submitted At</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inquiry in inquiries %}
+            <tr id="inquiry-row-{{ inquiry._id }}">
+                <td>{{ inquiry.user_email }}</td>
+                <td>{{ inquiry.inquiry }}</td>
+                <td>{{ inquiry.submitted_at }}</td>
+                <td class="status-column">{{ inquiry.status }}</td>
+                <td>
+                    <button class="edit-button" data-inquiry-id="{{ inquiry._id }}">Edit</button>
+                    <button class="delete-button" data-inquiry-id="{{ inquiry._id }}">Delete</button>
+                </td>
+            </tr>
+            <!-- Hidden edit form -->
+            <tr id="edit-row-{{ inquiry._id }}" style="display:none;">
+                <td colspan="5">
+                    <form class="edit-inquiry-form" data-inquiry-id="{{ inquiry._id }}">
+                        <label for="status-{{ inquiry._id }}">Status:</label>
+                        <select id="status-{{ inquiry._id }}" name="status">
+                            <option value="Pending" {% if inquiry.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Completed" {% if inquiry.status == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                        <button type="submit">Update Status</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

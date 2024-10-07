@@ -15,7 +15,8 @@
             <div class="navi_menu">
                 <a class="active" href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
                 <a class="active" href="{{ url_for('edprovider.view_courses') }}" class="view-courses-btn">Potential Student</a>
-            </div>
+                <a class="active" href="{{ url_for('edprovider.user_inquiry') }}" class="submit-inquiry-btn">Submit Inquiry</a>
+        </div>
         </nav>
     </header>
 
@@ -34,47 +35,51 @@
     </div>
 
     <script>
-        // Fetch data from the Flask backend
-        fetch('/view_courses_data')
-            .then(response => response.json())
-            .then(data => {
-                const courseCounts = data.courses;
-                const totalCosts = data.costs;
-
-                // Get course names and corresponding data
-                const courseNames = Object.keys(courseCounts);
-                const studentCounts = Object.values(courseCounts);
-                const courseCosts = Object.values(totalCosts);
-
-                // Create the charts with the real data
-                createStudentsChart(courseNames, studentCounts);
-                createCostsChart(courseNames, courseCosts);
-            });
-
-        // Function to create the Students Bar Chart (Vertical)
-        function createStudentsChart(courseNames, studentCounts) {
-            const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
-            new Chart(ctx, {
+        // Fetch data from the Flask backend and create charts
+        function fetchDataAndCreateCharts() {
+            fetch('/view_courses_data')
+                .then(response => response.json())
+                .then(data => {
+                    const { courses: courseCounts, costs: totalCosts } = data;
+    
+                    // Extract course names, student counts, and costs
+                    const courseNames = Object.keys(courseCounts);
+                    const studentCounts = Object.values(courseCounts);
+                    const courseCosts = Object.values(totalCosts);
+    
+                    // Create the charts with the fetched data
+                    createBarChart('studentsPerCourseChart', 'Number of Students', 'Courses', courseNames, studentCounts, '#4E79A7', 'students');
+                    createBarChart('costsPerCourseChart', 'Total Cost (USD)', 'Courses', courseNames, courseCosts, '#E15759', 'USD', true);
+                })
+                .catch(error => {
+                    console.error('Error fetching course data:', error);
+                    alert('Failed to load course data.');
+                });
+        }
+    
+        // General function to create a bar chart
+        function createBarChart(canvasId, yAxisTitle, xAxisTitle, labels, dataValues, color, unit, horizontal = false) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const config = {
                 type: 'bar',
                 data: {
-                    labels: courseNames,
+                    labels: labels,
                     datasets: [{
-                        label: 'Number of Students',
-                        data: studentCounts,
-                        backgroundColor: '#4E79A7',
-                        borderColor: '#4E79A7',
+                        label: yAxisTitle,
+                        data: dataValues,
+                        backgroundColor: color,
+                        borderColor: color,
                         borderWidth: 1,
-                        hoverBackgroundColor: '#2E5B91',
+                        hoverBackgroundColor: adjustColorBrightness(color, -30),
                     }]
                 },
                 options: {
+                    indexAxis: horizontal ? 'y' : 'x', // Horizontal if true
                     responsive: true,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
-                            backgroundColor: '#4E79A7',
+                            backgroundColor: color,
                             titleFont: { size: 14 },
                             bodyFont: { size: 12 },
                             padding: 10,
@@ -82,97 +87,42 @@
                         },
                         datalabels: {
                             color: 'white',
-                            align: 'center',
-                            anchor: 'center',
-                            font: {
-                                weight: 'bold',
-                                size: 14
-                            },
+                            align: horizontal ? 'right' : 'center',
+                            anchor: horizontal ? 'end' : 'center',
+                            font: { weight: 'bold', size: 14 },
                             formatter: function(value) {
-                                return value + ' students';
+                                return horizontal ? `$${value}` : `${value} ${unit}`;
                             }
                         }
                     },
                     scales: {
-                        y: {
+                        x: { title: { display: true, text: xAxisTitle } },
+                        y: { 
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Students'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Courses'
-                            }
+                            title: { display: true, text: yAxisTitle }
                         }
                     }
                 }
-            });
+            };
+            new Chart(ctx, config);
         }
-
-        // Function to create the Costs Bar Chart (Horizontal)
-        function createCostsChart(courseNames, courseCosts) {
-            const ctx = document.getElementById('costsPerCourseChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: courseNames,
-                    datasets: [{
-                        label: 'Total Cost (USD)',
-                        data: courseCosts,
-                        backgroundColor: '#E15759',
-                        borderColor: '#E15759',
-                        borderWidth: 1,
-                        hoverBackgroundColor: '#C94648',
-                    }]
-                },
-                options: {
-                    indexAxis: 'y', // Make it horizontal
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: '#E15759',
-                            titleFont: { size: 14 },
-                            bodyFont: { size: 12 },
-                            padding: 10,
-                            cornerRadius: 5,
-                        },
-                        datalabels: {
-                            color: 'white',
-                            align: 'right',
-                            anchor: 'end',
-                            font: {
-                                weight: 'bold',
-                                size: 14
-                            },
-                            formatter: function(value) {
-                                return '$' + value;
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Total Cost (USD)'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Courses'
-                            }
-                        }
-                    }
-                }
-            });
+    
+        // Utility function to adjust color brightness
+        function adjustColorBrightness(hex, percent) {
+            const num = parseInt(hex.slice(1), 16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                G = (num >> 8 & 0x00FF) + amt,
+                B = (num & 0x0000FF) + amt;
+            return `#${(0x1000000 + (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 + 
+                        (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 + 
+                        (B < 255 ? (B < 1 ? 0 : B) : 255))
+                        .toString(16).slice(1).toUpperCase()}`;
         }
+    
+        // Call function to fetch data and create charts
+        fetchDataAndCreateCharts();
     </script>
+    
 </body>
 </html>
