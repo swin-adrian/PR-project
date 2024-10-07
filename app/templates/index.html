@@ -30,23 +30,31 @@
     <div class="background-container">
         <img src="../static/css/images/background.jpg" alt="Background Image" id="background-image">
         <p id="brand1">EZ <span class="logo-color">Resi</span></p>
-
+    
         <div class="form-container">
             <form method="post" action="/login" id="login_form">
                 <fieldset>
                     <legend>Sign in</legend>
-            
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-            
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" maxlength="25" required>
-            
+    
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" maxlength="25" required>
+                    </div>
+    
                     <button type="submit" value="signin">Sign In</button>
+    
+                    <p class="signup-message">Don't have an account yet? <a href="/signup">Create an account</a></p>
                 </fieldset>
             </form>
         </div>
     </div>
+    
+    
 
     <footer>
         &#169 2024-2025 Shine Brite Pty Ltd All Rights Reserved

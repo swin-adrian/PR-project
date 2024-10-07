@@ -123,8 +123,33 @@ form {
     flex-direction: column;
     align-items: center;
     width: 100%;
-
 }
+
+/* Ensure form fields are on separate lines */
+.form-group {
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styling for the "Don't have an account yet?" message */
+.signup-message {
+    margin-top: 15px;
+    color: black !important;
+    font-size: 14px;
+    text-align: center;
+}
+
+.signup-message a {
+    color: #007bff; /* Adjust the color as needed */
+    text-decoration: none;
+}
+
+.signup-message a:hover {
+    text-decoration: underline;
+}
+
 
 #tagline {
     position: absolute;
