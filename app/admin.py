@@ -13,19 +13,24 @@ def detect_role(email):
 
     # Admin detection
     if 'admin' in email:
-        return 'Admin'
+        return 'Admin', None
 
     # Education Provider (University) detection
-    university_domains = ['swinburne.edu.au', 'monash.edu.au', 'latrobe.edu.au']
+    university_domains = {
+        'latrobe.edu.au': 'La Trobe',
+        'swinburne.edu.au': 'Swinburne',
+        'monash.edu.au': 'Monash'
+    }
+
     if email_domain in university_domains:
-        return 'Education Provider'
+        return 'Education Provider', university_domains[email_domain]
 
     # Agent detection
     elif 'agent' in email:
-        return 'Agent'
+        return 'Agent', None
 
     # Default to Migrant
-    return 'Migrant'
+    return 'Migrant', None
 
 
 @admin_bp.route('/adminlanding')
@@ -43,14 +48,20 @@ def user_management():
             return redirect(url_for('admin.user_management'))
 
         password_hash = generate_password_hash(password)
-        role = detect_role(email)
+        role, university = detect_role(email)  # Detect role and university
 
+        # Prepare user data
         user_data = {
             "email": email,
             "password_hash": password_hash,
             "role": role,  # Ensure role is set during creation
             "created_at": datetime.now()
         }
+        print(user_data)
+                # If the role is Education Provider, store the university
+        if role == 'Education Provider':
+            user_data['university'] = university
+
 
         from main import mongo
         try:

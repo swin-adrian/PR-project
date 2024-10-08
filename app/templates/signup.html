@@ -3,44 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smart Migrate">
+    <meta name="keywords" content="Smart migrate, migration to Australia, PR Pathway">
+    <meta name="author" content="Adrian Soe Myint">
+    <!--stylesheet-->
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
-    <title>Register</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>EasiResi - Sign Up</title>
 </head>
 <body>
-    <div class="form-container">
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="Business logo" class="business-logo">
+    <header>
+        <!-- Add any content you want to display in the header here -->
+    </header>
+
+    <div class="background-container">
+        <img src="../static/css/images/background.jpg" alt="Background Image" id="background-image">
+        <p id="brand1">EZ <span class="logo-color">Resi</span></p>
+
+        <div class="form-container">
+            <form method="POST" action="{{ url_for('auth.signup') }}" id="signup_form">
+                <fieldset>
+                    <legend>Sign Up</legend>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="pwd" placeholder="Password" required autocomplete="new-password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_pwd">Confirm Password:</label>
+                        <input type="password" id="confirm_pwd" name="confirm_pwd" placeholder="Confirm Password" required autocomplete="new-password">
+                    </div>
+
+                    <!-- New Radio Buttons for Profile Type -->
+                    <div class="form-group">
+                        <label>Select Profile Type:</label>
+                        <div>
+                            <input type="radio" id="migrant" name="user_type" value="Migrant">
+                            <label for="migrant">Migrant</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="agent" name="user_type" value="Agent">
+                            <label for="agent">Agent</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button">Register</button>
+
+                    <p class="login-prompt">Already a user? <a href="/home">Log in here</a>.</p>
+
+                    <!-- Error Message Placeholder -->
+                    <p id="error-message" style="color: red; display: none;">Select the profile type</p>
+                </fieldset>
+            </form>
+
+            <!-- Display flash messages or errors (if using Flask messages) -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flash-messages">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
         </div>
-
-        <!-- Form starts here -->
-        <form method="POST" action="{{ url_for('auth.signup') }}">
-            <!-- Input field for email -->
-            <input type="email" name="email" placeholder="Email" required class="input-field" autocomplete="email">
-            
-            <!-- Input field for password -->
-            <input type="password" name="pwd" placeholder="Password" required class="input-field" autocomplete="new-password">
-            
-            <!-- Confirm password field for validation -->
-            <input type="password" name="confirm_pwd" placeholder="Confirm Password" required class="input-field" autocomplete="new-password">
-            
-            <!-- Register button -->
-            <button type="submit" class="submit-button">Register</button>
-        </form>
-
-        <!-- Link to login page -->
-        <p class="login-prompt">Already a user? <a href="{{ url_for('auth.login') }}">Log in here</a>.</p>
-
-        <!-- Display flash messages or errors (if using Flask messages) -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flash-messages">
-                    {% for category, message in messages %}
-                        <li class="{{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
     </div>
+
+    <footer>
+        &#169 2024-2025 EasiResi All Rights Reserved
+    </footer>
+
+    <!-- JavaScript to Validate Radio Button Selection -->
+    <script>
+        document.getElementById('signup_form').addEventListener('submit', function(event) {
+            const migrant = document.getElementById('migrant').checked;
+            const agent = document.getElementById('agent').checked;
+            const errorMessage = document.getElementById('error-message');
+
+            // Check if neither of the radio buttons is selected
+            if (!migrant && !agent) {
+                errorMessage.style.display = 'block'; // Show error message
+                event.preventDefault(); // Prevent form submission
+            } else {
+                errorMessage.style.display = 'none'; // Hide error message if valid
+            }
+        });
+    </script>
 </body>
 </html>

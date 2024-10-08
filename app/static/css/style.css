@@ -115,7 +115,9 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1;
+    width: 300px; /* Set a fixed width */
 }
+
 
 /* Form Styling */
 form {
@@ -125,6 +127,7 @@ form {
     width: 100%;
 }
 
+
 /* Ensure form fields are on separate lines */
 .form-group {
     width: 100%;
@@ -132,6 +135,15 @@ form {
     display: flex;
     flex-direction: column;
 }
+.login-prompt{
+    margin-top: 15px;
+    color: black !important;
+    font-size: 14px;
+    text-align: center;
+}
+
+
+
 
 /* Styling for the "Don't have an account yet?" message */
 .signup-message {
