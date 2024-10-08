@@ -448,3 +448,42 @@ def register_course():
     except Exception as e:
         print(f"Error occurred during registration: {e}")
         return jsonify({"error": "An error occurred while processing your registration."}), 500
+    
+@migrant_bp.route('/submit_inquiry', methods=['POST'])
+def submit_inquiry():
+    mongo = PyMongo(current_app)
+
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Fetch role from the user document
+    user_role = user.get('role', 'Migrant')
+
+    inquiry_content = request.form.get("inquiry")
+    if not inquiry_content:
+        return jsonify({"error": "Inquiry content is required."}), 400
+
+    inquiry_data = {
+        "user_id": ObjectId(user_id),
+        "role": user_role,
+        "inquiry": inquiry_content,
+        "submitted_at": datetime.utcnow(),
+        "status": "Pending"
+    }
+
+    mongo.db.inquiries.insert_one(inquiry_data)
+    return jsonify({"message": "Inquiry submitted successfully!"}), 200
+
+
+@migrant_bp.route('/userinquiry')
+def user_inquiry():
+    return render_template('Userinquiry.html', submit_url=url_for('migrant.submit_inquiry'))
+
+
+
+

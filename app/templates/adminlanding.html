@@ -19,9 +19,13 @@
         <nav>
             <!--Navigation menu in header as a list to apply more styles-->
             <div class="navi_menu">
-                <a class="active" href="/"><strong>Home</strong></a>
+               <div class="navi_menu">
                 <a class="active" href="{{ url_for('admin.adminlanding') }}" class="view-courses-btn">Dashboard</a>
                 <a class="active" href="{{ url_for('admin.user_management') }}" class="view-courses-btn">User Management</a>
+                <a class="active" href="{{ url_for('admin.manage_connections') }}" class="view-courses-btn">Manage Connections</a>
+                <a class="active" href="{{ url_for('admin.viewinquiries') }}" class="view-courses-btn">View Inquiries</a>
+            </div>
+
                 <!-- <a href="product.html"><strong>Products</strong></a>
                 <a href="enquire.html"><strong>Enquire</strong></a>
                 <a href="about.html"><strong>About</strong></a>

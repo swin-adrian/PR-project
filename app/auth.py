@@ -5,6 +5,7 @@ from flask_pymongo import PyMongo
 auth_bp = Blueprint('auth', __name__)
 
 
+
 # Login route
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -93,6 +94,7 @@ def signup():
             return redirect(url_for('agent.agentlanding'))
 
     return render_template('signup.html')
+
 
 @auth_bp.route('/logout')
 def logout():
