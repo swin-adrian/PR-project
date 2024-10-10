@@ -8,9 +8,7 @@ description: stylings for CWA Assignmebnt 1
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Orbitron');
-* {
-	font-family: Arial, Helvetica, sans-serif;
-}
+
 
 h1 {
 	text-align: center;
@@ -18,54 +16,152 @@ h1 {
 	font-size: 20px;
 }
 
+
+/* Global reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Remove default margin and padding on body and html */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    width: 100%;
+    height: 100%;
+    background-color: #FFFF; /* Set a global background color */
+}
+
+nav {
+    padding-top: 0 !important;
+    padding-bottom: 15px;
+}
+
 /* Basic styling for the navigation menu */
 .navi_menu {
-    overflow: hidden;
-    background-color: #B76D68;  
-    z-index: 1001;
+    background-color: #B76D68;  /* Background color of the navbar */
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    flex-wrap: wrap; 
+    justify-content: space-between; /* Distribute space between elements */
+    align-items: center; /* Vertically center items */
+    padding: 10px 20px; /* Adjust padding for spacing */
+    height: 60px; /* Set a fixed height for the navbar */
 }
 
+/* Styling for the logo */
+.navi_menu .logo img {
+    height: 30px; /* Match the height of the navbar */
+    width: auto; /* Keep the width auto to maintain aspect ratio */
+    max-height: 100%; /* Ensure it does not overflow the navbar height */
+    margin-right: 15px; /* Space between the logo and links */
+    object-fit: contain; /* Prevent any stretching or distortion */
+}
+
+/* Styling for the navigation links */
+.navi_menu .navbar-nav {
+    display: flex;
+    align-items: center; /* Vertically align navigation links */
+}
 .navi_menu a {
-    font-size: 12px;
-    color: white;
+    font-size: 16px;
+    color: #D3D3D3; /* Dimmed color for inactive links */
     text-align: center;
-    padding: 20px 25px;
-    text-decoration: none;
-    z-index: 1001;
+    padding: 10px 15px;
+    line-height: 1.5;
+    margin-right: 10px; /* Adds space between the menu items */
 }
 
+/* Styling for the active navigation link */
 .navi_menu a.active {
-    background-color: #403F4C;
+    color: #FFFFFF !important; /* Brighter color for active link */
+    border-bottom: 3px solid #FFFFFF; /* Adds a border underline for active link */
+    text-decoration: none; /* Remove underline from active link to distinguish it */
+    font-weight: bold;
 }
-
+/* Styling for hover state */
 .navi_menu a:hover {
-    background-color: #b8837f;
+    color: #D3D3D3;
+/* Make hovered links more visible */
+    border-bottom: 3px solid #D3D3D3; /* Adds underline border when hovering */
+    text-decoration: none; /* Remove the default underline on hover */
+    font-weight: bold;
+}
+/* Remove pointer hover effect from the logo */
+.logo {
+    cursor: default;
+    background-color: transparent !important; 
+}
+/* Welcome text styling */
+.welcome-text {
+    font-size: 16px;
+    color: #D3D3D3;
+    margin-right: 10px; /* Space between welcome text and the hamburger icon */
 }
 
-/* Responsive styling for the navigation menu*/
+
+.dropdown {
+    margin-left: auto; /* Align hamburger menu to the right */
+    display: flex;
+    align-items: center; /* Vertically align the hamburger icon */
+}
+
+.dropdown button {
+    background: none; /* Remove default button styling */
+    border: none; /* Remove border */
+    padding: 0;
+}
+
+.dropdown .navbar-toggler-icon { width: 25px; height: 25px; color: #FFFFFF; fill: #FFFFFF;
+}
+/* Hamburger Menu (Dropdown) Styling */
+/* Dropdown Menu Styling */
+.dropdown-menu {
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid #dddada; /* Add a light border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+
+
+.dropdown-menu a {
+    color: rgb(0, 0, 0) !important; /* Ensure the text is white */
+}
+
+.dropdown-menu a:hover {
+    background-color: #dddada !important; /* Add hover background for dropdown items */
+}
+
+/* Remove background color when hamburger icon is expanded */
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* Responsive styling for the navigation menu */
 @media screen and (max-width: 768px) {
     .navi_menu {
-        flex-direction: column; 
-        padding: 0; 
+        flex-direction: column;
+        padding: 0;
+        height: auto; /* Reset height for smaller screens */
     }
 
     .navi_menu a {
-        float: none; 
-        display: block; 
-        width: 100%; 
-        text-align: center; 
-        padding: 15px; 
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .navi_menu .logo {
+        margin-bottom: 10px; /* Center the logo on smaller screens */
     }
 }
 
 @media screen and (max-width: 480px) {
     .navi_menu a {
         font-size: 14px; 
-        padding: 10px; 
+        padding: 10px;
     }
 }
 
@@ -80,13 +176,18 @@ h1 {
 	width: 100%
 }
 
-body {
-	margin: 0px 0px 0px 0px;
-	overflow-x: hidden;
-	width: 100%;
-	height: 100%;
-	background-color: #FFFF;
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    width: 100%;
+    height: 100%;
+    background-color: #FFFF; /* Set a global background color */
 }
+
+
+
+
 
 
 /*logo*/

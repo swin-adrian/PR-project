@@ -3,45 +3,115 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <title>Agent Dashboard</title>
+
+    <style>
+        /* Styling for the dashboard cards */
+        .dashboard-card {
+            background-color: #f8f9fa; /* Light grey background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            border-radius: 10px; /* Rounded corners */
+            padding: 20px;
+            height: 150px; /* Ensure equal height for both cards */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.2rem; /* Slightly smaller heading */
+            color: #343a40; /* Dark grey text */
+            text-align: center; /* Center the title */
+        }
+
+        .dashboard-card p {
+            font-size: 2.5rem; /* Reduced font size for the numbers */
+            color: #17a2b8; /* Bootstrap info color */
+        }
+
+        /* Adding a bit of variety to the second card */
+        .dashboard-card.secondary {
+            background-color: #e9f7fa; /* Light blue background */
+        }
+
+        /* Adjusting card layout for mobile */
+        @media (max-width: 768px) {
+            .dashboard-card {
+                height: auto;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav>
-            <div class="navi_menu">
-                <a class="active" href="/"><strong>Home</strong></a>
-                <a href="{{ url_for('agent.user_inquiry') }}" class="submit-inquiry-btn">Submit Inquiry</a>
-                <a href="{{ url_for('auth.logout') }}">Logout</a>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid navi_menu">
+                <!-- Logo -->
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+                </a>
+    
+                <!-- Navbar links (Home and Submit Inquiry) -->
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('agent.agentlanding') }}">Overview</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('agent.my_migrants') }}">My migrants</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('agent.user_inquiry') }}">Submit Inquiry</a>
+                        </li>
+                    </ul>
+                </div>
+    
+                <!-- Welcome message and Hamburger Menu -->
+                <div class="dropdown ms-auto d-flex align-items-center">
+                    <span class="welcome-text me-3">{{ agent.email }}</span>
+                    <!-- Hamburger button triggers dropdown -->
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Dropdown menu -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#">Menu Item 1</a></li>
+                        <li><a class="dropdown-item" href="#">Menu Item 2</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <h1>Welcome, {{ agent.email }}</h1>
-        <h2>Your Migrants</h2>
-        {% if connections %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Migrant Email</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for connection in connections %}
-                    <tr>
-                        <td>{{ connection.migrant_email }}</td>
-                        <td>
-                            <!-- Actions such as sending a message, viewing profile, etc. -->
-                            <a href="#" class="btn">View Profile</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No migrants are connected to you yet.</p>
-        {% endif %}
+    
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Agent Dashboard Overview</h2>
+
+        <div class="row">
+            <!-- Box to show the total number of migrants -->
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h3>Total Migrants</h3>
+                    <p>{{ total_migrants }}</p> <!-- Display the total number of migrants -->
+                </div>
+            </div>
+
+            <!-- Box to show the average age score of migrants -->
+            <div class="col-md-6">
+                <div class="dashboard-card secondary">
+                    <h3>Average Age</h3>
+                    <p>{{ average_age }}</p> <!-- Display the average migrant age score -->
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Add Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
