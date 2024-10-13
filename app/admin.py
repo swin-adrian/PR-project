@@ -49,7 +49,7 @@ def user_management():
 
         password_hash = generate_password_hash(password)
         role, university = detect_role(email)  # Detect role and university
-
+        print(role)
         # Prepare user data
         user_data = {
             "email": email,
@@ -57,12 +57,12 @@ def user_management():
             "role": role,  # Ensure role is set during creation
             "created_at": datetime.now()
         }
-        print(user_data)
+        
                 # If the role is Education Provider, store the university
         if role == 'Education Provider':
             user_data['university'] = university
 
-
+        print(user_data)
         from main import mongo
         try:
             mongo.db.users.insert_one(user_data)
@@ -89,15 +89,6 @@ def user_management():
         'Agent': mongo.db.users.count_documents({'role': 'Agent'})
     }
     
-    # Ensure every user has a role, even older records
-    for user in users:
-        if 'role' not in user or user['role'] not in ['Admin', 'Edu Provider', 'Agent', 'Migrant']:
-            role = detect_role(user['email'])
-            mongo.db.users.update_one(
-                {"_id": user['_id']},
-                {"$set": {"role": role}}
-            )
-            user['role'] = role  # Update in local list as well
 
     return render_template(
         'user_management.html',
