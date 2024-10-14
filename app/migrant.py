@@ -483,7 +483,35 @@ def submit_inquiry():
 
 @migrant_bp.route('/userinquiry')
 def user_inquiry():
-    return render_template('Userinquiry.html', submit_url=url_for('migrant.submit_inquiry'))
+    return render_template(
+        'Userinquiry.html',
+        submit_url=url_for('migrant.submit_inquiry'),
+        get_inquiries_url=url_for('migrant.get_inquiries')
+    )
+
+@migrant_bp.route('/get_inquiries', methods=['GET'])
+def get_inquiries():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify([])
+
+    inquiries_cursor = mongo.db.inquiries.find({"user_id": ObjectId(user_id)})
+    inquiries = []
+    for inquiry in inquiries_cursor:
+        submitted_at = inquiry.get('submitted_at', 'N/A')
+        if isinstance(submitted_at, datetime):
+            submitted_at = submitted_at.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            submitted_at = str(submitted_at)
+        inquiries.append({
+            "inquiry": inquiry.get('inquiry', 'No inquiry provided'),
+            "submitted_at": submitted_at,
+            "status": inquiry.get('status', 'Pending')
+        })
+
+    return jsonify(inquiries)
+
 
 
 @migrant_bp.route('/get_saved_courses', methods=['GET'])
