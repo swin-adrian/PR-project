@@ -346,7 +346,7 @@ def admin_dashboard_m():
 
 # Route to display the inquiries
 @admin_bp.route('/viewinquiries', methods=['GET'])
-def view_inquiries():
+def viewinquiries():
     # Access the MongoDB instance
     mongo = PyMongo(current_app)
 
