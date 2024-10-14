@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash, current_app
 from flask_pymongo import PyMongo
 from bson import ObjectId
+from flask import jsonify
+
 
 agent_bp = Blueprint('agent', __name__)
 
@@ -150,3 +152,26 @@ def my_migrants():
 
     # Render the agent migrants page with connections and total migrants count
     return render_template('agent_migrants.html', agent=agent, connections=connections_list, total_migrants=total_migrants)
+
+@agent_bp.route('/migrant/<migrant_id>', methods=['GET'])
+def get_migrant_profile(migrant_id):
+    mongo = PyMongo(current_app)
+
+    # Fetch migrant's details from MongoDB using their ObjectId
+    migrant = mongo.db.users.find_one({'_id': ObjectId(migrant_id)})
+
+    if not migrant:
+        return jsonify({"error": "Migrant not found"}), 404
+
+    # Return the migrant's information as a JSON response
+    migrant_data = {
+        'email': migrant.get('email'),
+        'first_name': migrant.get('first_name'),
+        'last_name': migrant.get('last_name'),
+        'occupation': migrant.get('occupation'),
+        'nationality': migrant.get('nationality'),
+        'current_country': migrant.get('current_country'),
+        'dob': migrant.get('dob')
+    }
+
+    return jsonify(migrant_data), 200

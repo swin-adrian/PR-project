@@ -1,0 +1,10 @@
+/* Custom styles for the View Profile button */
+.btn-primary {
+    background-color: #B76D68 !important;  /* Matches the navbar color */
+    border-color: #B76D68 !important;      /* Ensures the button border matches */
+}
+
+.btn-primary:hover {
+    background-color: #b8837f !important;  /* Slightly lighter color on hover for effect */
+    border-color: #b8837f !important;
+}
