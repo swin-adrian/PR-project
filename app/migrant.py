@@ -91,7 +91,7 @@ def recommendcourse():
             course['Total_Points'] = course['Similarity_Score'] + course['Ranking_Points']
 
         # Limit the number of courses to 2
-        limited_courses = sorted_courses[:2]
+        limited_courses = sorted_courses[:5]
 
         # Return the limited courses as a JSON response
         return jsonify({"courses": limited_courses})
@@ -486,5 +486,65 @@ def user_inquiry():
     return render_template('Userinquiry.html', submit_url=url_for('migrant.submit_inquiry'))
 
 
+@migrant_bp.route('/get_saved_courses', methods=['GET'])
+def get_saved_courses():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
 
+    # Fetch saved courses for the user
+    saved_data = mongo.db.saved_courses.find_one({"user_id": ObjectId(user_id)})
+    saved_course_ids = saved_data.get("course_ids", []) if saved_data else []
+
+    return jsonify({"saved_courses": saved_course_ids})
+
+@migrant_bp.route('/save_course', methods=['POST'])
+def save_course():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    course_id = request.json.get('course_id')
+    if not course_id:
+        return jsonify({"error": "No course ID provided"}), 400
+
+    # Check if a saved_courses document exists for the user
+    saved_data = mongo.db.saved_courses.find_one({"user_id": ObjectId(user_id)})
+
+    if saved_data:
+        # Update the document by adding the course to the array if it doesn't exist
+        if course_id not in saved_data['course_ids']:
+            mongo.db.saved_courses.update_one(
+                {"user_id": ObjectId(user_id)},
+                {"$push": {"course_ids": course_id}}
+            )
+    else:
+        # Create a new document for the user with the course_id
+        mongo.db.saved_courses.insert_one({
+            "user_id": ObjectId(user_id),
+            "course_ids": [course_id]
+        })
+
+    return jsonify({"message": "Course saved successfully!"})
+
+@migrant_bp.route('/unsave_course', methods=['POST'])
+def unsave_course():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    course_id = request.json.get('course_id')
+    if not course_id:
+        return jsonify({"error": "No course ID provided"}), 400
+
+    # Remove the course from the saved courses array
+    mongo.db.saved_courses.update_one(
+        {"user_id": ObjectId(user_id)},
+        {"$pull": {"course_ids": course_id}}
+    )
+
+    return jsonify({"message": "Course unsaved successfully!"})
 

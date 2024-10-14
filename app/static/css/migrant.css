@@ -425,3 +425,18 @@ footer {
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
 }
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.register-button {
+    margin-right: 10px; /* Additional margin to ensure spacing between buttons */
+}
+
+.save-button {
+    margin-left: auto; /* Push Save button to the right if necessary */
+}
+

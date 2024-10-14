@@ -33,7 +33,7 @@
                             <a class="nav-link active">Overview</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link">My migrants</a>
+                            <a class="nav-link">My Courses</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link">Submit Inquiry</a>
@@ -297,49 +297,116 @@
             });
         });
 
-        // Fetch and display courses
-        $.ajax({
-            type: 'GET',
-            url: "{{ url_for('migrant.recommendcourse') }}",
-            success: function(response) {
-                var courseResults = $('#courseResults');
-                courseResults.empty();
+ // Fetch and display courses
+$.ajax({
+    type: 'GET',
+    url: "{{ url_for('migrant.recommendcourse') }}",
+    success: function(response) {
+        var courseResults = $('#courseResults');
+        courseResults.empty();
 
-                if (response.courses.length > 0) {
-                    $.each(response.courses, function(index, course) {
-                        if (course.Similarity_Score > 20) {
-                            var card = `
-                                <div class="course-card"
-                                     data-course-id="${course.CourseID}"
-                                     data-course-name="${course.CourseName}"
-                                     data-industry="${course.Industry}"
-                                     data-course-type="${course.CourseType}"
-                                     data-duration="${course.Duration}"
-                                     data-similarity-score="${course.Similarity_Score}"
-                                     data-total-points="${course.Total_Points}">
-                                    <div class="course-title">${course.CourseName}</div>
-                                    <div class="course-info">Industry: ${course.Industry}</div>
-                                    <div class="course-info">Course Type: ${course.CourseType}</div>
-                                    <div class="course-info">Duration: ${course.Duration}</div>
-                                    <div class="course-info">Similarity Score: ${course.Similarity_Score}%</div>
-                                    <div class="course-points">Total Points: ${course.Total_Points}</div>
-                                    <button class="register-button">Register</button>
-                                </div>`;
-                            courseResults.append(card);
-                        }
-                    });
+        if (response.courses.length > 0) {
+            // Add a row to contain the cards
+            var row = $('<div class="row"></div>');
+            
+            $.each(response.courses, function(index, course) {
+                // Create the card for each course
+                var card = `
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 course-card"
+                             data-course-id="${course._id}"
+                             data-course-name="${course.CourseName}"
+                             data-industry="${course.Industry}"
+                             data-course-type="${course.CourseType}"
+                             data-duration="${course.Duration}"
+                             data-similarity-score="${course.Similarity_Score}"
+                             data-cost="${course.Cost}">
+                            <div class="card-body">
+                                <h5 class="card-title">${course.CourseName}</h5>
+                                <p class="card-text">Industry: ${course.Industry}</p>
+                                <p class="card-text">Course Type: ${course.CourseType}</p>
+                                <p class="card-text">Duration: ${course.Duration}</p>
+                                <p class="card-text">Cost: $${course.Cost}</p>
+                                <p class="card-text">Similarity Score: ${course.Similarity_Score}%</p>
+                            </div>
+<div class="card-footer d-flex justify-content-between">
+    <button class="btn btn-primary register-button me-2">Register</button>
+    <button class="btn btn-success save-button" data-course-id="${course._id}">Save</button>
+</div>
 
-                    if (courseResults.children().length === 0) {
-                        courseResults.html('<p class="no-results">No courses found with a similarity score above 20%.</p>');
-                    }
-                } else {
-                    courseResults.html('<p class="no-results">No courses found matching your profile.</p>');
-                }
-            },
-            error: function(error) {
-                $('#courseResults').html('<p class="no-results">Error fetching recommendations. Please try again later.</p>');
+                        </div>
+                    </div>`;
+                
+                row.append(card);
+            });
+
+            // Append the row to the courseResults container
+            courseResults.append(row);
+
+            // If no courses are found
+            if (row.children().length === 0) {
+                courseResults.html('<p class="no-results">No courses found.</p>');
             }
-        });
+
+            // Check which courses are already saved and update the save buttons
+            updateSaveButtons();
+
+        } else {
+            courseResults.html('<p class="no-results">No courses found matching your profile.</p>');
+        }
+    },
+    error: function(error) {
+        $('#courseResults').html('<p class="no-results">Error fetching recommendations. Please try again later.</p>');
+    }
+});
+
+// Function to update the save buttons based on saved courses
+function updateSaveButtons() {
+    $.ajax({
+        type: 'GET',
+        url: "{{ url_for('migrant.get_saved_courses') }}", // New endpoint to fetch saved courses
+        success: function(response) {
+            var savedCourseIds = response.saved_courses;
+
+            // Loop through each save button
+            $('.save-button').each(function() {
+                var courseId = $(this).data('course-id');
+                
+                if (savedCourseIds.includes(courseId)) {
+                    $(this).text('Unsave').addClass('btn-danger').removeClass('btn-success unsave');
+                } else {
+                    $(this).text('Save').addClass('btn-success').removeClass('btn-danger unsave');
+                }
+            });
+        }
+    });
+}
+
+// Handle save/unsave button clicks
+$(document).on('click', '.save-button', function() {
+    var courseId = $(this).data('course-id');
+    var isUnsave = $(this).hasClass('btn-danger'); // Check if this is an "unsave" operation
+
+    // Send the save/unsave request
+    $.ajax({
+        type: 'POST',
+        url: isUnsave ? "{{ url_for('migrant.unsave_course') }}" : "{{ url_for('migrant.save_course') }}",
+        data: JSON.stringify({ course_id: courseId }),
+        contentType: 'application/json',
+        success: function(response) {
+            // Update button state based on the action
+            if (isUnsave) {
+                $(`.save-button[data-course-id='${courseId}']`).text('Save').removeClass('btn-danger').addClass('btn-success');
+            } else {
+                $(`.save-button[data-course-id='${courseId}']`).text('Unsave').removeClass('btn-success').addClass('btn-danger');
+            }
+        },
+        error: function(error) {
+            alert('Error saving course. Please try again.');
+        }
+    });
+});
+
     });
 </script>
 
