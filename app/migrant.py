@@ -107,6 +107,7 @@ def recommendcourse():
 def migrantlanding():
     mongo = PyMongo(current_app)
     user_id = session.get('user_id')
+    migrant_email = session.get('email')
     
     if user_id:
         user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
@@ -131,7 +132,7 @@ def migrantlanding():
         pr_prob = None
     
     # Pass the score, probability, occupation, and industry to the template
-    return render_template('migrantlanding.html', first_name=first_name, profile_complete=profile_complete, total_score=total_score, pr_prob=pr_prob, occupation=occupation, industry=industry)
+    return render_template('migrantlanding.html', first_name=first_name, profile_complete=profile_complete, total_score=total_score, pr_prob=pr_prob, occupation=occupation, industry=industry, migrant_email=migrant_email)
 
 
 @migrant_bp.route('/form')
