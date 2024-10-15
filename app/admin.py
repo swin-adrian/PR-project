@@ -426,3 +426,139 @@ def delete_inquiry(inquiry_id):
         return jsonify({"success": True})
     else:
         return jsonify({"success": False, "message": "Inquiry not found"}), 404
+
+
+# Occupation lists
+
+@admin_bp.route('/occupations', methods=['GET', 'POST'])
+def occupations():
+    # If a form is submitted (POST request)
+    if request.method == 'POST':
+        # Capture form data for adding a new occupation
+        occupation_name = request.form.get('occupation')
+        anzsco_code = request.form.get('anzsco_code')
+        industry = request.form.get('industry')
+        occupation_type = request.form.get('occupation_type')
+
+        # Prepare the occupation data
+        occupation_data = {
+            "Occupation": occupation_name,
+            "ANZSCOCode": anzsco_code,
+            "Industry": industry,
+            "Type": occupation_type,
+            "created_at": datetime.now()
+        }
+
+        # Insert the occupation data into MongoDB
+        from main import mongo
+        mongo.db.occupations.insert_one(occupation_data)
+
+        # Flash a success message
+        flash("Occupation added successfully!", "success")
+        # Redirect to the same page (occupationlanding) to prevent form re-submission on page refresh
+        return redirect(url_for('admin.occupations'))
+
+    # Handle GET request - Fetch occupations and implement pagination
+    page = request.args.get('page', 1, type=int)  # Get the current page, default to 1
+    per_page = 8  # Set how many occupations to display per page
+
+    from main import mongo
+    # Count total number of occupations for pagination
+    total_occupations = mongo.db.occupations.count_documents({})
+    total_pages = (total_occupations + per_page - 1) // per_page  # Calculate total number of pages
+
+    # Fetch occupations for the current page
+    occupations = mongo.db.occupations.find().skip((page - 1) * per_page).limit(per_page)
+
+    # Render the occupationlanding.html template with all data
+    return render_template(
+        'occupations.html',
+        occupations=occupations,
+        page=page,
+        per_page=per_page,
+        total_occupations=total_occupations,
+        total_pages=total_pages  # Pass total pages to the template for pagination
+    )
+
+# Route for searching occupations with pagination
+@admin_bp.route('/search_occupations', methods=['GET', 'POST'])
+def search_occupations():
+    page = request.args.get('page', 1, type=int)  # Get the current page or default to 1
+    per_page = 10  # Define how many items you want to display per page
+    query = request.form.get('search_query') if request.method == 'POST' else request.args.get('search_query', '')
+
+    from main import mongo
+    # Search occupations by name, ANZSCO code, or industry
+    search_filter = {
+        "$or": [
+            {"Occupation": {"$regex": query, "$options": "i"}},
+            {"ANZSCOode": {"$regex": query, "$options": "i"}},
+            {"Industry": {"$regex": query, "$options": "i"}}
+        ]
+    }
+
+    # Count total matching occupations for pagination
+    total_occupations = mongo.db.occupations.count_documents(search_filter)
+    total_pages = (total_occupations + per_page - 1) // per_page  # Calculate total number of pages
+
+    # Retrieve the relevant page of occupations
+    occupations = mongo.db.occupations.find(search_filter).skip((page - 1) * per_page).limit(per_page)
+
+    return render_template(
+        'occupations.html',
+        occupations=occupations,
+        page=page,
+        per_page=per_page,
+        total_occupations=total_occupations,
+        total_pages=total_pages,  # Pass total pages to the template
+        search_query=query
+    )
+@admin_bp.route('/get_occupation_summary', methods=['GET'])
+def get_occupation_summary():
+    from main import mongo
+    
+    # Query the MongoDB collection for the occupation summary data
+    total_occupations = mongo.db.occupations.count_documents({})
+    agriculture_count = mongo.db.occupations.count_documents({"Industry": "Agriculture"})
+    beekeeping_count = mongo.db.occupations.count_documents({"Industry": "Beekeeping"})
+    other_count = mongo.db.occupations.count_documents({"Industry": {"$nin": ["Agriculture", "Beekeeping"]}})
+    
+    # Return summary as JSON
+    return jsonify({
+        "total_occupations": total_occupations,
+        "agriculture_count": agriculture_count,
+        "beekeeping_count": beekeeping_count,
+        "other_count": other_count
+    })
+
+# Route for deleting an occupation using AJAX
+@admin_bp.route('/delete_occupation/<occupation_id>', methods=['POST'])
+def delete_occupation(occupation_id):
+    from main import mongo
+    result = mongo.db.occupations.delete_one({"_id": ObjectId(occupation_id)})
+    if result.deleted_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False})
+
+# AJAX route for modifying an occupation
+@admin_bp.route('/modify_occupation_ajax/<occupation_id>', methods=['POST'])
+def modify_occupation_ajax(occupation_id):
+    from main import mongo
+    updated_occupation = {
+        "Occupation": request.form.get('occupation'),
+        "ANZSCO code": request.form.get('anzsco_code'),
+        "Industry": request.form.get('industry'),
+        "Type": request.form.get('occupation_type'),
+        "updated_at": datetime.now()
+    }
+
+    result = mongo.db.occupations.update_one(
+        {"_id": ObjectId(occupation_id)}, 
+        {"$set": updated_occupation}
+    )
+
+    if result.modified_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False})
