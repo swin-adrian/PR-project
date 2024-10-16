@@ -53,12 +53,15 @@ def signup():
     mongo = PyMongo(current_app)
 
     if request.method == "POST":
-        # Get the email, password, and user type (from the radio button selection)
-        email = request.form.get('email').strip().lower()  # Ensure email is lowercase and trimmed
+        email = request.form.get('email').strip().lower()
         password = request.form.get('pwd')
-        user_type = request.form.get('user_type')  # Get the selected user type from the radio button
+        user_type = request.form.get('user_type')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        company_name = request.form.get('company_name')
+        abn = request.form.get('abn')
+        phone = request.form.get('phone')
 
-        # Check if email, password, and user type are provided
         if not email or not password:
             flash("Email and password are required", "danger")
             return redirect(url_for('auth.signup'))
@@ -67,33 +70,39 @@ def signup():
             flash("Please select a profile type", "danger")
             return redirect(url_for('auth.signup'))
 
-        # Check if the email already exists in the database
         existing_user = mongo.db.users.find_one({"email": email})
         if existing_user:
             flash("Email already exists", "danger")
             return redirect(url_for('auth.signup'))
 
-        # Hash the password for secure storage
         password_hash = generate_password_hash(password)
 
-        # Insert the new user into the database with their selected role
-        user_id = mongo.db.users.insert_one({
-            "email": email,  # Use email as the unique identifier
+        user_data = {
+            "email": email,
             "password_hash": password_hash,
-            "role": user_type  # Store the user type from the radio button (Migrant or Agent)
-        }).inserted_id
+            "role": user_type
+        }
 
-        # Set the session to the new user's ID and email
+        if user_type == 'Agent':
+            user_data.update({
+                "first_name": first_name,
+                "last_name": last_name,
+                "company_name": company_name,
+                "abn": abn,
+                "phone": phone
+            })
+
+        user_id = mongo.db.users.insert_one(user_data).inserted_id
         session['user_id'] = str(user_id)
         session['email'] = email
 
-        # Redirect the user based on their selected profile type (role)
         if user_type == 'Migrant':
             return redirect(url_for('migrant.migrantlanding'))
         elif user_type == 'Agent':
             return redirect(url_for('agent.agentlanding'))
 
     return render_template('signup.html')
+
 
 
 @auth_bp.route('/logout')

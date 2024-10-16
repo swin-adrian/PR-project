@@ -75,25 +75,92 @@
         </div>
     </div>
 
+    <!-- Agent Info Modal -->
+    <div id="agentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="agent_info_form">
+                <h2>Agent Information</h2>
+                <div class="form-group">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="company_name">Company Name:</label>
+                    <input type="text" id="company_name" name="company_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="abn">ABN:</label>
+                    <input type="text" id="abn" name="abn" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <button type="button" id="agentSubmit" class="submit-button">Submit</button>
+            </form>
+        </div>
+    </div>
+
     <footer>
         &#169 2024-2025 EasiResi All Rights Reserved
     </footer>
 
-    <!-- JavaScript to Validate Radio Button Selection -->
     <script>
-        document.getElementById('signup_form').addEventListener('submit', function(event) {
+        const signupForm = document.getElementById('signup_form');
+        const agentModal = document.getElementById('agentModal');
+        const agentSubmitButton = document.getElementById('agentSubmit');
+        const closeModal = document.querySelector('.close');
+
+        signupForm.addEventListener('submit', function(event) {
             const migrant = document.getElementById('migrant').checked;
             const agent = document.getElementById('agent').checked;
             const errorMessage = document.getElementById('error-message');
 
-            // Check if neither of the radio buttons is selected
             if (!migrant && !agent) {
-                errorMessage.style.display = 'block'; // Show error message
-                event.preventDefault(); // Prevent form submission
+                errorMessage.style.display = 'block';
+                event.preventDefault();
             } else {
-                errorMessage.style.display = 'none'; // Hide error message if valid
+                errorMessage.style.display = 'none';
+                if (agent) {
+                    // Show the modal if Agent is selected
+                    agentModal.style.display = 'block';
+                    event.preventDefault(); // Prevent the form from submitting
+                }
             }
         });
+
+        agentSubmitButton.addEventListener('click', function() {
+            const formData = new FormData(agent_info_form);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('pwd', document.getElementById('password').value);
+            formData.append('user_type', 'Agent');
+
+            fetch('{{ url_for('auth.signup') }}', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = response.url;
+                } else {
+                    alert('Failed to submit agent information');
+                }
+            });
+        });
+
+        closeModal.addEventListener('click', function() {
+            agentModal.style.display = 'none';
+        });
+
+        window.onclick = function(event) {
+            if (event.target == agentModal) {
+                agentModal.style.display = 'none';
+            }
+        };
     </script>
 </body>
 </html>

@@ -15,6 +15,8 @@ $(document).ready(function() {
                 $('#migrant-nationality').text(response.nationality);
                 $('#migrant-country').text(response.current_country);
                 $('#migrant-dob').text(response.dob);
+                $('#migrant-pr-score').text(response.pr_score);
+                $('#migrant-pr-probability').text(response.pr_probability + "%");
 
                 // Show the modal
                 $('#migrantProfileModal').modal('show');

@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, session, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, session, redirect, url_for, flash, current_app, request
 from flask_pymongo import PyMongo
 from bson import ObjectId
 from flask import jsonify
 
 
+
+    
 agent_bp = Blueprint('agent', __name__)
 
 @agent_bp.route('/agentlanding')
@@ -163,6 +165,11 @@ def get_migrant_profile(migrant_id):
     if not migrant:
         return jsonify({"error": "Migrant not found"}), 404
 
+    # Fetch PR score and probability from the scores collection
+    score_data = mongo.db.scores.find_one({'user_id': ObjectId(migrant_id)})
+    pr_score = score_data.get('total_score') if score_data else "N/A"
+    pr_probability = score_data.get('pr_probability') if score_data else "N/A"
+
     # Return the migrant's information as a JSON response
     migrant_data = {
         'email': migrant.get('email'),
@@ -171,7 +178,64 @@ def get_migrant_profile(migrant_id):
         'occupation': migrant.get('occupation'),
         'nationality': migrant.get('nationality'),
         'current_country': migrant.get('current_country'),
-        'dob': migrant.get('dob')
+        'dob': migrant.get('dob'),
+        'pr_score': pr_score,
+        'pr_probability': pr_probability
     }
 
     return jsonify(migrant_data), 200
+
+@agent_bp.route('/courses', methods=['GET'])
+def get_courses():
+    print("this is working")
+    mongo = PyMongo(current_app)
+    courses = list(mongo.db.courses.find({}))
+    print(f"here are the", courses)
+    for course in courses:
+        course['_id'] = str(course['_id'])  # Convert ObjectId to string for JSON compatibility
+    return jsonify(courses)
+
+@agent_bp.route('/linked_migrants', methods=['GET'])
+def get_linked_migrants():
+    user_id = session.get('user_id')
+    mongo = PyMongo(current_app)
+
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    agent_connections = mongo.db.connections.find_one({'agentid': ObjectId(user_id)})
+    migrant_ids = agent_connections['migrantids'] if agent_connections and 'migrantids' in agent_connections else []
+
+    migrants = list(mongo.db.users.find({'_id': {'$in': migrant_ids}}, {'first_name': 1, 'last_name': 1, 'email': 1}))
+    for migrant in migrants:
+        migrant['_id'] = str(migrant['_id'])  # Convert ObjectId to string for JSON compatibility
+    return jsonify(migrants)
+
+from datetime import datetime
+
+@agent_bp.route('/recommend_course', methods=['POST'])
+def recommend_course():
+    mongo = PyMongo(current_app)
+    data = request.get_json()
+    agent_id = session.get('user_id')
+
+    if not agent_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    # Create a new recommendation document
+    recommendation = {
+        "agent_id": ObjectId(agent_id),
+        "migrant_id": ObjectId(data['migrant_id']),
+        "course_id": ObjectId(data['course_id']),
+        "feedback": data['feedback'],
+        "recommended_at": datetime.utcnow()
+    }
+
+    mongo.db.recommendations.insert_one(recommendation)
+    return jsonify({"message": "Recommendation submitted successfully"}), 200
+
+@agent_bp.route('/agent_courses')
+def agent_courses():
+    agent_email=session.get('email')
+    # Render the agent_courses.html template
+    return render_template('agent_courses.html', agent_email=agent_email)
