@@ -6,7 +6,6 @@ from flask_pymongo import PyMongo
 # Define the blueprint
 edprovider_bp = Blueprint('edprovider', __name__)
 
-# Route for edproviderlanding (Add Course form)
 @edprovider_bp.route('/edproviderlanding', methods=['GET', 'POST'])
 def edproviderlanding():
     if request.method == 'POST':
@@ -17,7 +16,13 @@ def edproviderlanding():
         duration = request.form.get('duration')
         course_structure = request.form.get('course_structure')
         key_learnings = request.form.get('key_learnings')
-        cost = request.form.get('cost')  # New field
+        cost = request.form.get('cost')
+
+        # Get the university from the user's document
+        university = session.get('university')
+        if not university:
+            flash('University information is missing. Please log in again.', 'error')
+            return redirect(url_for('auth.login'))
 
         # Validate and process the cost
         try:
@@ -37,19 +42,17 @@ def edproviderlanding():
             "Duration": duration,
             "CourseStructure": course_structure,
             "KeyLearnings": key_learnings,
-            "cost": cost,
-            "university": session.get('university'),  # Save the course under the university in session
-            "created_at": datetime.now()
+            "Cost": cost,
+            "University": university,  # Automatically set from the user's session
+            "CreatedAt": datetime.now()
         }
 
         # Insert the data into MongoDB
         from main import mongo
         mongo.db.courses.insert_one(course_data)
-        
+
         # Flash a success message
         flash("Course added successfully!", "success")
-
-        # Redirect to the view_courses page to view the course table
         return redirect(url_for('edprovider.view_courses'))
 
     return render_template('edproviderlanding.html')
@@ -74,6 +77,12 @@ def view_courses():
     
     # Fetch registrations for the current page, filtering by university
     registrations = mongo.db.registrations.find({"university": user_university}).skip((page - 1) * per_page).limit(per_page)
+
+    # Convert the cost field to a float for each registration
+    registrations = [
+        {**registration, "cost": float(registration.get("cost", 0.00)) if registration.get("cost") is not None else 0.00}
+        for registration in registrations
+    ]
     
     # Pass the page, per_page, total_pages, and filtered registrations to the template
     return render_template(
@@ -84,6 +93,7 @@ def view_courses():
         total_registrations=total_registrations,
         total_pages=total_pages  # Pass total pages to the template
     )
+
 
 
 # Route for searching courses by first name, last name, or course name

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find an Agent</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Find an Agent</h1>
+        <ul class="agent-list">
+            {% for agent in agents %}
+                <li>
+                    <h2>{{ agent.first_name }} {{ agent.last_name }}</h2>
+                    <p><strong>Email:</strong> {{ agent.email }}</p>
+                    <p><strong>Company Name:</strong> {{ agent.company_name }}</p>
+                    <button onclick="linkAgent('{{ agent._id }}')">Select Agent</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function linkAgent(agentId) {
+            fetch('{{ url_for("migrant.linkagent") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ agent_id: agentId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "Agent linked successfully!") {
+                    alert("Agent linked successfully!");
+                    window.location.href = "{{ url_for('migrant.myagent') }}";
+                } else {
+                    alert("Failed to link agent. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error("Error linking agent:", error);
+            });
+        }
+    </script>
+</body>
+</html>

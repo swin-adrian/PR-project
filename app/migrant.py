@@ -793,3 +793,89 @@ def save_course_migrantcourses():
         print(f"Error occurred during saving course: {e}")
         return jsonify({"error": "An error occurred while saving the course."}), 500
 
+@migrant_bp.route('/myagent')
+def myagent():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return redirect(url_for('auth.login'))  # Redirect to login if the user is not logged in
+
+    # Find the connection document where the migrant is associated with an agent
+    connection = mongo.db.connections.find_one({"migrantids": ObjectId(user_id)})
+    agent = None
+    recommended_courses = []
+
+    if connection:
+        # If a connection is found, get the agent's details using the agentid
+        agent = mongo.db.users.find_one({"_id": ObjectId(connection['agentid'])})
+
+        if agent:
+            # Fetch the agent's recommended courses for this migrant
+            recommendations_cursor = mongo.db.recommendations.find({"agent_id": agent['_id'], "migrant_id": ObjectId(user_id)})
+            recommendations = list(recommendations_cursor)
+
+            # Fetch course details for each recommended course
+            for recommendation in recommendations:
+                # Check if 'courseid' exists in the recommendation document
+                course_id = recommendation.get('course_id')
+                if course_id:
+                    # Retrieve course details from the courses collection
+                    course_details = mongo.db.courses.find_one({"_id": ObjectId(course_id)})
+                    if course_details:
+                        # Add the course details to the recommendation data
+                        recommendation['CourseName'] = course_details.get('CourseName')
+                        recommendation['Industry'] = course_details.get('Industry')
+                        recommendation['CourseType'] = course_details.get('CourseType')
+                        recommendation['Duration'] = course_details.get('Duration')
+                        recommendation['Cost'] = course_details.get('Cost')
+                        recommendation['Feedback'] = recommendation.get('feedback')  # Add feedback if available
+
+                        # Add to the recommended_courses list
+                        recommended_courses.append(recommendation)
+
+    return render_template('myagent.html', agent=agent, recommended_courses=recommended_courses)
+
+
+@migrant_bp.route('/findagent')
+def findagent():
+    mongo = PyMongo(current_app)
+    
+    # Fetch available agents
+    agents_cursor = mongo.db.users.find({"role": "Agent"})
+    agents = list(agents_cursor)
+    
+    return render_template('findagent.html', agents=agents)
+
+@migrant_bp.route('/linkagent', methods=['POST'])
+def linkagent():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    agent_id = request.json.get('agent_id')
+    if not agent_id:
+        return jsonify({"error": "No agent ID provided"}), 400
+
+    # Check if a connection already exists for the agent
+    connection = mongo.db.connections.find_one({"agentid": ObjectId(agent_id)})
+
+    if connection:
+        # If a connection exists, add the migrant ID to the migrantids array if not already present
+        if ObjectId(user_id) not in connection['migrantids']:
+            mongo.db.connections.update_one(
+                {"agentid": ObjectId(agent_id)},
+                {"$push": {"migrantids": ObjectId(user_id)}}
+            )
+    else:
+        # If no connection exists, create a new connection document
+        mongo.db.connections.insert_one({
+            "agentid": ObjectId(agent_id),
+            "migrantids": [ObjectId(user_id)]
+        })
+
+    return jsonify({"message": "Agent linked successfully!"}), 200
+
+

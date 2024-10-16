@@ -10,26 +10,15 @@
 <body>
     <header>
         <nav>
-            <!--Navigation menu in header as a list to apply more styles-->
             <div class="navi_menu">
                 <a class="active" href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
                 <a class="active" href="{{ url_for('edprovider.view_courses') }}" class="view-courses-btn">Potential Student</a>
                 <a class="active" href="{{ url_for('edprovider.edprovidervisuals') }}" class="view-courses-btn">EdProvider Visuals</a>
-                <a class="active"href="{{ url_for('edprovider.user_inquiry') }}" class="submit-inquiry-btn">Submit Inquiry</a>
-
-
-        </div>
-    </nav>
-                <!-- <a href="product.html"><strong>Products</strong></a>
-                <a href="enquire.html"><strong>Enquire</strong></a>
-                <a href="about.html"><strong>About</strong></a>
-                <a href="/"><strong>Enhancements</strong></a> !-->
+                <a class="active" href="{{ url_for('edprovider.user_inquiry') }}" class="submit-inquiry-btn">Submit Inquiry</a>
             </div>
         </nav>
     </header>
-<!-- Add Course Form Container -->
-<body>
-  
+
     <div class="container">
         <!-- Display Flash Messages Here -->
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -43,111 +32,89 @@
                 </div>
             {% endif %}
         {% endwith %}
-        <div class="main-container">              
-            </div>
-    <div class="container">
+        
         <form action="{{ url_for('edprovider.edproviderlanding') }}" method="POST">
             <fieldset class="form-fieldset">
-                
                 <legend><strong>Add New Course</strong></legend>
-                <p class="container"> Select one of the options provided below: </p>
+                <p class="container">Select one of the options provided below:</p>
 
-            <!-- Industry Dropdown -->
-            <div class="form-group">
-                <label for="industry" class="form-label">Industry</label>
-                <select id="industry" name="industry" class="form-select" required>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Community and Personal Care">Community and Personal Care</option>
-                    <option value="Arts">Arts</option>
-                    <option value="Finance and Accounting">Finance and Accounting</option>
-                    <option value="Agriculture and Environmental">Agriculture and Environmental</option>
-                    <option value="Education">Education</option>
-                    <option value="ICT and Computer Science">ICT and Computer Science</option>
-                    <option value="Trade">Trade</option>
-                    <option value="Business">Business</option>
-                    <option value="Social Science">Social Science</option>
-                    <option value="Health and Fitness">Health and Fitness</option>
-                    <option value="Culinary">Culinary</option>
-                    <option value="Hospitality">Hospitality</option>
-                    <option value="Law">Law</option>
-                    <option value="Medicine">Medicine</option>
-                    <option value="Transport">Transport</option>
-                    <option value="Arts and Design">Arts and Design</option>
-                    <option value="Environmental Health">Environmental Health</option>
-                    <option value="Sport">Sport</option>
-                </select>
-            </div>
+                <!-- Industry Dropdown -->
+                <div class="form-group">
+                    <label for="industry" class="form-label">Industry</label>
+                    <select id="industry" name="industry" class="form-select" required>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Community and Personal Care">Community and Personal Care</option>
+                        <option value="Arts">Arts</option>
+                        <option value="Finance and Accounting">Finance and Accounting</option>
+                        <option value="Agriculture and Environmental">Agriculture and Environmental</option>
+                        <option value="Education">Education</option>
+                        <option value="ICT and Computer Science">ICT and Computer Science</option>
+                        <option value="Trade">Trade</option>
+                        <option value="Business">Business</option>
+                        <option value="Social Science">Social Science</option>
+                        <option value="Health and Fitness">Health and Fitness</option>
+                        <option value="Culinary">Culinary</option>
+                        <option value="Hospitality">Hospitality</option>
+                        <option value="Law">Law</option>
+                        <option value="Medicine">Medicine</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Arts and Design">Arts and Design</option>
+                        <option value="Environmental Health">Environmental Health</option>
+                        <option value="Sport">Sport</option>
+                    </select>
+                </div>
 
-            <!-- Course Name Dropdown -->
-            <div class="form-group">
-                <label for="course_name" class="form-label">Course Name</label>
-                <select id="course_name" name="course_name" class="form-select" required>
-                    <option value="Mechanical, Civil, Electrical">Mechanical, Civil, Electrical</option>
-                    <option value="Aged Care, Disability Care">Aged Care, Disability Care</option>
-                    <option value="Music, Fine Arts, Digital Arts">Music, Fine Arts, Digital Arts</option>
-                    <option value="Accounting, Financial Planning">Accounting, Financial Planning</option>
-                    <option value="Environmental Science, Agriculture">Environmental Science, Agriculture</option>
-                    <option value="Programming, Networking">Programming, Networking</option>
-                    <option value="Earlychildhoodlearning">Early Childhood, Teaching</option>
-                    <option value="Plumbing, Carpentry, Electrician">Plumbing, Carpentry, Electrician</option> 
-                    <option value="Business Management, Marketing">Business Management, Marketing</option> 
-                    <option value="Sociology, Psychology">Sociology, Psychology</option> 
-                    <option value="Fitness Trainer, Nutrition">Fitness Trainer, Nutrition</option> 
-                    <option value="Culinary Arts, Pastry Chef">Culinary Arts, Pastry Chef</option> 
-                    <option value="Hotel Management, Event Planning">Hotel Management, Event Planning</option> 
-                    <option value="Legal Studies, Paralegal">Legal Studies, Paralegal</option> 
-                    <option value="Nursing, Radiology">Nursing, Radiology</option> 
-                    <option value="Aviation, Maritime">Aviation, Maritime</option> 
-                    <option value="Graphic Design, Fashion Design"> Graphic Design, Fashion Design</option> 
-                    <option value="Public Health, Environmental Safety"> Public Health, Environmental Safety</option> 
-                    <option value="Coaching, Sports Management">Coaching, Sports Management</option> 
+                <!-- Course Name Text Field -->
+                <div class="form-group">
+                    <label for="course_name" class="form-label">Course Name</label>
+                    <input type="text" id="course_name" name="course_name" class="form-input" placeholder="Enter course name" required>
+                </div>
 
+                <!-- Course Type Dropdown -->
+                <div class="form-group">
+                    <label for="course_type" class="form-label">Course Type</label>
+                    <select id="course_type" name="course_type" class="form-select" required>
+                        <option value="Bachelors">Bachelors</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Certificate">Certificate</option>
+                        <option value="Masters">Masters</option>
+                        <option value="PhD">PhD</option>
+                    </select>
+                </div>
 
+                <!-- Duration Dropdown -->
+                <div class="form-group">
+                    <label for="duration" class="form-label">Duration</label>
+                    <select id="duration" name="duration" class="form-select" required>
+                        <option value="1 year">1 year</option>
+                        <option value="2 years">2 years</option>
+                        <option value="3 years">3 years</option>
+                        <option value="4 years">4 years</option>
+                        <option value="6-12 months">6-12 months</option>
+                    </select>
+                </div>
 
+                <!-- Course Structure Textarea -->
+                <div class="form-group">
+                    <label for="course_structure" class="form-label">Course Structure</label>
+                    <textarea id="course_structure" name="course_structure" class="form-input" placeholder="Enter course structure details" required></textarea>
+                </div>
 
-                </select>
-            </div>
+                <!-- Cost Input Field -->
+                <div class="form-group">
+                    <label for="cost" class="form-label">Cost (in AUD)</label>
+                    <input type="number" id="cost" name="cost" class="form-input" placeholder="Enter course cost" required min="0" step="0.01">
+                </div>
 
-            <!-- Course Type Dropdown -->
-            <div class="form-group">
-                <label for="course_type" class="form-label">Course Type</label>
-                <select id="course_type" name="course_type" class="form-select" required>
-                    <option value="Bachelors">Bachelors</option>
-                    <option value="Diploma">Diploma</option>
-                    <option value="Certificate">Certificate</option>
-                </select>
-            </div>
+                <!-- Key Learnings Textarea -->
+                <div class="form-group">
+                    <label for="key_learnings" class="form-label">Key Learnings</label>
+                    <textarea id="key_learnings" name="key_learnings" class="form-input" placeholder="Enter key learnings" required></textarea>
+                </div>
 
-            <!-- Duration Dropdown -->
-            <div class="form-group">
-                <label for="duration" class="form-label">Duration</label>
-                <select id="duration" name="duration" class="form-select" required>
-                    <option value="1 year">1 year</option>
-                    <option value="2 years">2 years</option>
-                    <option value="3 years">3 years</option>
-                    <option value="4 years">4 years</option>
-                    <option value="6-12 months">6-12 months</option>
-                </select>
-            </div>
-
-            <!-- Course Structure Textarea -->
-            <div class="form-group">
-                <label for="course_structure" class="form-label">Course Structure</label>
-                <textarea id="course_structure" name="course_structure" class="form-input" placeholder="Enter course structure details" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="cost" class="form-label">Cost (in AUD)</label>
-                <input type="number" id="cost" name="cost" class="form-input" placeholder="Enter course cost" required min="0" step="0.01">
-
-            </div>
-            
-
-            <!-- Key Learnings Textarea -->
-            <div class="form-group">
-                <label for="key_learnings" class="form-label">Key Learnings</label>
-                <textarea id="key_learnings" name="key_learnings" class="form-input" placeholder="Enter key learnings" required></textarea>
-            </div>
                 <button type="submit">Add Course</button>
             </fieldset>
         </form>
+    </div>
+</body>
+</html>

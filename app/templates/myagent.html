@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Agent</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Popper.js and Bootstrap JS for dropdown functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-light">
+            <div class="container-fluid navi_menu">
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+                </a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('migrant.migrantlanding') }}">Overview</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('migrant.migrantcourses') }}">My Courses</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('migrant.myagent') }}">My Agent</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown ms-auto d-flex align-items-center">
+                    <span class="welcome-text me-3">{{ migrant_email }}</span>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container my-4">
+        <h1>My Agent</h1>
+        {% if not agent %}
+            <p>You don't have an agent assigned yet. <a href="{{ url_for('migrant.findagent') }}">Find an agent</a>.</p>
+        {% else %}
+            <div class="agent-profile p-3 mb-4 border rounded">
+                <h2>Agent Information</h2>
+                <p><strong>Full Name:</strong> {{ agent.first_name }} {{ agent.last_name }}</p>
+                <p><strong>Email:</strong> {{ agent.email }}</p>
+                <p><strong>Phone:</strong> {{ agent.phone }}</p>
+                <p><strong>Company Name:</strong> {{ agent.company_name }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="container recommended-courses">
+        <h2>Recommended Courses</h2>
+        <div class="row">
+            {% if recommended_courses %}
+                {% for course in recommended_courses %}
+                    <div class="col-md-4 mb-4">
+                        <div class="course-card card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.CourseName }}</h5>
+                                <p class="card-text">Industry: {{ course.Industry }}</p>
+                                <p class="card-text">Course Type: {{ course.CourseType }}</p>
+                                <p class="card-text">Duration: {{ course.Duration }}</p>
+                                <p class="card-text">Cost: ${{ course.Cost }}</p>
+                                <p class="card-text"><strong>Feedback:</strong> {{ course.Feedback }}</p>
+                            </div>
+                            <div class="card-footer d-flex flex-column">
+                                <button class="btn btn-primary register-button mb-2" data-course-id="{{ course.course_id }}">Register</button>
+                                <button class="btn btn-success save-button" data-course-id="{{ course.course_id }}">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-courses">No recommended courses available.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+
+    <footer class="text-center mt-4">
+        &#169 2024-2025 EasiResi All Rights Reserved
+    </footer>
+
+    <script>
+        $(document).on('click', '.register-button', function () {
+            var courseId = $(this).data('course-id');
+
+            // Send the register request
+            $.ajax({
+                type: 'POST',
+                url: "{{ url_for('migrant.register_course_migrantcourses') }}",
+                data: JSON.stringify({ course_id: courseId }),
+                contentType: 'application/json',
+                success: function (response) {
+                    alert('Course registered successfully!');
+                },
+                error: function (error) {
+                    alert('Error registering for the course. Please try again.');
+                    console.error('Error registering course:', error);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -5,7 +5,7 @@ from flask import jsonify
 
 
 
-    
+
 agent_bp = Blueprint('agent', __name__)
 
 @agent_bp.route('/agentlanding')
@@ -187,10 +187,8 @@ def get_migrant_profile(migrant_id):
 
 @agent_bp.route('/courses', methods=['GET'])
 def get_courses():
-    print("this is working")
     mongo = PyMongo(current_app)
     courses = list(mongo.db.courses.find({}))
-    print(f"here are the", courses)
     for course in courses:
         course['_id'] = str(course['_id'])  # Convert ObjectId to string for JSON compatibility
     return jsonify(courses)
