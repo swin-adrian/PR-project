@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrant Courses Page</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid navi_menu">
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo"
+                        id="logo">
+                </a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('migrant.migrantlanding') }}">Overview</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('migrant.migrantcourses') }}">My Courses</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link">Submit Inquiry</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Welcome message and Hamburger Menu -->
+                <div class="dropdown ms-auto d-flex align-items-center">
+                    <span class="welcome-text me-3">{{ migrant_email }}</span>
+                    <!-- Hamburger button triggers dropdown -->
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Dropdown menu -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#">Menu Item 1</a></li>
+                        <li><a class="dropdown-item" href="#">Menu Item 2</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container my-5">
+        <!-- Section 1: Registered Courses -->
+        <div class="section" id="registered-courses">
+            <h2>Registered Courses</h2>
+            <div class="row" id="registeredCoursesContainer">
+                <p class="no-courses">You have no registered courses.</p>
+                <!-- This will be replaced if courses exist -->
+            </div>
+        </div>
+
+        <!-- Section 2: Saved Courses -->
+        <div class="section my-5" id="saved-courses">
+            <h2>Saved Courses</h2>
+            <div class="row" id="savedCoursesContainer">
+                <p class="no-courses">You have no saved courses.</p> <!-- This will be replaced if courses exist -->
+            </div>
+        </div>
+
+        <!-- Section 3: Recommended Courses -->
+        <div class="container">
+            <h2>Recommended Courses</h2>
+            <div class="row" id="recommendedCoursesContainer">
+                <p class="no-results">Fetching recommended courses...</p>
+            </div>
+        </div>
+
+        <!-- Section 4: Agent Recommended Courses -->
+        <!-- <div class="section my-5" id="agent-recommended-courses">
+        <h2>Agent Recommended Courses</h2>
+        <div id="agentRecommendedCoursesContainer" class="row">
+            <p class="no-results">Fetching agent recommended courses...</p> 
+        </div>
+    </div> -->
+    </div>
+
+    <!-- JavaScript to fetch and display the course sections -->
+    <script>
+        $(document).ready(function () {
+            
+// Fetch and display registered courses
+$.ajax({
+    type: 'GET',
+    url: "{{ url_for('migrant.get_registered_courses') }}", // Correct endpoint
+    success: function(response) {
+        var container = $('#registeredCoursesContainer');
+        container.empty();
+
+        if (response.courses && response.courses.length > 0) {
+            $.each(response.courses, function(index, course) {
+                container.append(`
+                    <div class="col-md-4 mb-4">
+                        <div class="course-card card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">${course.CourseName}</h5>
+                                <p class="card-text">Industry: ${course.Industry}</p>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        } else {
+            container.html('<p class="no-courses">No registered courses.</p>');
+        }
+    },
+    error: function(error) {
+        // If there's an error fetching the data, still display 'No registered courses' instead of an error message.
+        $('#registeredCoursesContainer').html('<p class="no-courses">No registered courses.</p>');
+    }
+});
+
+
+
+            // Fetch and display saved courses
+            function fetchSavedCourses() {
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ url_for('migrant.get_saved_courses_details') }}",
+                    success: function (response) {
+                        var savedCoursesContainer = $('#savedCoursesContainer');
+                        savedCoursesContainer.empty();
+
+                        if (response.saved_courses && response.saved_courses.length > 0) {
+                            $.each(response.saved_courses, function (index, course) {
+                                savedCoursesContainer.append(`
+                            <div class="col-md-4 mb-4">
+                                <div class="course-card card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${course.CourseName}</h5>
+                                        <p class="card-text">Industry: ${course.Industry}</p>
+                                        <p class="card-text">Duration: ${course.Duration}</p>
+                                        <p class="card-text">Cost: $${course.Cost}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-danger unsave-button" data-course-id="${course.CourseID}">Unsave</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                            });
+                        } else {
+                            savedCoursesContainer.html('<p class="no-courses">You have no saved courses.</p>');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching saved courses:', error);
+                    }
+                });
+            }
+
+            // Call the function to fetch and display saved courses on page load
+            fetchSavedCourses();
+
+            // Handle unsave button clicks
+            $(document).on('click', '.unsave-button', function () {
+                var courseId = $(this).data('course-id');
+
+                // Send unsave request
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('migrant.unsave_course') }}",
+                    data: JSON.stringify({ course_id: courseId }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        alert('Course unsaved successfully!');
+                        // Refresh the saved courses list after unsaving
+                        fetchSavedCourses();
+                    },
+                    error: function (error) {
+                        console.error('Error unsaving course:', error);
+                    }
+                });
+            });
+
+            // Fetch and display recommended courses
+            function fetchRecommendedCourses() {
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ url_for('migrant.get_recommended_courses_details') }}",
+                    success: function (response) {
+                        var recommendedCoursesContainer = $('#recommendedCoursesContainer');
+                        recommendedCoursesContainer.empty();
+
+                        if (response.recommended_courses && response.recommended_courses.length > 0) {
+                            $.each(response.recommended_courses, function (index, course) {
+                                recommendedCoursesContainer.append(`
+                            <div class="col-md-4 mb-4">
+                                <div class="course-card card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${course.CourseName}</h5>
+                                        <p class="card-text">Industry: ${course.Industry}</p>
+                                        <p class="card-text">Duration: ${course.Duration}</p>
+                                        <p class="card-text">Cost: $${course.Cost}</p>
+                                        <p class="card-text">Similarity Score: ${course.Similarity_Score}%</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-primary register-button" data-course-id="${course._id}">Register</button>
+                                        <button class="btn btn-success save-button" data-course-id="${course._id}">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                            });
+                        } else {
+                            recommendedCoursesContainer.html('<p class="no-courses">No recommended courses found.</p>');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching recommended courses:', error);
+                    }
+                });
+            }
+
+            // Handle course registration
+            $(document).on('click', '.register-button', function () {
+                var courseId = $(this).data('course-id');
+
+                // Send register request
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('migrant.register_course_migrantcourses') }}",
+                    data: JSON.stringify({ course_id: courseId }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        alert('Course registered successfully!');
+                    },
+                    error: function (error) {
+                        alert('Error registering for the course. Please try again.');
+                        console.error('Error registering course:', error);
+                    }
+                });
+            });
+
+            // Handle saving courses
+            $(document).on('click', '.save-button', function () {
+                var courseId = $(this).data('course-id');
+
+                // Send save request
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('migrant.save_course_migrantcourses') }}",
+                    data: JSON.stringify({ course_id: courseId }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        alert('Course saved successfully!');
+                    },
+                    error: function (error) {
+                        alert('Error saving the course. Please try again.');
+                        console.error('Error saving course:', error);
+                    }
+                });
+            });
+
+            // Call the function to fetch and display recommended courses on page load
+            fetchRecommendedCourses();
+        });
+    </script>
+
+</body>
+
+</html>

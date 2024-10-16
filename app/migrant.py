@@ -576,3 +576,220 @@ def unsave_course():
 
     return jsonify({"message": "Course unsaved successfully!"})
 
+# Route for rendering migrantcourses.html
+@migrant_bp.route('/migrantcourses', methods=['GET'])
+def migrantcourses():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+    migrant_email=session.get('email')
+    if not user_id:
+        return redirect(url_for('auth.login'))  # Redirect to login if user is not logged in
+    
+    # Fetch additional data if necessary (registered courses, agent-recommended courses, etc.)
+    return render_template('migrantcourses.html', migrant_email=migrant_email)
+
+@migrant_bp.route('/get_saved_courses_details', methods=['GET'])
+def get_saved_courses_details():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    # Fetch saved courses for the user
+    saved_data = mongo.db.saved_courses.find_one({"user_id": ObjectId(user_id)})
+    saved_course_ids = saved_data.get("course_ids", []) if saved_data else []
+
+    # Fetch the course details for the saved courses
+    saved_courses = []
+    if saved_course_ids:
+        saved_courses_cursor = mongo.db.courses.find({"_id": {"$in": [ObjectId(id) for id in saved_course_ids]}})
+        for course in saved_courses_cursor:
+            saved_courses.append({
+                "CourseID": str(course.get("_id")),
+                "CourseName": course.get("CourseName"),
+                "Industry": course.get("Industry"),
+                "Duration": course.get("Duration"),
+                "Cost": course.get("Cost")
+            })
+
+    return jsonify({"saved_courses": saved_courses})
+
+@migrant_bp.route('/get_registered_courses', methods=['GET'])
+def get_registered_courses():
+    mongo = PyMongo(current_app)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 403
+
+    # Query to find registered courses for this user
+    registered_courses = mongo.db.registrations.find({"user_id": ObjectId(user_id)})
+
+    # Collect courses into a list
+    course_list = []
+    for course in registered_courses:
+        course_data = {
+            "CourseName": course.get('course_name'),
+            "Industry": course.get('industry', 'N/A'),
+            "Duration": course.get('duration', 'N/A')
+        }
+        course_list.append(course_data)
+
+    # Return the list of registered courses
+    if course_list:
+        return jsonify({"courses": course_list})
+    else:
+        return jsonify({"courses": []})  # Return empty list if no registered courses
+
+
+@migrant_bp.route('/get_recommended_courses_details', methods=['GET'])
+def get_recommended_courses_details():
+    try:
+        # Initialize MongoDB
+        mongo = PyMongo(current_app)
+        
+        # Get the user_id from the session and fetch the user's profile
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 403
+
+        user_profile = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+        if not user_profile:
+            return jsonify({"error": "User profile not found"}), 404
+
+        # Extract the user's occupation
+        user_occupation = user_profile.get("occupation", "")
+        if not user_occupation:
+            return jsonify({"error": "Occupation not found in profile"}), 400
+
+        # Query the occupation collection to get the industry
+        occupation_data = mongo.db.occupations.find_one({"Occupation": user_occupation})
+        if not occupation_data:
+            return jsonify({"error": "Occupation not found in database"}), 404
+
+        # Extract the industry from the occupation data
+        industry = occupation_data.get("Industry", "")
+        if not industry:
+            return jsonify({"error": "Industry not found for occupation"}), 404
+
+        # Use the occupation and industry to form the comparison string
+        migrant_text = f"{industry} {user_occupation}"
+
+        # Fetch courses from MongoDB
+        courses_cursor = mongo.db.courses.find({})
+        courses = list(courses_cursor)
+
+        if not courses:
+            return jsonify({"courses": []})  # No courses found
+
+        # Convert ObjectId to string in the courses list
+        for course in courses:
+            course['_id'] = str(course['_id'])  # Convert ObjectId to string
+
+        # Prepare course text for comparison (combine Industry and KeyLearnings)
+        course_texts = [f"{course.get('Industry', '')} {course.get('KeyLearnings', '')}" for course in courses]
+
+        # Add user input to the course texts for comparison
+        course_texts.append(migrant_text)
+
+        # Apply TF-IDF to compare user input with courses
+        vectorizer = TfidfVectorizer(stop_words='english')
+        tfidf_matrix = vectorizer.fit_transform(course_texts)
+
+        # Get the similarity scores between the user input (last entry) and the courses
+        similarity_scores = cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1])[0]
+
+        # Assign similarity scores to courses
+        for idx, score in enumerate(similarity_scores):
+            courses[idx]['Similarity_Score'] = round(score * 100, 2)  # Convert to percentage
+
+        # Sort the courses by similarity score (highest first)
+        sorted_courses = sorted(courses, key=lambda x: x['Similarity_Score'], reverse=True)
+
+        # Limit the number of courses to 5 (or change this limit as necessary)
+        limited_courses = sorted_courses[:5]
+
+        # Return the detailed recommended courses as a JSON response
+        return jsonify({"recommended_courses": limited_courses})
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({"error": "An error occurred while processing your request."}), 500
+    
+@migrant_bp.route('/register_course_migrantcourses', methods=['POST'])
+def register_course_migrantcourses():
+    mongo = PyMongo(current_app)
+    
+    try:
+        # Get the user_id from the session
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 403
+
+        user_object_id = ObjectId(user_id)
+
+        # Get data from the request
+        course_id = request.json.get('course_id')
+        if not course_id:
+            return jsonify({"error": "No course ID provided"}), 400
+
+        # Find the course by course_id
+        course_data = mongo.db.courses.find_one({"_id": ObjectId(course_id)})
+        if not course_data:
+            return jsonify({"error": "Course not found"}), 404
+
+        # Store the registration data
+        registration_data = {
+            "user_id": user_object_id,
+            "course_id": course_id,
+            "course_name": course_data.get('CourseName'),
+            "industry": course_data.get('Industry'),
+            "cost": course_data.get('Cost'),
+            "registration_date": datetime.utcnow()
+        }
+
+        # Insert the registration into the registrations collection
+        mongo.db.registrations.insert_one(registration_data)
+
+        return jsonify({"message": "Course registered successfully!"}), 200
+
+    except Exception as e:
+        print(f"Error occurred during course registration: {e}")
+        return jsonify({"error": "An error occurred while processing your registration."}), 500
+
+
+@migrant_bp.route('/save_course_migrantcourses', methods=['POST'])
+def save_course_migrantcourses():
+    mongo = PyMongo(current_app)
+
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 403
+
+        course_id = request.json.get('course_id')
+        if not course_id:
+            return jsonify({"error": "No course ID provided"}), 400
+
+        # Check if the user already has a saved_courses document
+        saved_courses = mongo.db.saved_courses.find_one({"user_id": ObjectId(user_id)})
+
+        if saved_courses:
+            # Add the course to the user's saved courses if not already present
+            if course_id not in saved_courses['course_ids']:
+                mongo.db.saved_courses.update_one(
+                    {"user_id": ObjectId(user_id)},
+                    {"$push": {"course_ids": course_id}}
+                )
+        else:
+            # If no saved_courses document exists, create a new one
+            mongo.db.saved_courses.insert_one({
+                "user_id": ObjectId(user_id),
+                "course_ids": [course_id]
+            })
+
+        return jsonify({"message": "Course saved successfully!"}), 200
+
+    except Exception as e:
+        print(f"Error occurred during saving course: {e}")
+        return jsonify({"error": "An error occurred while saving the course."}), 500
+
