@@ -86,7 +86,7 @@ def view_courses():
     
     # Pass the page, per_page, total_pages, and filtered registrations to the template
     return render_template(
-        'add_course.html',
+        'edprovideraddcourse.html',
         registrations=registrations,
         page=page,
         per_page=per_page,
@@ -130,7 +130,7 @@ def search_courses():
     registrations = mongo.db.registrations.find(search_filter).skip((page - 1) * per_page).limit(per_page)
 
     return render_template(
-        'add_course.html',
+        'edprovideraddcourse.html',
         registrations=registrations,
         page=page,
         per_page=per_page,

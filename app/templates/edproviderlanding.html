@@ -10,12 +10,14 @@
 <body>
     <header>
         <nav>
+            <div class ='navi_menu'>
             <div class="navi_menu">
                 <a class="active" href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
                 <a class="active" href="{{ url_for('edprovider.view_courses') }}" class="view-courses-btn">Potential Student</a>
                 <a class="active" href="{{ url_for('edprovider.edprovidervisuals') }}" class="view-courses-btn">EdProvider Visuals</a>
                 <a class="active" href="{{ url_for('edprovider.user_inquiry') }}" class="submit-inquiry-btn">Submit Inquiry</a>
             </div>
+        </div>
         </nav>
     </header>
 
