@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Migrant Landing Page</title>
-        <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
-        <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <title>Smart Track | PR Pathway</title>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
-    
-        <!-- Popper.js and Bootstrap JS for dropdown functionality -->
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    
-        <!-- ApexCharts -->
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    </head>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrant Landing Page</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Smart Track | PR Pathway</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
+
+    <!-- Popper.js and Bootstrap JS for dropdown functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
                 <!-- Logo -->
                 <a href="/" class="logo">
-                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo"
+                        id="logo">
                 </a>
-    
+
                 <!-- Navbar links (Home and Submit Inquiry) -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -43,19 +46,22 @@
                         </li>
                     </ul>
                 </div>
-    
+
                 <!-- Welcome message and Hamburger Menu -->
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ migrant_email }}</span>
                     <!-- Hamburger button triggers dropdown -->
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <!-- Dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="#">Menu Item 1</a></li>
                         <li><a class="dropdown-item" href="#">Menu Item 2</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>
                 </div>
@@ -66,7 +72,8 @@
     <div class="container">
         <h1>Welcome {{ first_name }}</h1>
         {% if not profile_complete %}
-        <p>Please <a href="{{ url_for('migrant.migrantform') }}">fill up your profile</a> to get personalized recommendations.</p>
+        <p>Please <a href="{{ url_for('migrant.migrantform') }}">fill up your profile</a> to get personalized
+            recommendations.</p>
         {% endif %}
     </div>
 
@@ -88,7 +95,7 @@
                 <h2>Your Score</h2>
                 <p class="large-score">{% if total_score %}{{ total_score }}{% else %}Not available{% endif %}</p>
             </div>
-            
+
             <!-- PR Probability Tile -->
             <div class="tile">
                 <h2>PR Probability</h2>
@@ -97,7 +104,7 @@
                     <script>
                         // Use your actual PR probability value here
                         var prProbability = {{ pr_prob }};
-                    
+
                         var options = {
                             series: [prProbability],
                             chart: {
@@ -144,7 +151,7 @@
                             },
                             labels: ['PR Probability'],
                         };
-                    
+
                         var chart = new ApexCharts(document.querySelector("#chart"), options);
                         chart.render();
                     </script>
@@ -156,165 +163,166 @@
         </div>
     </div>
 
-<!-- Recommended Courses Section -->
-<div class="container">
-    <h2>Recommended Courses</h2>
-    <div id="recommendation-message">
-        <p>Based on your occupation and industry: <strong>{{ occupation }}</strong>, <strong>{{ industry }}</strong>, we recommend the following courses to improve your chances of getting a PR.</p>
+    <!-- Recommended Courses Section -->
+    <div class="container">
+        <h2>Recommended Courses</h2>
+        <div id="recommendation-message">
+            <p>Based on your occupation and industry: <strong>{{ occupation }}</strong>, <strong>{{ industry
+                    }}</strong>, we recommend the following courses to improve your chances of getting a PR.</p>
+        </div>
+        <div id="courseResults">
+            <p class="no-results">Fetching recommended courses...</p>
+        </div>
     </div>
-    <div id="courseResults">
-        <p class="no-results">Fetching recommended courses...</p>
+    <!-- Registration Modal Structure -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Register for Course</h2>
+            <p id="modalCourseTitle"></p>
+
+            <!-- Main Form -->
+            <form id="registerForm">
+                <!-- First Name and Last Name fields -->
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
+
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required>
+
+                <!-- Email Field -->
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <!-- University Selection Dropdown -->
+                <label for="university">Select University:</label>
+                <select id="university" name="university" class="input-field" required>
+                    <option value="" disabled selected>Select your option</option>
+                    <option value="Swinburne">Swinburne University of Technology</option>
+                    <option value="Monash">Monash University</option>
+                    <option value="La Trobe">La Trobe University</option>
+                </select>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitRegistration">Submit Registration</button>
+            </form>
+        </div>
     </div>
-</div>
-<!-- Registration Modal Structure -->
-<div id="registerModal" class="modal">
-    <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2>Register for Course</h2>
-        <p id="modalCourseTitle"></p>
-        
-        <!-- Main Form -->
-        <form id="registerForm">
-            <!-- First Name and Last Name fields -->
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" required>
 
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" required>
+    <!-- JavaScript to fetch and display recommended courses -->
+    <script>
+        $(document).ready(function () {
+            // Cache modal elements
+            var registerModal = $('#registerModal');
+            var registerForm = $('#registerForm');
+            var selectedCourseData = null;
 
-            <!-- Email Field -->
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
-            <!-- University Selection Dropdown -->
-            <label for="university">Select University:</label>
-            <select id="university" name="university" class="input-field" required>
-                <option value="" disabled selected>Select your option</option>
-                <option value="Swinburne">Swinburne University of Technology</option>
-                <option value="Monash">Monash University</option>
-                <option value="La Trobe">La Trobe University</option>
-            </select>
-
-            <!-- Submit Button -->
-            <button type="submit" id="submitRegistration">Submit Registration</button>
-        </form>
-    </div>
-</div>
-
-<!-- JavaScript to fetch and display recommended courses -->
-<script>
-    $(document).ready(function() {
-        // Cache modal elements
-        var registerModal = $('#registerModal');
-        var registerForm = $('#registerForm');
-        var selectedCourseData = null;
-
-        // Initially hide the modal when the page loads
-        registerModal.hide();
-
-        // Close button functionality
-        $(document).on('click', '.close-button', function() {
+            // Initially hide the modal when the page loads
             registerModal.hide();
-        });
 
-        // Close modal when clicking outside of it
-        $(window).click(function(event) {
-            if ($(event.target).is('.modal')) {
+            // Close button functionality
+            $(document).on('click', '.close-button', function () {
                 registerModal.hide();
-            }
-        });
+            });
 
-        // Handle "Register" button click inside the course card
-        $(document).on('click', '.register-button', function(event) {
-            event.stopPropagation(); // Prevent event bubbling to parent elements
+            // Close modal when clicking outside of it
+            $(window).click(function (event) {
+                if ($(event.target).is('.modal')) {
+                    registerModal.hide();
+                }
+            });
 
-            var courseCard = $(this).closest('.course-card');
+            // Handle "Register" button click inside the course card
+            $(document).on('click', '.register-button', function (event) {
+                event.stopPropagation(); // Prevent event bubbling to parent elements
 
-            selectedCourseData = {
-                CourseID: courseCard.data('course-id'),
-                CourseName: courseCard.data('course-name'),
-                Industry: courseCard.data('industry'),
-                CourseType: courseCard.data('course-type'),
-                Duration: courseCard.data('duration'),
-                Similarity_Score: courseCard.data('similarity-score'),
-                Total_Points: courseCard.data('total-points')
-            };
+                var courseCard = $(this).closest('.course-card');
 
-            // Populate the registration modal with course data
-            $('#modalCourseTitle').html(`
+                selectedCourseData = {
+                    CourseID: courseCard.data('course-id'),
+                    CourseName: courseCard.data('course-name'),
+                    Industry: courseCard.data('industry'),
+                    CourseType: courseCard.data('course-type'),
+                    Duration: courseCard.data('duration'),
+                    Similarity_Score: courseCard.data('similarity-score'),
+                    Total_Points: courseCard.data('total-points')
+                };
+
+                // Populate the registration modal with course data
+                $('#modalCourseTitle').html(`
                 <strong>${selectedCourseData.CourseName}</strong>
                 <p>Industry: ${selectedCourseData.Industry}</p>
                 <p>Course Type: ${selectedCourseData.CourseType}</p>
                 <p>Duration: ${selectedCourseData.Duration}</p>
             `);
 
-            // Show the registration modal
-            registerModal.show();
+                // Show the registration modal
+                registerModal.show();
 
-            // Set focus to the first input field
-            $('#firstName').focus();
-        });
-
-        // Handle registration form submission
-        registerForm.submit(function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            var formData = $(this).serializeArray(); // Get form data
-
-            // Convert form data to an object
-            var userData = {};
-            $.each(formData, function(_, field) {
-                userData[field.name] = field.value;
+                // Set focus to the first input field
+                $('#firstName').focus();
             });
 
-            // Prepare data to send to the server
-            var dataToSend = {
-                courseId: selectedCourseData.CourseID,
-                courseName: selectedCourseData.CourseName,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                email: userData.email,
-                university: userData.university  // Capture the selected university
-            };
+            // Handle registration form submission
+            registerForm.submit(function (event) {
+                event.preventDefault(); // Prevent default form submission
 
-            // Send data to the server via AJAX
+                var formData = $(this).serializeArray(); // Get form data
+
+                // Convert form data to an object
+                var userData = {};
+                $.each(formData, function (_, field) {
+                    userData[field.name] = field.value;
+                });
+
+                // Prepare data to send to the server
+                var dataToSend = {
+                    courseId: selectedCourseData.CourseID,
+                    courseName: selectedCourseData.CourseName,
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    email: userData.email,
+                    university: userData.university  // Capture the selected university
+                };
+
+                // Send data to the server via AJAX
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('migrant.register_course') }}",
+                    data: dataToSend,
+                    success: function (response) {
+                        alert('Successfully registered for the course!');
+
+                        // Hide the modal
+                        registerModal.hide();
+
+                        // Reset the form
+                        registerForm[0].reset();
+
+                        // Remove the corresponding course card
+                        $(`div[data-course-id='${selectedCourseData.CourseID}']`).remove();
+                    },
+                    error: function (error) {
+                        alert('Error registering for the course. Please try again.');
+                    }
+                });
+            });
+
+            // Fetch and display courses
             $.ajax({
-                type: 'POST',
-                url: "{{ url_for('migrant.register_course') }}",
-                data: dataToSend,
-                success: function(response) {
-                    alert('Successfully registered for the course!');
+                type: 'GET',
+                url: "{{ url_for('migrant.recommendcourse') }}",
+                success: function (response) {
+                    var courseResults = $('#courseResults');
+                    courseResults.empty();
 
-                    // Hide the modal
-                    registerModal.hide();
+                    if (response.courses.length > 0) {
+                        // Add a row to contain the cards
+                        var row = $('<div class="row"></div>');
 
-                    // Reset the form
-                    registerForm[0].reset();
-
-                    // Remove the corresponding course card
-                    $(`div[data-course-id='${selectedCourseData.CourseID}']`).remove();
-                },
-                error: function(error) {
-                    alert('Error registering for the course. Please try again.');
-                }
-            });
-        });
-
- // Fetch and display courses
-$.ajax({
-    type: 'GET',
-    url: "{{ url_for('migrant.recommendcourse') }}",
-    success: function(response) {
-        var courseResults = $('#courseResults');
-        courseResults.empty();
-
-        if (response.courses.length > 0) {
-            // Add a row to contain the cards
-            var row = $('<div class="row"></div>');
-            
-            $.each(response.courses, function(index, course) {
-                // Create the card for each course
-                var card = `
+                        $.each(response.courses, function (index, course) {
+                            // Create the card for each course
+                            var card = `
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card h-100 course-card"
                              data-course-id="${course._id}"
@@ -323,96 +331,99 @@ $.ajax({
                              data-course-type="${course.CourseType}"
                              data-duration="${course.Duration}"
                              data-similarity-score="${course.Similarity_Score}"
-                             data-cost="${course.Cost}">
+                             data-cost="${course.Cost}"
+                             data-university="${course.University}">
                             <div class="card-body">
                                 <h5 class="card-title">${course.CourseName}</h5>
                                 <p class="card-text">Industry: ${course.Industry}</p>
                                 <p class="card-text">Course Type: ${course.CourseType}</p>
                                 <p class="card-text">Duration: ${course.Duration}</p>
+                                <p class="card-text">University: ${course.University}</p>
                                 <p class="card-text">Cost: $${course.Cost}</p>
                                 <p class="card-text">Similarity Score: ${course.Similarity_Score}%</p>
                             </div>
-<div class="card-footer d-flex justify-content-between">
-    <button class="btn btn-primary register-button me-2">Register</button>
-    <button class="btn btn-success save-button" data-course-id="${course._id}">Save</button>
-</div>
-
+                            <div class="card-footer d-flex justify-content-between">
+                                <button class="btn btn-primary register-button me-2">Register</button>
+                                <button class="btn btn-success save-button" data-course-id="${course._id}">Save</button>
+                            </div>
                         </div>
                     </div>`;
-                
-                row.append(card);
-            });
 
-            // Append the row to the courseResults container
-            courseResults.append(row);
+                            row.append(card);
+                        });
 
-            // If no courses are found
-            if (row.children().length === 0) {
-                courseResults.html('<p class="no-results">No courses found.</p>');
-            }
+                        // Append the row to the courseResults container
+                        courseResults.append(row);
 
-            // Check which courses are already saved and update the save buttons
-            updateSaveButtons();
+                        // If no courses are found
+                        if (row.children().length === 0) {
+                            courseResults.html('<p class="no-results">No courses found.</p>');
+                        }
 
-        } else {
-            courseResults.html('<p class="no-results">No courses found matching your profile.</p>');
-        }
-    },
-    error: function(error) {
-        $('#courseResults').html('<p class="no-results">Error fetching recommendations. Please try again later.</p>');
-    }
-});
+                        // Check which courses are already saved and update the save buttons
+                        updateSaveButtons();
 
-// Function to update the save buttons based on saved courses
-function updateSaveButtons() {
-    $.ajax({
-        type: 'GET',
-        url: "{{ url_for('migrant.get_saved_courses') }}", // New endpoint to fetch saved courses
-        success: function(response) {
-            var savedCourseIds = response.saved_courses;
-
-            // Loop through each save button
-            $('.save-button').each(function() {
-                var courseId = $(this).data('course-id');
-                
-                if (savedCourseIds.includes(courseId)) {
-                    $(this).text('Unsave').addClass('btn-danger').removeClass('btn-success unsave');
-                } else {
-                    $(this).text('Save').addClass('btn-success').removeClass('btn-danger unsave');
+                    } else {
+                        courseResults.html('<p class="no-results">No courses found matching your profile.</p>');
+                    }
+                },
+                error: function (error) {
+                    $('#courseResults').html('<p class="no-results">Error fetching recommendations. Please try again later.</p>');
                 }
             });
-        }
-    });
-}
 
-// Handle save/unsave button clicks
-$(document).on('click', '.save-button', function() {
-    var courseId = $(this).data('course-id');
-    var isUnsave = $(this).hasClass('btn-danger'); // Check if this is an "unsave" operation
 
-    // Send the save/unsave request
-    $.ajax({
-        type: 'POST',
-        url: isUnsave ? "{{ url_for('migrant.unsave_course') }}" : "{{ url_for('migrant.save_course') }}",
-        data: JSON.stringify({ course_id: courseId }),
-        contentType: 'application/json',
-        success: function(response) {
-            // Update button state based on the action
-            if (isUnsave) {
-                $(`.save-button[data-course-id='${courseId}']`).text('Save').removeClass('btn-danger').addClass('btn-success');
-            } else {
-                $(`.save-button[data-course-id='${courseId}']`).text('Unsave').removeClass('btn-success').addClass('btn-danger');
+            // Function to update the save buttons based on saved courses
+            function updateSaveButtons() {
+                $.ajax({
+                    type: 'GET',
+                    url: "{{ url_for('migrant.get_saved_courses') }}", // New endpoint to fetch saved courses
+                    success: function (response) {
+                        var savedCourseIds = response.saved_courses;
+
+                        // Loop through each save button
+                        $('.save-button').each(function () {
+                            var courseId = $(this).data('course-id');
+
+                            if (savedCourseIds.includes(courseId)) {
+                                $(this).text('Unsave').addClass('btn-danger').removeClass('btn-success unsave');
+                            } else {
+                                $(this).text('Save').addClass('btn-success').removeClass('btn-danger unsave');
+                            }
+                        });
+                    }
+                });
             }
-        },
-        error: function(error) {
-            alert('Error saving course. Please try again.');
-        }
-    });
-});
 
-    });
-</script>
+            // Handle save/unsave button clicks
+            $(document).on('click', '.save-button', function () {
+                var courseId = $(this).data('course-id');
+                var isUnsave = $(this).hasClass('btn-danger'); // Check if this is an "unsave" operation
+
+                // Send the save/unsave request
+                $.ajax({
+                    type: 'POST',
+                    url: isUnsave ? "{{ url_for('migrant.unsave_course') }}" : "{{ url_for('migrant.save_course') }}",
+                    data: JSON.stringify({ course_id: courseId }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        // Update button state based on the action
+                        if (isUnsave) {
+                            $(`.save-button[data-course-id='${courseId}']`).text('Save').removeClass('btn-danger').addClass('btn-success');
+                        } else {
+                            $(`.save-button[data-course-id='${courseId}']`).text('Unsave').removeClass('btn-success').addClass('btn-danger');
+                        }
+                    },
+                    error: function (error) {
+                        alert('Error saving course. Please try again.');
+                    }
+                });
+            });
+
+        });
+    </script>
 
 
 </body>
+
 </html>

@@ -11,6 +11,7 @@ $(document).ready(function() {
                             <p class="card-text"><strong>Industry:</strong> ${course.Industry}</p>
                             <p class="card-text"><strong>Type:</strong> ${course.CourseType}</p>
                             <p class="card-text"><strong>Duration:</strong> ${course.Duration}</p>
+                            <p class="card-text"><strong>University:</strong> ${course.University}</p> <!-- Added University field -->
                             <p class="card-text"><strong>Cost:</strong> $${course.Cost}</p>
                             <button class="btn btn-info recommend-btn" data-id="${course._id}">Recommend</button>
                         </div>

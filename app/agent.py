@@ -10,7 +10,7 @@ agent_bp = Blueprint('agent', __name__)
 
 @agent_bp.route('/agentlanding')
 def agentlanding():
-    user_id = session.get('user_id')  # Get the current agent's user_id from session
+    user_id = session.get('user_id')
     mongo = PyMongo(current_app)
 
     # Get the agent's email from the session
@@ -28,32 +28,92 @@ def agentlanding():
 
     # Find the agent's connections document where the agentid matches the current agent's user_id
     agent_connections = mongo.db.connections.find_one({'agentid': ObjectId(user_id)})
-
-    # Count the total number of migrants (migrantids array length)
     migrant_ids = agent_connections['migrantids'] if agent_connections and 'migrantids' in agent_connections else []
     total_migrants = len(migrant_ids)
 
-    # Calculate the average age score of migrants from the scores collection
+    # Calculate the average age using migrants' dates of birth
     if total_migrants > 0:
-        # Query the scores collection for the age scores of the migrants
-        migrants_scores = mongo.db.scores.find({'user_id': {'$in': migrant_ids}}, {'individual_scores.age_score': 1})
-
-        # Calculate the total of all age scores
-        total_age_score = 0
-        age_score_count = 0
-        for score in migrants_scores:
-            age_score = score.get('individual_scores', {}).get('age_score')
-            if age_score is not None:  # Ensure age_score is present
-                total_age_score += age_score
-                age_score_count += 1
-        
-        # Calculate the average age score if there are any valid scores
-        average_age = total_age_score / age_score_count if age_score_count > 0 else 0
+        migrants_data = list(mongo.db.users.find({'_id': {'$in': migrant_ids}}, {'dob': 1}))
+        total_age = 0
+        age_count = 0
+        for migrant in migrants_data:
+            dob = migrant.get('dob')
+            if dob:
+                dob_dt = datetime.strptime(dob, '%Y-%m-%d')
+                age = (datetime.today() - dob_dt).days // 365
+                total_age += age
+                age_count += 1
+        average_age = total_age / age_count if age_count > 0 else 0
     else:
         average_age = 0
 
-    # Render the agent landing template with total migrant count and average age score
-    return render_template('agentlanding.html', agent=agent, total_migrants=total_migrants, average_age=round(average_age, 1))
+    # Calculate the average PR score and probability
+    scores = list(mongo.db.scores.find({'user_id': {'$in': migrant_ids}}, {'total_score': 1, 'pr_probability': 1}))
+    if scores:
+        total_pr_score = sum(score.get('total_score', 0) for score in scores)
+        total_pr_prob = sum(score.get('pr_probability', 0) for score in scores)
+        average_pr_score = total_pr_score / len(scores)
+        average_pr_probability = total_pr_prob / len(scores)
+    else:
+        average_pr_score = 0
+        average_pr_probability = 0
+
+    # Find top 5 nationalities (capitalizing first letter)
+    top_nationalities = list(mongo.db.users.aggregate([
+        {'$match': {'_id': {'$in': migrant_ids}, 'nationality': {'$ne': None}}},
+        {'$group': {'_id': {'$concat': [
+            {'$toUpper': {'$substrCP': ['$nationality', 0, 1]}},
+            {'$substrCP': ['$nationality', 1, {'$strLenCP': '$nationality'}]}
+        ]}, 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 5}
+    ]))
+
+    # Find top 5 current countries (capitalizing first letter)
+    top_countries = list(mongo.db.users.aggregate([
+        {'$match': {'_id': {'$in': migrant_ids}, 'current_country': {'$ne': None}}},
+        {'$group': {'_id': {'$concat': [
+            {'$toUpper': {'$substrCP': ['$current_country', 0, 1]}},
+            {'$substrCP': ['$current_country', 1, {'$strLenCP': '$current_country'}]}
+        ]}, 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 5}
+    ]))
+
+    # Gender distribution data
+    gender_distribution = list(mongo.db.users.aggregate([
+        {'$match': {'_id': {'$in': migrant_ids}, 'gender': {'$ne': None}}},
+        {'$group': {'_id': '$gender', 'count': {'$sum': 1}}},
+        {'$sort': {'_id': 1}}
+    ]))
+
+    # Prepare data for the migrant table
+    migrants_scores = list(mongo.db.scores.find({'user_id': {'$in': migrant_ids}}, {'user_id': 1, 'total_score': 1, 'pr_probability': 1}))
+    migrants_data_map = {str(m['_id']): m for m in mongo.db.users.find({'_id': {'$in': migrant_ids}}, {'first_name': 1, 'last_name': 1})}
+
+    # Combine migrant name, PR score, and probability
+    migrants_data_combined = [
+        {
+            'full_name': f"{migrants_data_map.get(str(score['user_id']), {}).get('first_name', '')} {migrants_data_map.get(str(score['user_id']), {}).get('last_name', '')}",
+            'total_score': score['total_score'],
+            'pr_probability': score['pr_probability']
+        }
+        for score in migrants_scores if str(score['user_id']) in migrants_data_map
+    ]
+
+    return render_template(
+        'agentlanding.html',
+        agent=agent,
+        total_migrants=total_migrants,
+        average_age=round(average_age, 1),
+        average_pr_score=round(average_pr_score, 1),
+        average_pr_probability=round(average_pr_probability, 1),
+        top_nationalities=top_nationalities,
+        top_countries=top_countries,
+        gender_distribution=gender_distribution,
+        migrants_data=migrants_data_combined
+    )
+
 
 
 @agent_bp.route('/submit_inquiry', methods=['POST'])

@@ -39,14 +39,17 @@
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ migrant_email }}</span>
                     <!-- Hamburger button triggers dropdown -->
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <!-- Dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="#">Menu Item 1</a></li>
                         <li><a class="dropdown-item" href="#">Menu Item 2</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>
                 </div>
@@ -92,41 +95,49 @@
     <!-- JavaScript to fetch and display the course sections -->
     <script>
         $(document).ready(function () {
-            
-// Fetch and display registered courses
-$.ajax({
-    type: 'GET',
-    url: "{{ url_for('migrant.get_registered_courses') }}", // Correct endpoint
-    success: function(response) {
-        var container = $('#registeredCoursesContainer');
-        container.empty();
 
-        if (response.courses && response.courses.length > 0) {
-            $.each(response.courses, function(index, course) {
-                container.append(`
+            fetchSavedCourses();
+
+            // Fetch and display registered courses
+            // Fetch and display registered courses
+            $.ajax({
+                type: 'GET',
+                url: "{{ url_for('migrant.get_registered_courses') }}",
+                success: function (response) {
+                    var container = $('#registeredCoursesContainer');
+                    container.empty();
+
+                    if (response.courses && response.courses.length > 0) {
+                        $.each(response.courses, function (index, course) {
+                            // Provide default values if fields are missing
+                            var courseName = course.CourseName || 'No course name available';
+                            var industry = course.Industry || 'N/A';
+                            var duration = course.Duration || 'N/A';
+                            var university = course.University || 'N/A';
+
+                            container.append(`
                     <div class="col-md-4 mb-4">
                         <div class="course-card card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">${course.CourseName}</h5>
-                                <p class="card-text">Industry: ${course.Industry}</p>
+                                <h5 class="card-title">${courseName}</h5>
+                                <p class="card-text">Industry: ${industry}</p>
+                                <p class="card-text">Duration: ${duration}</p>
+                                <p class="card-text">University: ${university}</p>
                             </div>
                         </div>
                     </div>
                 `);
+                        });
+                    } else {
+                        container.html('<p class="no-courses">No registered courses.</p>');
+                    }
+                },
+                error: function (error) {
+                    $('#registeredCoursesContainer').html('<p class="no-courses">No registered courses.</p>');
+                }
             });
-        } else {
-            container.html('<p class="no-courses">No registered courses.</p>');
-        }
-    },
-    error: function(error) {
-        // If there's an error fetching the data, still display 'No registered courses' instead of an error message.
-        $('#registeredCoursesContainer').html('<p class="no-courses">No registered courses.</p>');
-    }
-});
 
 
-
-            // Fetch and display saved courses
             function fetchSavedCourses() {
                 $.ajax({
                     type: 'GET',
@@ -135,23 +146,32 @@ $.ajax({
                         var savedCoursesContainer = $('#savedCoursesContainer');
                         savedCoursesContainer.empty();
 
+                        // Check if the response contains saved_courses and if it has any items
                         if (response.saved_courses && response.saved_courses.length > 0) {
                             $.each(response.saved_courses, function (index, course) {
+                                // Provide default values if fields are missing
+                                var courseName = course.CourseName || 'No course name available';
+                                var industry = course.Industry || 'N/A';
+                                var duration = course.Duration || 'N/A';
+                                var university = course.University || 'N/A'; // Default to 'N/A' if missing
+                                var cost = course.Cost !== undefined ? `$${course.Cost}` : 'Cost not available';
+
                                 savedCoursesContainer.append(`
-                            <div class="col-md-4 mb-4">
-                                <div class="course-card card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${course.CourseName}</h5>
-                                        <p class="card-text">Industry: ${course.Industry}</p>
-                                        <p class="card-text">Duration: ${course.Duration}</p>
-                                        <p class="card-text">Cost: $${course.Cost}</p>
-                                    </div>
-                                    <div class="card-footer">
-                                        <button class="btn btn-danger unsave-button" data-course-id="${course.CourseID}">Unsave</button>
-                                    </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="course-card card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">${courseName}</h5>
+                                    <p class="card-text">Industry: ${industry}</p>
+                                    <p class="card-text">Duration: ${duration}</p>
+                                    <p class="card-text">University: ${university}</p>
+                                    <p class="card-text">Cost: ${cost}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-danger unsave-button" data-course-id="${course.CourseID}">Unsave</button>
                                 </div>
                             </div>
-                        `);
+                        </div>
+                    `);
                             });
                         } else {
                             savedCoursesContainer.html('<p class="no-courses">You have no saved courses.</p>');
@@ -163,29 +183,7 @@ $.ajax({
                 });
             }
 
-            // Call the function to fetch and display saved courses on page load
-            fetchSavedCourses();
 
-            // Handle unsave button clicks
-            $(document).on('click', '.unsave-button', function () {
-                var courseId = $(this).data('course-id');
-
-                // Send unsave request
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ url_for('migrant.unsave_course') }}",
-                    data: JSON.stringify({ course_id: courseId }),
-                    contentType: 'application/json',
-                    success: function (response) {
-                        alert('Course unsaved successfully!');
-                        // Refresh the saved courses list after unsaving
-                        fetchSavedCourses();
-                    },
-                    error: function (error) {
-                        console.error('Error unsaving course:', error);
-                    }
-                });
-            });
 
             // Fetch and display recommended courses
             function fetchRecommendedCourses() {
@@ -199,22 +197,23 @@ $.ajax({
                         if (response.recommended_courses && response.recommended_courses.length > 0) {
                             $.each(response.recommended_courses, function (index, course) {
                                 recommendedCoursesContainer.append(`
-                            <div class="col-md-4 mb-4">
-                                <div class="course-card card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${course.CourseName}</h5>
-                                        <p class="card-text">Industry: ${course.Industry}</p>
-                                        <p class="card-text">Duration: ${course.Duration}</p>
-                                        <p class="card-text">Cost: $${course.Cost}</p>
-                                        <p class="card-text">Similarity Score: ${course.Similarity_Score}%</p>
-                                    </div>
-                                    <div class="card-footer">
-                                        <button class="btn btn-primary register-button" data-course-id="${course._id}">Register</button>
-                                        <button class="btn btn-success save-button" data-course-id="${course._id}">Save</button>
-                                    </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="course-card card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">${course.CourseName}</h5>
+                                    <p class="card-text">Industry: ${course.Industry}</p>
+                                    <p class="card-text">Duration: ${course.Duration}</p>
+                                    <p class="card-text">University: ${course.University}</p>
+                                    <p class="card-text">Cost: $${course.Cost}</p>
+                                    <p class="card-text">Similarity Score: ${course.Similarity_Score}%</p>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary register-button" data-course-id="${course._id}">Register</button>
+                                    <button class="btn btn-success save-button" data-course-id="${course._id}">Save</button>
                                 </div>
                             </div>
-                        `);
+                        </div>
+                    `);
                             });
                         } else {
                             recommendedCoursesContainer.html('<p class="no-courses">No recommended courses found.</p>');
@@ -225,6 +224,7 @@ $.ajax({
                     }
                 });
             }
+
 
             // Handle course registration
             $(document).on('click', '.register-button', function () {
