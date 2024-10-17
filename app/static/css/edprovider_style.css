@@ -14,21 +14,7 @@ body {
     padding: 20px;
 }
 
-/* Form container with heavier borders */
-.form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 50px;
-    background: linear-gradient(135deg, #ffffff, #ffffff);
-    border-radius: 15px;
-    border: 3px solid #B76D68; /* Updated to Main Pink */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    text-align: left;
-}
+
 
 /* Calm, welcoming form title */
 .form-title {
@@ -250,49 +236,6 @@ tr:hover {
     color: #b8837f; /* Updated to Soft Pink */
 }
 
-/* Basic styling for the navigation menu */
-.navi_menu {
-    overflow: hidden;
-    background-color: #B76D68; /* Updated to Main Pink */
-    z-index: 1001;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.navi_menu a {
-    font-size: 12px;
-    color: white;
-    text-align: center;
-    padding: 20px 25px;
-    text-decoration: none;
-    z-index: 1001;
-}
-
-.navi_menu a.active {
-    background-color: #403F4C;
-}
-
-.navi_menu a:hover {
-    background-color: #b8837f; /* Updated to Soft Pink */
-}
-
-/* Responsive styling for the navigation menu */
-@media screen and (max-width: 768px) {
-    .navi_menu {
-        flex-direction: column;
-        padding: 0;
-    }
-
-    .navi_menu a {
-        float: none;
-        display: block;
-        width: 100%;
-        text-align: center;
-        padding: 15px;
-    }
-}
 
 @media screen and (max-width: 480px) {
     .navi_menu a {
@@ -593,3 +536,937 @@ tr:hover {
             width: 100% !important;
             height: 400px !important;
         }
+
+
+
+
+h1 {
+	text-align: center;
+	color: #403f4c;
+	font-size: 20px;
+}
+
+
+/* Global reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Remove default margin and padding on body and html */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    width: 100%;
+    height: 100%;
+    background-color: #FFFF; /* Set a global background color */
+}
+
+nav {
+    padding-top: 0 !important;
+    padding-bottom: 15px;
+}
+
+/* Basic styling for the navigation menu */
+.navi_menu {
+    background-color: #B76D68;  /* Background color of the navbar */
+    display: flex;
+    justify-content: space-between; /* Distribute space between elements */
+    align-items: center; /* Vertically center items */
+    padding: 10px 20px; /* Adjust padding for spacing */
+    height: 60px; /* Set a fixed height for the navbar */
+}
+
+/* Styling for the logo */
+.navi_menu .logo img {
+    height: 30px; /* Match the height of the navbar */
+    width: auto; /* Keep the width auto to maintain aspect ratio */
+    max-height: 100%; /* Ensure it does not overflow the navbar height */
+    margin-right: 15px; /* Space between the logo and links */
+    object-fit: contain; /* Prevent any stretching or distortion */
+}
+
+/* Styling for the navigation links */
+.navi_menu .navbar-nav {
+    display: flex;
+    align-items: center; /* Vertically align navigation links */
+}
+.navi_menu a {
+    font-size: 16px;
+    color: #D3D3D3; /* Dimmed color for inactive links */
+    text-align: center;
+    padding: 10px 15px;
+    line-height: 1.5;
+    margin-right: 10px; /* Adds space between the menu items */
+}
+
+/* Styling for the active navigation link */
+.navi_menu a.active {
+    color: #FFFFFF !important; /* Brighter color for active link */
+    border-bottom: 3px solid #FFFFFF; /* Adds a border underline for active link */
+    text-decoration: none; /* Remove underline from active link to distinguish it */
+    font-weight: bold;
+}
+/* Styling for hover state */
+.navi_menu a:hover {
+    color: #D3D3D3;
+/* Make hovered links more visible */
+    border-bottom: 3px solid #D3D3D3; /* Adds underline border when hovering */
+    text-decoration: none; /* Remove the default underline on hover */
+    font-weight: bold;
+}
+/* Remove pointer hover effect from the logo */
+.logo {
+    cursor: default;
+    background-color: transparent !important; 
+}
+/* Welcome text styling */
+.welcome-text {
+    font-size: 16px;
+    color: #D3D3D3;
+    margin-right: 10px; /* Space between welcome text and the hamburger icon */
+}
+
+
+.dropdown {
+    margin-left: auto; /* Align hamburger menu to the right */
+    display: flex;
+    align-items: center; /* Vertically align the hamburger icon */
+}
+
+.dropdown button {
+    background: none; /* Remove default button styling */
+    border: none; /* Remove border */
+    padding: 0;
+}
+
+.dropdown .navbar-toggler-icon { width: 25px; height: 25px; color: #FFFFFF; fill: #FFFFFF;
+}
+/* Hamburger Menu (Dropdown) Styling */
+/* Dropdown Menu Styling */
+.dropdown-menu {
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid #dddada; /* Add a light border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+
+
+.dropdown-menu a {
+    color: rgb(0, 0, 0) !important; /* Ensure the text is white */
+}
+
+.dropdown-menu a:hover {
+    background-color: #dddada !important; /* Add hover background for dropdown items */
+}
+
+/* Remove background color when hamburger icon is expanded */
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* Responsive styling for the navigation menu */
+@media screen and (max-width: 768px) {
+    .navi_menu {
+        flex-direction: column;
+        padding: 0;
+        height: auto; /* Reset height for smaller screens */
+    }
+
+    .navi_menu a {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .navi_menu .logo {
+        margin-bottom: 10px; /* Center the logo on smaller screens */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .navi_menu a {
+        font-size: 14px; 
+        padding: 10px;
+    }
+}
+
+
+
+
+#background-video {
+	object-fit: cover;
+	top: 0;
+	left: 0;
+	height: 97%;
+	width: 100%
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    width: 100%;
+    height: 100%;
+    background-color: #FFFF; /* Set a global background color */
+}
+
+
+
+
+
+
+/*logo*/
+#brand1 {
+    position: absolute;
+    font: bold 10vw Poppins, sans-serif; 
+    text-align: center;
+    text-transform: uppercase;
+    color: #ffffff;
+    top: 0.01em;
+    left: 50%;
+    transform: translateX(-50%); 
+    white-space: nowrap;
+    max-width: 100%;
+    box-sizing: border-box;
+    z-index: 2; /* Ensures the brand text is above the form */
+}
+
+.form-container {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    width: 300px; /* Set a fixed width */
+}
+
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+
+/* Ensure form fields are on separate lines */
+.form-group {
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+.login-prompt{
+    margin-top: 15px;
+    color: black !important;
+    font-size: 14px;
+    text-align: center;
+}
+
+
+
+
+/* Styling for the "Don't have an account yet?" message */
+.signup-message {
+    margin-top: 15px;
+    color: black !important;
+    font-size: 14px;
+    text-align: center;
+}
+
+.signup-message a {
+    color: #007bff; /* Adjust the color as needed */
+    text-decoration: none;
+}
+
+.signup-message a:hover {
+    text-decoration: underline;
+}
+
+
+#tagline {
+    position: absolute;
+    font: bolder 2vw Poppins, sans-serif; 
+    text-align: center;
+    color: white;
+    top: 22em;
+    left: 50%;
+    transform: translateX(-50%); 
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/*making logo responsive to screen size*/
+@media (max-width: 768px) {
+    #brand1 {
+        font-size: 8vw; 
+        top: 5em; 
+    }
+
+    #tagline {
+        font-size: 2vw; 
+        top: 28em; 
+    }
+}
+
+@media (max-width: 480px) {
+    #brand1 {
+        font-size: 12vw; 
+        top: 4em;
+    }
+
+    #tagline {
+        font-size: 2vw;
+        top: 37em; 
+    }
+}
+
+
+.logo-color
+{
+	color: #B76D68;
+}
+
+
+
+
+#company_intro {
+    padding: 2em;
+    background-color: #f9f9f9; 
+    color: #333; 
+    border-radius: 8px; 
+    margin: 2em auto; 
+    max-width: 800px; 
+    text-align: center; 
+}
+
+#company_intro h2 {
+    font-size: 2em; 
+    color: #333; 
+    margin-bottom: 0.5em; 
+}
+
+#company_intro p {
+    font-size: 1.2em; 
+    line-height: 1.5; 
+}
+
+
+/*background image in index.html*/
+#background_image {
+	object-fit: cover;
+	filter: brightness(70%);
+	top: 0;
+	left: 0;
+	height: 97%;
+	width: 100%
+	
+}
+
+article {
+	text-align: justify;
+	font-size: 14px;
+	clear: both;
+}
+
+
+
+@media screen and (max-width: 480px) 
+{
+    aside {
+        display: none; /* Hide the aside element */
+    }
+}
+
+main {
+    padding: 10px;
+}
+
+/* Product Overview Section */
+section {
+	overflow: hidden;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #fff; 
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+section h3 {
+    color: #403F4C; 
+    margin-bottom: 10px;
+}
+
+section p {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+/* Image Styling */
+img {
+	display: block;
+	margin: 0 auto;
+	width: 300px;
+	height: 300px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+
+div img {
+	display: block;
+	margin: 0 auto;
+	width: 300px;
+	height: 300px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* List Styling */
+ul, ol {
+    margin-left: 20px;
+}
+
+ul li, ol li {
+    margin-bottom: 10px;
+}
+
+/* Aside Styles */
+
+
+aside {
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    width: 25%;
+    padding: 15px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+aside h3 {
+    color: #403F4C;
+    margin-bottom: 15px;
+}
+
+aside ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+aside ul li {
+    margin-bottom: 10px;
+}
+
+aside ul li a {
+    text-decoration: none;
+    color: #403F4C;
+}
+
+aside ul li a:hover {
+    color: #B76D68;
+}
+
+
+/*definition list - terms*/
+dt {
+	display: table;
+	float: left;
+	width: auto;
+	text-align: right;
+}
+
+dt ::after {
+	content: ":"; 
+}
+
+
+
+/*definition list container for personal information*/
+#define_list {
+	float: left;
+	padding-top: 2em;
+	padding-left: 20em;
+}
+
+
+/*object data for resume in pdf*/
+
+footer {
+		bottom: 10px;
+		left: 0;
+		width: 100%;
+		font: 10px Arial, sans-serif;
+		color: black;
+		text-align: center;
+		background-color: white;
+		padding-bottom: 10px;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, #403F4C, #B76D68, #403F4C);
+    margin: 5px 0; 
+    width: 100%; 
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.7; 
+}
+
+
+
+
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+legend {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+label {
+    margin: 10px 0 5px;
+    width: 100%;
+    text-align: left;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 100px;
+}
+
+.radio-group, .checkbox-group {
+    margin-bottom: 10px;
+}
+
+.radio-group label, .checkbox-group label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #B76D68;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #b8837f;
+}
+
+
+/* About me Style */
+dl {
+    margin: 0;
+    padding: 0;
+    vertical-align: top;  
+    width: calc(100% - 220px); 
+}
+
+dt {
+	text-align: left;
+    font-weight: bold;
+    width: 150px; /
+}
+
+dd {
+    margin: 0; 
+    padding-left: 10px; 
+}
+
+/* Style for the figure element */
+figure {
+    float: right;
+    border: 2px solid #000; 
+    padding: 20px;
+    margin: 0;
+    margin-left: 20px;
+    max-width: 100%;
+    box-sizing: border-box; 
+}
+
+
+
+@media (max-width: 768px) {
+    figure {
+        float: none;
+        margin: 20px auto; 
+        max-width: 80%;
+    }
+
+    img {
+        max-width: 100%; /* Allow the image to scale with the figure */
+    }
+}
+
+figcaption {
+    text-align: center;
+    margin-top: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+}
+
+thead {
+    background-color: #403F4C;
+    color: white;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+.product-main {
+	margin-left: 35%;	
+}
+
+.table-container {
+    display: flex;
+    justify-content: center; 
+}
+
+.background-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.background-container img {
+    width: 100%;
+    transition: transform 0.5s ease;
+    display: block;
+}
+
+/* Adding a dim overlay */
+.background-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity to control dimness */
+    z-index: 1; /* Make sure it's above the image */
+}
+
+.background-container p {
+    position: relative;
+    z-index: 2; /* Place the text above the dim overlay */
+    color: white; /* Text color contrasting with the dimmed background */
+}
+
+
+/* Container for the zoom effect */
+.image-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block; 
+}
+
+/* Zoom effect for the image */
+.image-container img {
+    transition: transform 0.5s ease; 
+    width: 100%; 
+}
+
+/* Zoom effect on hover */
+.image-container:hover img {
+    transform: scale(1.2); 
+}
+
+/* Form.html page */
+.questionaire-container {
+    border: 1px solid #FF9933;
+    border-radius: 5px;
+    padding: 15px;
+    max-width: 60%;
+    margin: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin-top: 60px;
+}
+
+/* Header Styling */
+.header {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FF9933;
+    margin-bottom: 15px;
+    text-align: left;
+    border-bottom: 1px solid #FF9933;
+    padding-bottom: 10px;
+}
+
+/* Option Styling  */
+.option {
+    margin-bottom: 15px;
+    background-color: #FAF4EF;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #E0E0E0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Radio Buttons Styling */
+.option input[type="radio"] {
+    margin-right: 10px;
+    accent-color: #0073E6;
+}
+
+.option label {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Form Button Styling */
+.form-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    float: right;
+    margin-right: 30px;
+}
+
+.form-button:hover {
+    background-color: #45a049;
+}
+
+/* Styling for Previous Button */
+#prevBtn {
+    background-color: #bbbbbb;
+    color: white;
+    margin-right: 30px;
+}
+
+/* Progress Circle Styling */
+.progress-circle {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Progress Step Styling */
+.step {
+    height: 15px;
+    width: 15px;
+    margin: 0 3px;
+    background-color: #bbbbbb;
+    border: none;
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.step.active,
+.step.finish {
+    opacity: 1;
+    background-color: #4CAF50;
+}
+
+/* Tab Styling */
+.tab {
+    display: none;
+}
+
+/* Show first tab on page */
+.tab:first-child {
+    display: block;
+}
+
+/* Styling for invalid input fields */
+.invalid {
+    background-color: #ffdddd;
+}
+
+select, input[type="text"], input[type="date"] {
+    width: 98%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+  /*page 2 */
+  .q2-2-section {
+    display: none; 
+}
+
+  /*page 4 */
+.score-section {
+    display: none;
+}
+
+/* Page 8 */
+.hidden {
+  display: none;
+}
+
+/* Center all content inside .widget */
+.widget {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: To align the container as well */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* To ensure the chart and text are aligned properly */
+#chart {
+    width: 100%;
+    max-width: 400px; /* Ensures responsiveness */
+    margin-top: 10px;
+}
+
+/* Modal container */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+}
+
+/* Modal content box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.modal-backdrop {
+    z-index: -1;
+  }
+
+/* Close button */
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form fields */
+#registerForm label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+#registerForm input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#submitRegistration {
+    background-color: #B76D68;
+    color: white;
+    padding: 12px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+#submitRegistration:hover {
+    background-color: #b8837f;
+}
