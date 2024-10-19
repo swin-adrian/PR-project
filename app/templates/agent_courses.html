@@ -14,30 +14,31 @@
                 <a href="/" class="logo">
                     <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
                 </a>
+
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('agent.agentlanding') }}">Overview</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('agent.my_migrants') }}">My Migrants</a>
+                            <a class="nav-link" href="{{ url_for('agent.my_migrants') }}">My migrants</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Courses</a>
+                            <a class="nav-link active" href="{{ url_for('agent.agent_courses') }}">Courses</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('agent.user_inquiry') }}">Submit Inquiry</a>
-                        </li>
+
                     </ul>
                 </div>
+
                 <div class="dropdown ms-auto d-flex align-items-center">
-                    <span class="welcome-text me-3">{{ agent_email }}</span>
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="welcome-text me-3">{{ agent.email }}</span>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{{ url_for('agent.user_inquiry') }}">Submit Inquiry</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+
                     </ul>
                 </div>
             </div>

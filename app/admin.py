@@ -3,6 +3,7 @@ from bson import ObjectId
 from flask_pymongo import PyMongo
 from datetime import datetime
 from werkzeug.security import generate_password_hash
+from flask import jsonify
 
 # Define the admin blueprint
 admin_bp = Blueprint('admin', __name__)
@@ -35,7 +36,28 @@ def detect_role(email):
 
 @admin_bp.route('/adminlanding')
 def adminlanding():
-    return render_template('adminlanding.html')
+    mongo = PyMongo(current_app)
+
+    # Total number of migrants
+    total_migrants = mongo.db.users.count_documents({'role': 'Migrant'})
+
+    # Total number of agents
+    total_agents = mongo.db.users.count_documents({'role': 'Agent'})
+
+    # Total course registrations
+    total_course_registrations = mongo.db.courses.count_documents({})  # Assuming you have a 'courses' collection
+
+    # Percentage of migrants with complete profiles
+    total_migrants_with_profile = mongo.db.users.count_documents({'role': 'Migrant', 'profile_complete': True})
+    profile_completion_percentage = (total_migrants_with_profile / total_migrants * 100) if total_migrants > 0 else 0
+
+    return render_template(
+        'adminlanding.html',
+        total_migrants=total_migrants,
+        total_agents=total_agents,
+        total_course_registrations=total_course_registrations,
+        profile_completion_percentage=round(profile_completion_percentage, 2)  # Rounding to 2 decimal places
+    )
 
 @admin_bp.route('/user_management', methods=['GET', 'POST'])
 def user_management():
@@ -339,10 +361,6 @@ def get_users_by_test():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@admin_bp.route('/admin_dashboard_m')
-def admin_dashboard_m():
-    #tutor_id = session['user_id']
-    return render_template('admindashboard_m.html')
 
 # Route to display the inquiries
 @admin_bp.route('/viewinquiries', methods=['GET'])
@@ -562,3 +580,361 @@ def modify_occupation_ajax(occupation_id):
         return jsonify({"success": True})
     else:
         return jsonify({"success": False})
+    
+@admin_bp.route('/admin_dashboard_m')
+def adminlanding_m():
+    print("this is triggered")
+    
+    mongo = PyMongo(current_app)
+
+    # Get all migrant user data
+    total_migrants = mongo.db.users.count_documents({'role': 'Migrant'})
+
+    # Calculate average age for all migrants
+    if total_migrants > 0:
+        migrants_data = list(mongo.db.users.find({'role': 'Migrant'}, {'dob': 1}))
+        total_age = 0
+        age_count = 0
+        for migrant in migrants_data:
+            dob = migrant.get('dob')
+            if dob:
+                dob_dt = datetime.strptime(dob, '%Y-%m-%d')
+                age = (datetime.today() - dob_dt).days // 365
+                total_age += age
+                age_count += 1
+        average_age = total_age / age_count if age_count > 0 else 0
+    else:
+        average_age = 0
+
+    # Calculate average PR score and probability for all migrants
+    scores = list(mongo.db.scores.find({}, {'total_score': 1, 'pr_probability': 1}))
+    if scores:
+        total_pr_score = sum(score.get('total_score', 0) for score in scores)
+        total_pr_prob = sum(score.get('pr_probability', 0) for score in scores)
+        average_pr_score = total_pr_score / len(scores)
+        average_pr_probability = total_pr_prob / len(scores)
+    else:
+        average_pr_score = 0
+        average_pr_probability = 0
+
+    # Find top 5 nationalities
+    top_nationalities = list(mongo.db.users.aggregate([
+        {'$match': {'role': 'Migrant', 'nationality': {'$ne': None}}},
+        {'$group': {'_id': {'$concat': [
+            {'$toUpper': {'$substrCP': ['$nationality', 0, 1]}},
+            {'$substrCP': ['$nationality', 1, {'$strLenCP': '$nationality'}]}
+        ]}, 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 5}
+    ]))
+
+    # Find top 5 current countries
+    top_countries = list(mongo.db.users.aggregate([
+        {'$match': {'role': 'Migrant', 'current_country': {'$ne': None}}},
+        {'$group': {'_id': {'$concat': [
+            {'$toUpper': {'$substrCP': ['$current_country', 0, 1]}},
+            {'$substrCP': ['$current_country', 1, {'$strLenCP': '$current_country'}]}
+        ]}, 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 5}
+    ]))
+
+    # Gender distribution for all migrants
+# Gender distribution for all migrants, handling cases where gender is missing by defaulting to "Unknown"
+    gender_distribution = list(mongo.db.users.aggregate([
+        {'$match': {'role': 'Migrant'}},  # Match all migrants
+        {'$group': {
+            '_id': {'$ifNull': ['$gender', 'Unknown']},  # If gender is missing, default to "Unknown"
+            'count': {'$sum': 1}
+        }},
+        {'$sort': {'_id': 1}}
+    ]))
+
+    print(gender_distribution)  # This will print gender distribution, including "Unknown" if gender is missing
+
+    # Top 5 migrants by PR score
+    migrants_scores = list(mongo.db.scores.find({}, {'user_id': 1, 'total_score': 1, 'pr_probability': 1}))
+    migrants_data_map = {str(m['_id']): m for m in mongo.db.users.find({'_id': {'$in': [s['user_id'] for s in migrants_scores]}}, {'first_name': 1, 'last_name': 1})}
+
+    migrants_data_combined = [
+        {
+            'full_name': f"{migrants_data_map.get(str(score['user_id']), {}).get('first_name', '')} {migrants_data_map.get(str(score['user_id']), {}).get('last_name', '')}",
+            'total_score': score['total_score'],
+            'pr_probability': score['pr_probability']
+        }
+        for score in migrants_scores if str(score['user_id']) in migrants_data_map
+    ]
+
+    return render_template(
+        'admindashboard_m.html',
+        total_migrants=total_migrants,
+        average_age=round(average_age, 1),
+        average_pr_score=round(average_pr_score, 1),
+        average_pr_probability=round(average_pr_probability, 1),
+        top_nationalities=top_nationalities,
+        top_countries=top_countries,
+        gender_distribution=gender_distribution,
+        migrants_data=migrants_data_combined
+    )
+
+
+@admin_bp.route('/admin_dashboard_m')
+def admin_dashboard_m():
+    # Logic for Migrants dashboard
+    return render_template('admindashboard_m.html')
+
+
+
+@admin_bp.route('/admin_dashboard_e')
+def admin_dashboard_e():
+    mongo = PyMongo(current_app)
+
+    # Query to count courses by university and course type (Bachelors, Masters, and Diploma)
+    universities_courses = list(mongo.db.courses.aggregate([
+        {
+            '$group': {
+                '_id': {
+                    'university': '$University',
+                    'course_type': '$CourseType'
+                },
+                'count': {'$sum': 1}  # Count the number of courses for each university and course type
+            }
+        },
+        {
+            '$group': {
+                '_id': '$_id.university',  # Group by university
+                'courses': {
+                    '$push': {
+                        'course_type': '$_id.course_type',
+                        'count': '$count'
+                    }
+                }
+            }
+        },
+        {
+            '$project': {
+                'university': '$_id',
+                'Bachelors': {
+                    '$reduce': {
+                        'input': '$courses',
+                        'initialValue': 0,
+                        'in': {'$cond': [{'$eq': ['$$this.course_type', 'Bachelors']}, {'$add': ['$$value', '$$this.count']}, '$$value']}
+                    }
+                },
+                'Masters': {
+                    '$reduce': {
+                        'input': '$courses',
+                        'initialValue': 0,
+                        'in': {'$cond': [{'$eq': ['$$this.course_type', 'Masters']}, {'$add': ['$$value', '$$this.count']}, '$$value']}
+                    }
+                },
+                'Diploma': {
+                    '$reduce': {
+                        'input': '$courses',
+                        'initialValue': 0,
+                        'in': {'$cond': [{'$eq': ['$$this.course_type', 'Diploma']}, {'$add': ['$$value', '$$this.count']}, '$$value']}
+                    }
+                }
+            }
+        },
+        {
+            '$sort': {'university': 1}  # Sort alphabetically by university
+        }
+    ]))
+
+    # Query to get courses sorted by popularity (registrations)
+    popular_courses = list(mongo.db.registrations.aggregate([
+        {
+            '$group': {
+                '_id': {
+                    'course_name': '$course_name',
+                    'university': '$university'
+                },
+                'registration_count': {'$sum': 1}  # Count number of registrations for each course
+            }
+        },
+        {
+            '$sort': {'registration_count': -1}  # Sort by registration count in descending order
+        },
+        {
+            '$limit': 10  # Limit to top 10 most popular courses
+        }
+    ]))
+
+    # Query to rank universities by total registrations
+    university_rankings = list(mongo.db.registrations.aggregate([
+        {
+            '$group': {
+                '_id': '$university',
+                'total_registrations': {'$sum': 1}  # Count total registrations per university
+            }
+        },
+        {
+            '$sort': {'total_registrations': -1}  # Sort by the number of registrations in descending order
+        }
+    ]))
+
+    # Query to get the top 5 most recommended courses by agents
+    top_recommended_courses = list(mongo.db.recommendations.aggregate([
+        {
+            '$group': {
+                '_id': '$course_id',  # Group by course_id
+                'recommendation_count': {'$sum': 1}  # Count the number of recommendations
+            }
+        },
+        {
+            '$sort': {'recommendation_count': -1}  # Sort by the number of recommendations in descending order
+        },
+        {
+            '$limit': 5  # Limit to the top 5 most recommended courses
+        },
+        {
+            '$lookup': {
+                'from': 'courses',  # Join with the courses collection to get course details
+                'localField': '_id',
+                'foreignField': '_id',
+                'as': 'course_info'
+            }
+        },
+        {
+            '$unwind': '$course_info'  # Unwind the course info array
+        },
+        {
+            '$project': {
+                'course_name': '$course_info.CourseName',
+                'university': '$course_info.University',
+                'recommendation_count': 1
+            }
+        }
+    ]))
+
+    # Transform data for charts
+    university_course_data = [
+        {
+            'university': u['university'],
+            'Bachelors': u['Bachelors'],
+            'Masters': u['Masters'],
+            'Diploma': u['Diploma']
+        }
+        for u in universities_courses
+    ]
+
+    # Popular courses data for the bar chart
+    course_names = [f"{course['_id']['course_name']} ({course['_id']['university']})" for course in popular_courses]
+    registration_counts = [course['registration_count'] for course in popular_courses]
+
+    # University rankings data for the bar chart
+    ranked_universities = [ranking['_id'] for ranking in university_rankings]
+    total_registrations = [ranking['total_registrations'] for ranking in university_rankings]
+
+    # Most recommended courses by agents for the chart
+    recommended_course_names = [f"{course['course_name']} ({course['university']})" for course in top_recommended_courses]
+    recommendation_counts = [course['recommendation_count'] for course in top_recommended_courses]
+
+    return render_template(
+        'admindashboard_e.html',
+        universities_courses=university_course_data,  # Pass the processed university-course data
+        course_names=course_names,  # Pass the course names for the bar chart
+        registration_counts=registration_counts,  # Pass the registration counts for the bar chart
+        ranked_universities=ranked_universities,  # Pass ranked universities
+        total_registrations=total_registrations,  # Pass total registrations for the chart
+        recommended_course_names=recommended_course_names,  # Pass the most recommended courses
+        recommendation_counts=recommendation_counts  # Pass the recommendation counts
+    )
+
+
+
+@admin_bp.route('/admin_dashboard_a')
+def admin_dashboard_a():
+    mongo = PyMongo(current_app)
+    
+    # Fetch agents and count the number of migrants for each agent
+    agents_with_migrants = list(mongo.db.connections.aggregate([
+        {
+            '$lookup': {
+                'from': 'users',
+                'localField': 'agentid',
+                'foreignField': '_id',
+                'as': 'agent'
+            }
+        },
+        {
+            '$unwind': '$agent'
+        },
+        {
+            '$addFields': {
+                'migrant_count': {'$size': '$migrantids'}
+            }
+        },
+        {
+            '$project': {
+                '_id': 0,
+                'name': {'$concat': ['$agent.first_name', ' ', '$agent.last_name']},
+                'migrant_count': 1
+            }
+        },
+        {
+            '$sort': {'migrant_count': -1}  # Sort by migrant count in descending order
+        }
+    ]))
+
+    # Fetch average PR scores for each agent
+    avg_pr_scores_by_agent = list(mongo.db.connections.aggregate([
+        {
+            '$lookup': {
+                'from': 'users',
+                'localField': 'agentid',
+                'foreignField': '_id',
+                'as': 'agent'
+            }
+        },
+        {
+            '$unwind': '$agent'
+        },
+        {
+            '$lookup': {
+                'from': 'scores',
+                'localField': 'migrantids',
+                'foreignField': 'user_id',
+                'as': 'pr_scores'
+            }
+        },
+        {
+            '$addFields': {
+                'avg_pr_score': {'$avg': '$pr_scores.total_score'}
+            }
+        },
+        {
+            '$project': {
+                '_id': 0,
+                'name': {'$concat': ['$agent.first_name', ' ', '$agent.last_name']},
+                'avg_pr_score': 1
+            }
+        },
+        {
+            '$sort': {'avg_pr_score': -1}  # Sort by average PR score in descending order
+        }
+    ]))
+
+        # Recommendations per day
+    recommendations_by_day = list(mongo.db.recommendations.aggregate([
+        {
+            '$group': {
+                '_id': {
+                    '$dateToString': {'format': '%Y-%m-%d', 'date': '$recommended_at'}
+                },
+                'count': {'$sum': 1}
+            }
+        },
+        {'$sort': {'_id': 1}}
+    ]))
+
+    total_agents = mongo.db.users.count_documents({'role': 'Agent'})
+    
+    return render_template(
+        'admindashboard_a.html',
+        total_agents=total_agents,
+        agents_by_migrants=agents_with_migrants,
+        avg_pr_scores_by_agent=avg_pr_scores_by_agent,
+        recommendations_by_day=recommendations_by_day
+    )

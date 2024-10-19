@@ -3,80 +3,228 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
-    <title>Smart Track | PR Pathway</title>
-    <!-- Include Chart.js library -->
-    <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script> <!-- Correct path to chart.min.js -->
-    <!-- Include your custom JavaScript file -->
-    <script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script> <!-- Correct path to admin_dashboard.js -->
+    <title>Admin Dashboard</title>
+    <style>
+        .dashboard-card {
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.2rem;
+            color: #343a40;
+            text-align: center;
+        }
+
+        .dashboard-card p {
+            font-size: 2.5rem;
+            color: #17a2b8;
+        }
+
+        .bordered-section {
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-card {
+                height: auto;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
 </head>
-
-
 <body>
     <header>
-        <nav>
-            <div class="navi_menu">
-                <a href="{{ url_for('auth.login') }}"><strong>Home</strong></a>
-                <a href="{{ url_for('admin.adminlanding') }}"><strong>Admin Landing</strong></a>
-                <a href="{{ url_for('admin.manage_connections') }}">Manage Connections</a> <!-- Link to manage connections -->
-
-
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid navi_menu">
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+                </a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin.adminlanding') }}">Overview</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle active" href="#" id="dashboardsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dashboards
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dashboardsDropdown">
+                                <li><a class="dropdown-item active" href="{{ url_for('admin.admin_dashboard_m') }}">Migrants</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard_a') }}">Agents</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard_e') }}">Courses</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown ms-auto d-flex align-items-center">
+                    <span class="welcome-text me-3"></span>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{{ url_for('admin.user_management') }}">User Management</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin.manage_connections') }}">Manage Connections</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin.viewinquiries') }}">View Inquiries</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin.occupations') }}">Occupation Management</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>
-    <h1>Welcome Administrator</h1>
-    <h2 style="text-align: center;">Migrant Details</h2>
-    <!-- Grid container for organizing 9 charts into 3 columns -->
-    <div class="charts-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
-        <!-- Column 1: Migrant Details -->
-        <div>
-            
-            <h3>Top 5 Countries (Migrant Users)</h3>
-            <canvas id="topCountriesChart" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
-            
-            <h3>Number of Users by Age</h3>
-            <canvas id="ageChart" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
-            
-            <h3>Number of Users by Type of English Test</h3>
-            <canvas id="testChart" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Migrant Statistics</h2>
+
+        <!-- Section 1: Number Stats -->
+        <div class="bordered-section">
+            <div class="row text-center">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="dashboard-card">
+                        <h3>Total Migrants</h3>
+                        <p>{{ total_migrants }}</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="dashboard-card">
+                        <h3>Average Age</h3>
+                        <p>{{ average_age }}</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="dashboard-card">
+                        <h3>Average PR Score</h3>
+                        <p>{{ average_pr_score }}</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="dashboard-card">
+                        <h3>Average PR Probability (%)</h3>
+                        <p>{{ average_pr_probability }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        
-        <div>
-            
-            <h3>Visualization 4</h3>
-            <canvas id="chart4" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
-            
-            <h3>Visualization 5</h3>
-            <canvas id="chart5" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
-            
-            <h3>Visualization 6</h3>
-            <canvas id="chart6" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+        <!-- Section 2: Top 5 Nationalities, Countries, and Gender Distribution -->
+        <div class="bordered-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-center mb-3">Top 5 Nationalities</h4>
+                    <ul class="list-group">
+                        {% for nationality in top_nationalities %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ nationality._id }}
+                                <span class="badge bg-primary rounded-pill">{{ nationality.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="col-md-4">
+                    <h4 class="text-center mb-3">Top 5 Current Countries</h4>
+                    <ul class="list-group">
+                        {% for country in top_countries %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ country._id }}
+                                <span class="badge bg-success rounded-pill">{{ country.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="col-md-4">
+                    <h4 class="text-center mb-3">Gender Distribution</h4>
+                    <canvas id="genderPieChart" width="400" height="400"></canvas>
+                </div>
+            </div>
         </div>
 
-        
-        <div>
-            
-            <h3>Visualization 7</h3>
-            <canvas id="chart7" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
-            
-            <h3>Visualization 8</h3>
-            <canvas id="chart8" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
-            
-            <h3>Visualization 9</h3>
-            <canvas id="chart9" width="400" height="300" style="border: 1px solid #000; max-width: 400px; max-height: 300px;"></canvas>
+        <!-- Section 3: Migrant Table -->
+        <div class="bordered-section">
+            <h4 class="text-center mb-3">Top 5 Migrants by PR Score</h4>
+            <div class="d-flex justify-content-end mb-3">
+                <select id="sortFilter" class="form-select w-auto">
+                    <option value="top">Top 5</option>
+                    <option value="lowest">Lowest 5</option>
+                </select>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>PR Score</th>
+                        <th>PR Probability (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="migrantTableBody">
+                    <!-- Migrant data will be dynamically added here by JavaScript -->
+                </tbody>
+            </table>
         </div>
-
     </div>
+
+    <!-- Add Bootstrap and Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Gender Distribution Pie Chart
+        const genderData = {{ gender_distribution | tojson }};
+        const genderLabels = genderData.map(g => g._id.charAt(0).toUpperCase() + g._id.slice(1));
+        const genderCounts = genderData.map(g => g.count);
+
+        const ctx = document.getElementById('genderPieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: genderLabels,
+                datasets: [{
+                    data: genderCounts,
+                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // Migrant Table Sorting
+        const migrantsData = {{ migrants_data | tojson }};
+        const migrantTableBody = document.getElementById('migrantTableBody');
+        const sortFilter = document.getElementById('sortFilter');
+
+        function renderTable(sortedData) {
+            migrantTableBody.innerHTML = '';
+            sortedData.forEach(migrant => {
+                const row = `<tr>
+                    <td>${migrant.full_name}</td>
+                    <td>${migrant.total_score}</td>
+                    <td>${migrant.pr_probability}</td>
+                </tr>`;
+                migrantTableBody.innerHTML += row;
+            });
+        }
+
+        function sortMigrants() {
+            const sortType = sortFilter.value;
+            const sortedData = [...migrantsData].sort((a, b) => sortType === 'top' ? b.total_score - a.total_score : a.total_score - b.total_score);
+            renderTable(sortedData.slice(0, 5));
+        }
+
+        sortFilter.addEventListener('change', sortMigrants);
+        sortMigrants(); // Initial render
+    </script>
 </body>
-
-    
-
-
 </html>
-
-
-
-

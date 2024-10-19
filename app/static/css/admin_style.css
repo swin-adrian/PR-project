@@ -250,56 +250,6 @@ tr:hover {
     color: #b8837f;
 }
 
-/* Basic styling for the navigation menu */
-.navi_menu {
-    overflow: hidden;
-    background-color: #B76D68;
-    z-index: 1001;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.navi_menu a {
-    font-size: 12px;
-    color: white;
-    text-align: center;
-    padding: 20px 25px;
-    text-decoration: none;
-    z-index: 1001;
-}
-
-.navi_menu a.active {
-    background-color: #403F4C;
-}
-
-.navi_menu a:hover {
-    background-color: #b8837f;
-}
-
-/* Responsive styling for the navigation menu */
-@media screen and (max-width: 768px) {
-    .navi_menu {
-        flex-direction: column;
-        padding: 0;
-    }
-
-    .navi_menu a {
-        float: none;
-        display: block;
-        width: 100%;
-        text-align: center;
-        padding: 15px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .navi_menu a {
-        font-size: 14px;
-        padding: 10px;
-    }
-}
 
 /* Responsive design for mobile */
 @media (max-width: 768px) {

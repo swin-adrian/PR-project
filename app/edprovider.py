@@ -179,10 +179,131 @@ def delete_registration(registration_id):
         return jsonify({"success": False})
     
 
-# Route for displaying the EdProvider visuals page
+
 @edprovider_bp.route('/edprovidervisuals', methods=['GET'])
 def edprovidervisuals():
-    return render_template('edprovidervisuals.html')
+    mongo = PyMongo(current_app)
+
+    # Get the user's university from the session
+    user_university = session.get('university')
+
+    if not user_university:
+        flash("Please log in to access this page", "error")
+        return redirect(url_for('auth.login'))
+
+    # Find all students registered for this university's courses
+    registrations = list(mongo.db.registrations.find({'university': user_university}))
+    if not registrations:
+        flash("No registered students found for this university.", "error")
+        return render_template('edprovidervisuals.html', total_students=0, average_age=0, average_pr_score=0, average_pr_probability=0, top_nationalities=[], top_countries=[], gender_distribution=[], revenue=0, potential_revenue=0)
+
+    student_ids = [reg['user_id'] for reg in registrations]
+    total_students = len(student_ids)
+
+    # Calculate the average age using students' dates of birth
+    if total_students > 0:
+        students_data = list(mongo.db.users.find({'_id': {'$in': student_ids}}, {'dob': 1, 'nationality': 1, 'current_country': 1, 'gender': 1}))
+        total_age = 0
+        age_count = 0
+        for student in students_data:
+            dob = student.get('dob')
+            if dob:
+                dob_dt = datetime.strptime(dob, '%Y-%m-%d')
+                age = (datetime.today() - dob_dt).days // 365
+                total_age += age
+                age_count += 1
+        average_age = total_age / age_count if age_count > 0 else 0
+    else:
+        average_age = 0
+
+    # Calculate the average PR score and probability
+    scores = list(mongo.db.scores.find({'user_id': {'$in': student_ids}}, {'total_score': 1, 'pr_probability': 1}))
+    if scores:
+        total_pr_score = sum(score.get('total_score', 0) for score in scores)
+        total_pr_prob = sum(score.get('pr_probability', 0) for score in scores)
+        average_pr_score = total_pr_score / len(scores)
+        average_pr_probability = total_pr_prob / len(scores)
+    else:
+        average_pr_score = 0
+        average_pr_probability = 0
+
+    # Top 5 nationalities
+    top_nationalities = list(mongo.db.users.aggregate([
+        {'$match': {'_id': {'$in': student_ids}, 'nationality': {'$ne': None}}},
+        {'$group': {'_id': '$nationality', 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 5}
+    ]))
+
+    # Top 5 current countries
+    top_countries = list(mongo.db.users.aggregate([
+        {'$match': {'_id': {'$in': student_ids}, 'current_country': {'$ne': None}}},
+        {'$group': {'_id': '$current_country', 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 5}
+    ]))
+
+    # Gender distribution
+    gender_distribution = list(mongo.db.users.aggregate([
+        {'$match': {'_id': {'$in': student_ids}, 'gender': {'$ne': None}}},
+        {'$group': {'_id': '$gender', 'count': {'$sum': 1}}},
+        {'$sort': {'_id': 1}}
+    ]))
+
+    # Fetch top 5 registered courses
+    top_registered_courses = list(mongo.db.registrations.aggregate([
+        {"$match": {"university": user_university}},
+        {"$group": {"_id": {"course_id": "$course_id", "course_name": "$course_name"}, "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 5}
+    ]))
+
+    # Fetch top 5 saved courses
+    top_saved_courses = list(mongo.db.saved_courses.aggregate([
+        {"$unwind": "$course_ids"},
+        {"$group": {"_id": "$course_ids", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 5}
+    ]))
+
+    # Fetch course names and costs for revenue calculation
+    course_names_map = {
+        str(course["_id"]): {"name": course["CourseName"], "cost": course["Cost"]} 
+        for course in mongo.db.courses.find({}, {"CourseName": 1, "Cost": 1})
+    }
+
+    # Calculate Revenue (Registered)
+    revenue = 0
+    for course in top_registered_courses:
+        course_cost = course_names_map.get(str(course["_id"]["course_id"]), {}).get("cost", 0)
+        revenue += course["count"] * course_cost
+
+    # Calculate Potential Revenue (Saved)
+    potential_revenue = 0
+    for saved_course in top_saved_courses:
+        course_cost = course_names_map.get(saved_course["_id"], {}).get("cost", 0)
+        potential_revenue += saved_course["count"] * course_cost
+
+    # Map saved course ids to course names
+    for saved_course in top_saved_courses:
+        saved_course["name"] = course_names_map.get(saved_course["_id"], {}).get("name", "Unknown Course")
+
+    return render_template(
+        'edprovidervisuals.html',
+        total_students=total_students,
+        average_age=round(average_age, 1),
+        average_pr_score=round(average_pr_score, 1),
+        average_pr_probability=round(average_pr_probability, 1),
+        top_nationalities=top_nationalities,
+        top_countries=top_countries,
+        gender_distribution=gender_distribution,
+        revenue=round(revenue, 2),
+        potential_revenue=round(potential_revenue, 2),
+        top_registered_courses=top_registered_courses,
+        top_saved_courses=top_saved_courses
+    )
+
+
 
 
 # Route for viewing courses data (used by the charts)

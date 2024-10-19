@@ -407,51 +407,42 @@ def register_course():
         user_object_id = ObjectId(user_id)
 
         # Get data from the request
-        course_name = request.form.get('courseName')
-        first_name = request.form.get('firstName')
-        last_name = request.form.get('lastName')
-        email = request.form.get('email')
+        data = request.get_json()
+        course_id = data.get('courseId')
+        first_name = data.get('firstName')
+        last_name = data.get('lastName')
+        email = data.get('email')
+        university = data.get('university')
 
-        # Validate the data
-        if not all([course_name, first_name, last_name, email]):
+        if not all([course_id, first_name, last_name, email, university]):
             return jsonify({"error": "Missing required fields"}), 400
 
-        # Find the corresponding course in the "courses" collection by course_name
-        course_data = mongo.db.courses.find_one({"CourseName": course_name})
-
-        # If course is found, fetch all relevant details, otherwise set defaults
-        if course_data:
-            cost = course_data.get('Cost', 0.00)  # Default to 0.00 if cost is not available
-            key_learnings = course_data.get('KeyLearnings', "Not available")
-            industry = course_data.get('Industry', 'N/A')  # Default to 'N/A' if missing
-            duration = course_data.get('Duration', 'N/A')  # Default to 'N/A' if missing
-            university = course_data.get('University', 'N/A')  # Default to 'N/A' if missing
-        else:
+        # Find the course by course_id
+        course_data = mongo.db.courses.find_one({"_id": ObjectId(course_id)})
+        if not course_data:
             return jsonify({"error": "Course not found"}), 404
 
         # Store the registration data along with all relevant course details
         registration_data = {
             "user_id": user_object_id,
-            "course_name": course_name,
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "university": university,  # Include the university from the course data
-            "industry": industry,  # Include the industry from the course data
-            "duration": duration,  # Include the duration from the course data
-            "cost": cost,  # Include the cost from the course data
-            "key_learnings": key_learnings,  # Include the key learnings from the course
+            "course_id": course_id,
+            "course_name": course_data.get('CourseName'),
+            "industry": course_data.get('Industry', 'N/A'),
+            "duration": course_data.get('Duration', 'N/A'),
+            "university": university,
+            "cost": course_data.get('Cost', 'N/A'),
             "registration_date": datetime.utcnow()
         }
 
-        # Insert the registration data into the "registrations" collection
+        # Insert the registration into the registrations collection
         mongo.db.registrations.insert_one(registration_data)
 
-        return jsonify({"message": "Registration successful", "cost": cost, "key_learnings": key_learnings}), 200
+        return jsonify({"message": "Course registered successfully!"}), 200
 
     except Exception as e:
-        print(f"Error occurred during registration: {e}")
+        print(f"Error occurred during course registration: {e}")
         return jsonify({"error": "An error occurred while processing your registration."}), 500
+
 
     
 @migrant_bp.route('/submit_inquiry', methods=['POST'])

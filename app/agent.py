@@ -294,6 +294,21 @@ def recommend_course():
 
 @agent_bp.route('/agent_courses')
 def agent_courses():
-    agent_email=session.get('email')
-    # Render the agent_courses.html template
-    return render_template('agent_courses.html', agent_email=agent_email)
+    # Get the agent's email from the session
+    agent_email = session.get('email')
+    user_id = session.get('user_id')
+    mongo = PyMongo(current_app)
+
+    if not user_id:
+        flash("Please log in to access this page", "error")
+        return redirect(url_for('auth.login'))
+
+    # Find the agent's user data in the database
+    agent = mongo.db.users.find_one({'_id': ObjectId(user_id), 'role': 'Agent'})
+    if not agent:
+        flash("Agent not found", "error")
+        return redirect(url_for('auth.login'))
+
+    # Pass agent information to the template
+    return render_template('agent_courses.html', agent=agent)
+

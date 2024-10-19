@@ -17,11 +17,15 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
+                <!-- Logo -->
                 <a href="/" class="logo">
-                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo"
+                        id="logo">
                 </a>
+
+                <!-- Navbar links (Home and Submit Inquiry) -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -35,12 +39,22 @@
                         </li>
                     </ul>
                 </div>
+
+                <!-- Welcome message and Hamburger Menu -->
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ migrant_email }}</span>
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <!-- Hamburger button triggers dropdown -->
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+                    <!-- Dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{{ url_for('migrant.migrantform') }}">Profile</a></li>
+                        <li><a class="dropdown-item">Submit Inquiry</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>
                 </div>
