@@ -3,52 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+    <title>EdProvider Visuals</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Course Information Form</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/edprovider_style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        .dashboard-section {
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
 
-        <!-- Popper.js and Bootstrap JS for dropdown functionality -->
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</head>
-<body>
+        .chart-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .chart-box {
+            width: 45%;
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .chart-background {
+            background-color: #ffffff;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+
+
+        /* Dashboard card styling */
+        .dashboard-card {
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.2rem;
+            color: #343a40;
+            text-align: center;
+        }
+
+        .dashboard-card p {
+            font-size: 2.5rem;
+            color: #17a2b8;
+        }
+
+        .dashboard-card.secondary {
+            background-color: #e9f7fa;
+        }
+
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Fix for the pie chart stretch issue */
+        #genderPieChart {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 0 auto;
+        }
+
+        /* Styling for tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            color: #343a40;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+    </style>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
-                <!-- Logo -->
                 <a href="/" class="logo">
-                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo"
-                        id="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
                 </a>
-
-                <!-- Navbar links (Home and Submit Inquiry) -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('edprovider.edprovidervisuals') }}">Overview</a>
+                            <a class="nav-link" href="{{ url_for('edprovider.view_courses') }}">Potential Student</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('edprovider.view_courses') }}" class="view-courses-btn">Potential Student</a>
+                            <a class="nav-link" href="{{ url_for('edprovider.add_course') }}">Add Course</a>
                         </li>
                     </ul>
                 </div>
-
-                <!-- Welcome message and Hamburger Menu -->
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ migrant_email }}</span>
-                    <!-- Hamburger button triggers dropdown -->
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <!-- Dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item active" href="{{ url_for('edprovider.edproviderlanding') }}">Add Course</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('edprovider.user_inquiry') }}">Submit Inquiry</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><a class="dropdown-item" href="{{ url_for('edprovider.add_course') }}">Add Course</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>
                 </div>
@@ -56,103 +137,282 @@
         </nav>
     </header>
 
+    <!-- Dashboard and Charts... -->
+</body>
+</html>
 
-    <div class="container">
-        <!-- Display Flash Messages Here -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-        
-        <form action="{{ url_for('edprovider.edproviderlanding') }}" method="POST">
-            <fieldset class="form-fieldset">
-                <legend><strong>Add New Course</strong></legend>
-                <p class="container">Select one of the options provided below:</p>
 
-                <!-- Industry Dropdown -->
-                <div class="form-group">
-                    <label for="industry" class="form-label">Industry</label>
-                    <select id="industry" name="industry" class="form-select" required>
-                        <option value="Engineering">Engineering</option>
-                        <option value="Community and Personal Care">Community and Personal Care</option>
-                        <option value="Arts">Arts</option>
-                        <option value="Finance and Accounting">Finance and Accounting</option>
-                        <option value="Agriculture and Environmental">Agriculture and Environmental</option>
-                        <option value="Education">Education</option>
-                        <option value="ICT and Computer Science">ICT and Computer Science</option>
-                        <option value="Trade">Trade</option>
-                        <option value="Business">Business</option>
-                        <option value="Social Science">Social Science</option>
-                        <option value="Health and Fitness">Health and Fitness</option>
-                        <option value="Culinary">Culinary</option>
-                        <option value="Hospitality">Hospitality</option>
-                        <option value="Law">Law</option>
-                        <option value="Medicine">Medicine</option>
-                        <option value="Transport">Transport</option>
-                        <option value="Arts and Design">Arts and Design</option>
-                        <option value="Environmental Health">Environmental Health</option>
-                        <option value="Sport">Sport</option>
-                    </select>
-                </div>
+    <div class="container my-5">
+        <h1>Analytics for Registered Courses and Costs</h1>
 
-                <!-- Course Name Text Field -->
-                <div class="form-group">
-                    <label for="course_name" class="form-label">Course Name</label>
-                    <input type="text" id="course_name" name="course_name" class="form-input" placeholder="Enter course name" required>
-                </div>
+<!-- Section 1: Dashboard Cards for Statistics -->
+<div class="dashboard-section">
+    <div class="row text-center">
+        <div class="col-lg-2 col-md-4 mb-4">
+            <div class="dashboard-card">
+                <h3>Registered Students</h3>
+                <p>{{ total_students }}</p>
+            </div>
+        </div>
 
-                <!-- Course Type Dropdown -->
-                <div class="form-group">
-                    <label for="course_type" class="form-label">Course Type</label>
-                    <select id="course_type" name="course_type" class="form-select" required>
-                        <option value="Bachelors">Bachelors</option>
-                        <option value="Diploma">Diploma</option>
-                        <option value="Certificate">Certificate</option>
-                        <option value="Masters">Masters</option>
-                        <option value="PhD">PhD</option>
-                    </select>
-                </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+            <div class="dashboard-card secondary">
+                <h3>Average Age</h3>
+                <p>{{ average_age | round(0) }}</p>
+            </div>
+        </div>
 
-                <!-- Duration Dropdown -->
-                <div class="form-group">
-                    <label for="duration" class="form-label">Duration</label>
-                    <select id="duration" name="duration" class="form-select" required>
-                        <option value="1 year">1 year</option>
-                        <option value="2 years">2 years</option>
-                        <option value="3 years">3 years</option>
-                        <option value="4 years">4 years</option>
-                        <option value="6-12 months">6-12 months</option>
-                    </select>
-                </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+            <div class="dashboard-card">
+                <h3>Average PR Score</h3>
+                <p>{{ average_pr_score | round(0) }}</p>
+            </div>
+        </div>
 
-                <!-- Course Structure Textarea -->
-                <div class="form-group">
-                    <label for="course_structure" class="form-label">Course Structure</label>
-                    <textarea id="course_structure" name="course_structure" class="form-input" placeholder="Enter course structure details" required></textarea>
-                </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+            <div class="dashboard-card secondary">
+                <h3>Average PR Probability (%)</h3>
+                <p>{{ average_pr_probability | round(0) }}</p>
+            </div>
+        </div>
 
-                <!-- Cost Input Field -->
-                <div class="form-group">
-                    <label for="cost" class="form-label">Cost (in AUD)</label>
-                    <input type="number" id="cost" name="cost" class="form-input" placeholder="Enter course cost" required min="0" step="0.01">
-                </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+            <div class="dashboard-card">
+                <h3>Revenue ($)</h3>
+                <p>
+                    {% if revenue >= 1000000 %}
+                        {{ (revenue / 1000000) | round(0) }}M
+                    {% elif revenue >= 1000 %}
+                        {{ (revenue / 1000) | round(0) }}K
+                    {% else %}
+                        {{ revenue | round(0) }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
 
-                <!-- Key Learnings Textarea -->
-                <div class="form-group">
-                    <label for="key_learnings" class="form-label">Key Learnings</label>
-                    <textarea id="key_learnings" name="key_learnings" class="form-input" placeholder="Enter key learnings" required></textarea>
-                </div>
-
-                <button type="submit">Add Course</button>
-            </fieldset>
-        </form>
+        <div class="col-lg-2 col-md-4 mb-4">
+            <div class="dashboard-card secondary">
+                <h3>Potential Revenue ($)</h3>
+                <p>
+                    {% if potential_revenue >= 1000000 %}
+                        {{ (potential_revenue / 1000000) | round(0) }}M
+                    {% elif potential_revenue >= 1000 %}
+                        {{ (potential_revenue / 1000) | round(0) }}K
+                    {% else %}
+                        {{ potential_revenue | round(0) }}
+                    {% endif %}</p>
+            </div>
+        </div>
     </div>
+</div>
+
+
+        <!-- Section 2: Top Nationalities, Countries, and Gender Distribution -->
+        <div class="dashboard-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-center mb-3">Top 5 Nationalities</h4>
+                    <ul class="list-group">
+                        {% for nationality in top_nationalities %}
+                            <li class="list-group-item">
+                                {{ nationality._id }}
+                                <span class="badge bg-primary rounded-pill">{{ nationality.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="col-md-4">
+                    <h4 class="text-center mb-3">Top 5 Current Countries</h4>
+                    <ul class="list-group">
+                        {% for country in top_countries %}
+                            <li class="list-group-item">
+                                {{ country._id }}
+                                <span class="badge bg-success rounded-pill">{{ country.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="col-md-4">
+                    <h4 class="text-center mb-3">Gender Distribution</h4>
+                    <canvas id="genderPieChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Charts for Registered Courses -->
+        <div class="dashboard-section">
+            <div class="chart-container">
+                <div class="chart-box chart-background">
+                    <h4 class="text-center mb-3">Number of Students per Course</h4>
+                    <canvas id="studentsPerCourseChart"></canvas>
+                </div>
+
+                <div class="chart-box chart-background">
+                    <h4 class="text-center mb-3">Costs per Course</h4>
+                    <canvas id="costsPerCourseChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Tables for Top Registered Courses and Saved Courses -->
+        <div class="dashboard-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text-center mb-3">Top 5 Registered Courses</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Course Name</th>
+                                <th>Number of Registrations</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in top_registered_courses %}
+                            <tr>
+                                <td>{{ course._id.course_name }}</td>
+                                <td>{{ course.count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <h4 class="text-center mb-3">Top 5 Saved Courses</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Course Name</th>
+                                <th>Number of Saves</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in top_saved_courses %}
+                            <tr>
+                                <td>{{ course.name }}</td>
+                                <td>{{ course.count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+
+  
+    // Gender Distribution Pie Chart
+    const genderData = {{ gender_distribution | tojson }};
+    const genderLabels = genderData.map(g => g._id.charAt(0).toUpperCase() + g._id.slice(1));
+    const genderCounts = genderData.map(g => g.count);
+
+    const ctx = document.getElementById('genderPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: genderLabels,
+            datasets: [{
+                data: genderCounts,
+                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'],  // Colors for different genders
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,  // Ensure correct aspect ratio
+        }
+    });
+
+
+        function fetchDataAndCreateCharts() {
+            fetch('/view_courses_data')
+                .then(response => response.json())
+                .then(data => {
+                    const { courses: courseCounts, costs: totalCosts } = data;
+
+                    const courseNames = Object.keys(courseCounts);
+                    const studentCounts = Object.values(courseCounts);
+                    const courseCosts = Object.values(totalCosts);
+
+                    createBarChart('studentsPerCourseChart', 'Number of Students', 'Courses', courseNames, studentCounts, '#4E79A7', 'students');
+                    createBarChart('costsPerCourseChart', 'Total Cost (USD)', 'Courses', courseNames, courseCosts, '#E15759', 'USD', true);
+                })
+                .catch(error => {
+                    console.error('Error fetching course data:', error);
+                    alert('Failed to load course data.');
+                });
+        }
+
+        function createBarChart(canvasId, yAxisTitle, xAxisTitle, labels, dataValues, color, unit, horizontal = false) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const config = {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: yAxisTitle,
+                        data: dataValues,
+                        backgroundColor: color,
+                        borderColor: color,
+                        borderWidth: 1,
+                        hoverBackgroundColor: adjustColorBrightness(color, -30),
+                    }]
+                },
+                options: {
+                    indexAxis: horizontal ? 'y' : 'x',
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: color,
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                            cornerRadius: 5,
+                        },
+                        datalabels: {
+                            color: 'white',
+                            align: horizontal ? 'right' : 'center',
+                            anchor: horizontal ? 'end' : 'center',
+                            font: { weight: 'bold', size: 14 },
+                            formatter: function(value) {
+                                return horizontal ? `$${value}` : `${value} ${unit}`;
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: xAxisTitle } },
+                        y: { 
+                            beginAtZero: true,
+                            title: { display: true, text: yAxisTitle }
+                        }
+                    }
+                }
+            };
+            new Chart(ctx, config);
+        }
+
+        function adjustColorBrightness(hex, percent) {
+            const num = parseInt(hex.slice(1), 16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                G = (num >> 8 & 0x00FF) + amt,
+                B = (num & 0x0000FF) + amt;
+            return `#${(0x1000000 + (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 + 
+                        (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 + 
+                        (B < 255 ? (B < 1 ? 0 : B) : 255))
+                        .toString(16).slice(1).toUpperCase()}`;
+        }
+
+        fetchDataAndCreateCharts();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

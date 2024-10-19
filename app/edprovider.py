@@ -6,8 +6,9 @@ from flask_pymongo import PyMongo
 # Define the blueprint
 edprovider_bp = Blueprint('edprovider', __name__)
 
-@edprovider_bp.route('/edproviderlanding', methods=['GET', 'POST'])
-def edproviderlanding():
+# Route to add a course (formerly edproviderlanding, now edprovideraddcourse.html)
+@edprovider_bp.route('/add_course', methods=['GET', 'POST'])
+def add_course():
     if request.method == 'POST':
         # Capture form data
         industry = request.form.get('industry')
@@ -18,7 +19,7 @@ def edproviderlanding():
         key_learnings = request.form.get('key_learnings')
         cost = request.form.get('cost')
 
-        # Get the university from the user's document
+        # Get the university from the user's session
         university = session.get('university')
         if not university:
             flash('University information is missing. Please log in again.', 'error')
@@ -29,10 +30,10 @@ def edproviderlanding():
             cost = float(cost)
             if cost < 0:
                 flash('Cost cannot be negative.', 'error')
-                return redirect(url_for('edprovider.edproviderlanding'))
+                return redirect(url_for('edprovider.add_course'))
         except (ValueError, TypeError):
             flash('Invalid cost value.', 'error')
-            return redirect(url_for('edprovider.edproviderlanding'))
+            return redirect(url_for('edprovider.add_course'))
 
         # Prepare course data
         course_data = {
@@ -43,7 +44,7 @@ def edproviderlanding():
             "CourseStructure": course_structure,
             "KeyLearnings": key_learnings,
             "Cost": cost,
-            "University": university,  # Automatically set from the user's session
+            "University": university,
             "CreatedAt": datetime.now()
         }
 
@@ -55,11 +56,11 @@ def edproviderlanding():
         flash("Course added successfully!", "success")
         return redirect(url_for('edprovider.view_courses'))
 
-    return render_template('edproviderlanding.html')
+    return render_template('edprovideraddcourse.html')  # Render the renamed template for adding courses
 
 
-# Route for viewing courses (from registrations collection) with pagination
-@edprovider_bp.route('/view_courses', methods=['GET'])
+# Route for viewing courses (formerly view_courses, now edproviderviewcourse.html)
+@edprovider_bp.route('/courses', methods=['GET'])
 def view_courses():
     # Get the user's university from the session
     user_university = session.get('university')
@@ -67,14 +68,14 @@ def view_courses():
     if not user_university:
         return jsonify({"error": "User session not found or university not specified."}), 400
 
-    page = request.args.get('page', 1, type=int)  # Get the current page, default to 1
-    per_page = 6  # Set how many registrations you want to display per page
-    
+    page = request.args.get('page', 1, type=int)
+    per_page = 6
+
     from main import mongo
     # Count total number of registrations for the user's university
     total_registrations = mongo.db.registrations.count_documents({"university": user_university})
-    total_pages = (total_registrations + per_page - 1) // per_page  # Calculate total number of pages
-    
+    total_pages = (total_registrations + per_page - 1) // per_page
+
     # Fetch registrations for the current page, filtering by university
     registrations = mongo.db.registrations.find({"university": user_university}).skip((page - 1) * per_page).limit(per_page)
 
@@ -83,15 +84,15 @@ def view_courses():
         {**registration, "cost": float(registration.get("cost", 0.00)) if registration.get("cost") is not None else 0.00}
         for registration in registrations
     ]
-    
-    # Pass the page, per_page, total_pages, and filtered registrations to the template
+
+
     return render_template(
-        'edprovideraddcourse.html',
+        'edproviderviewcourse.html',  # Use the renamed template for viewing courses
         registrations=registrations,
         page=page,
         per_page=per_page,
         total_registrations=total_registrations,
-        total_pages=total_pages  # Pass total pages to the template
+        total_pages=total_pages
     )
 
 
@@ -99,8 +100,8 @@ def view_courses():
 # Route for searching courses by first name, last name, or course name
 @edprovider_bp.route('/search_courses', methods=['GET', 'POST'])
 def search_courses():
-    page = request.args.get('page', 1, type=int)  # Get the current page or default to 1
-    per_page = 10  # Define how many items you want to display per page
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
     query = request.form.get('search_query') if request.method == 'POST' else request.args.get('search_query', '')
 
     from main import mongo
@@ -113,7 +114,7 @@ def search_courses():
     # Search registrations by first_name, last_name, or course_name for the user's university
     search_filter = {
         "$and": [
-            {"university": user_university},  # Filter by university
+            {"university": user_university},
             {"$or": [
                 {"first_name": {"$regex": query, "$options": "i"}},
                 {"last_name": {"$regex": query, "$options": "i"}},
@@ -124,13 +125,13 @@ def search_courses():
 
     # Count total matching registrations for pagination
     total_registrations = mongo.db.registrations.count_documents(search_filter)
-    total_pages = (total_registrations + per_page - 1) // per_page  # Calculate total number of pages
+    total_pages = (total_registrations + per_page - 1) // per_page
 
     # Retrieve the relevant page of registrations
     registrations = mongo.db.registrations.find(search_filter).skip((page - 1) * per_page).limit(per_page)
 
     return render_template(
-        'edprovideraddcourse.html',
+        'edproviderviewcourse.html',
         registrations=registrations,
         page=page,
         per_page=per_page,
@@ -157,7 +158,7 @@ def modify_registration_ajax(registration_id):
         "cost": float(cost),
         "key_learnings": request.form.get('key_learnings'),
         "registration_date": datetime.now(),
-        "university": session.get('university')  # Ensure that the university is updated as well
+        "university": session.get('university')
     }
 
     result = mongo.db.registrations.update_one({"_id": ObjectId(registration_id)}, {"$set": updated_registration})
@@ -177,11 +178,12 @@ def delete_registration(registration_id):
         return jsonify({"success": True})
     else:
         return jsonify({"success": False})
-    
 
 
-@edprovider_bp.route('/edprovidervisuals', methods=['GET'])
-def edprovidervisuals():
+
+# Route for course visuals (formerly edprovidervisuals, now edproviderlanding.html)
+@edprovider_bp.route('/edproviderlanding', methods=['GET'])
+def edproviderlanding():
     mongo = PyMongo(current_app)
 
     # Get the user's university from the session
@@ -191,11 +193,11 @@ def edprovidervisuals():
         flash("Please log in to access this page", "error")
         return redirect(url_for('auth.login'))
 
-    # Find all students registered for this university's courses
+    # Fetch registrations for the university
     registrations = list(mongo.db.registrations.find({'university': user_university}))
     if not registrations:
         flash("No registered students found for this university.", "error")
-        return render_template('edprovidervisuals.html', total_students=0, average_age=0, average_pr_score=0, average_pr_probability=0, top_nationalities=[], top_countries=[], gender_distribution=[], revenue=0, potential_revenue=0)
+        return render_template('edproviderlanding.html', total_students=0, average_age=0, average_pr_score=0, average_pr_probability=0, top_nationalities=[], top_countries=[], gender_distribution=[], revenue=0, potential_revenue=0)
 
     student_ids = [reg['user_id'] for reg in registrations]
     total_students = len(student_ids)
@@ -268,7 +270,7 @@ def edprovidervisuals():
 
     # Fetch course names and costs for revenue calculation
     course_names_map = {
-        str(course["_id"]): {"name": course["CourseName"], "cost": course["Cost"]} 
+        str(course["_id"]): {"name": course["CourseName"], "cost": course["Cost"]}
         for course in mongo.db.courses.find({}, {"CourseName": 1, "Cost": 1})
     }
 
@@ -289,7 +291,7 @@ def edprovidervisuals():
         saved_course["name"] = course_names_map.get(saved_course["_id"], {}).get("name", "Unknown Course")
 
     return render_template(
-        'edprovidervisuals.html',
+        'edproviderlanding.html',
         total_students=total_students,
         average_age=round(average_age, 1),
         average_pr_score=round(average_pr_score, 1),
@@ -325,7 +327,7 @@ def view_courses_data():
 
     # Aggregate data for courses and cost associated with the university
     for registration in registrations:
-        course_name = registration.get('course_name', 'Unknown Course')  # Don't split the course name
+        course_name = registration.get('course_name', 'Unknown Course')
         cost = registration.get('cost', 0)
 
         # Count students and costs per course
@@ -335,6 +337,8 @@ def view_courses_data():
     # Return the aggregated data as JSON
     return jsonify({"courses": course_counts, "costs": total_costs})
 
+
+# Inquiry routes
 @edprovider_bp.route('/submit_inquiry', methods=['POST'])
 def submit_inquiry():
     mongo = PyMongo(current_app)
@@ -365,14 +369,16 @@ def submit_inquiry():
     mongo.db.inquiries.insert_one(inquiry_data)
     return jsonify({"message": "Inquiry submitted successfully!"}), 200
 
+
 @edprovider_bp.route('/user_inquiry')
 def user_inquiry():
-    # Render the inquiry page with the appropriate URLs
+    
     return render_template(
         'Userinquiry.html',
         submit_url=url_for('edprovider.submit_inquiry'),
         get_inquiries_url=url_for('edprovider.get_inquiries')
     )
+
 
 @edprovider_bp.route('/get_inquiries', methods=['GET'])
 def get_inquiries():
@@ -396,5 +402,6 @@ def get_inquiries():
         })
 
     return jsonify(inquiries)
+
 
 
