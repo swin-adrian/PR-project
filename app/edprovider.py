@@ -337,8 +337,6 @@ def view_courses_data():
     # Return the aggregated data as JSON
     return jsonify({"courses": course_counts, "costs": total_costs})
 
-
-# Inquiry routes
 @edprovider_bp.route('/submit_inquiry', methods=['POST'])
 def submit_inquiry():
     mongo = PyMongo(current_app)
@@ -372,9 +370,9 @@ def submit_inquiry():
 
 @edprovider_bp.route('/user_inquiry')
 def user_inquiry():
-    
+    # Render the inquiry page with the appropriate URLs for edproviders
     return render_template(
-        'Userinquiry.html',
+        'edprovider_userinquiry.html',  # Use specific HTML for edprovider
         submit_url=url_for('edprovider.submit_inquiry'),
         get_inquiries_url=url_for('edprovider.get_inquiries')
     )

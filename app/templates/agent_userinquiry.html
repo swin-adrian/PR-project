@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Inquiry Submission</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid navi_menu">
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+                </a>
+
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('agent.agentlanding') }}">Overview</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('agent.my_migrants') }}">My migrants</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('agent.agent_courses') }}">Courses</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div class="dropdown ms-auto d-flex align-items-center">
+                    <span class="welcome-text me-3">{{ agent.email }}</span>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Submit Your Inquiry</h2>
+        <form id="inquiryForm" method="POST" action="{{ submit_url }}">
+            <label for="inquiry">Your Inquiry:</label>
+            <textarea id="inquiry" name="inquiry" required></textarea><br>
+            <button type="submit">Submit Inquiry</button>
+        </form>
+
+        <h2>Your Inquiries</h2>
+        <table id="inquiries-table">
+            <thead>
+                <tr>
+                    <th>Inquiry</th>
+                    <th>Submitted At</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="inquiries-body">
+                {% for inquiry in inquiries %}
+                <tr>
+                    <td>{{ inquiry.inquiry }}</td>
+                    <td>{{ inquiry.submitted_at }}</td>
+                    <td>{{ inquiry.status }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3">You have not submitted any inquiries yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('inquiryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const inquiryContent = document.getElementById('inquiry').value;
+            const roleSubmitURL = "{{ submit_url }}";
+
+            fetch(roleSubmitURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    inquiry: inquiryContent
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    document.getElementById('inquiryForm').reset();
+                    fetchInquiries();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting inquiry:', error);
+            });
+        });
+
+        function fetchInquiries() {
+            fetch("{{ get_inquiries_url }}")
+            .
