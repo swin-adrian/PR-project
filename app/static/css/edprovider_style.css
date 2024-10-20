@@ -1,4 +1,4 @@
-
+/* Somto CSS for a calm and soft design */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f7f6;
@@ -20,7 +20,7 @@ body {
 .form-title {
     font-size: 34px;
     font-weight: 700;
-    color: #4a4a4a;
+    color: #b95b5b;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -1155,9 +1155,14 @@ table, th, td {
 th, td {
     padding: 10px;
 }
+.btn-inline {
+    display: inline-block;
+    margin-right: 5px; /* Optional: Add some spacing between the buttons */
+}
+
 
 thead {
-    background-color: #403F4C;
+    background-color: #B76D68;
     color: white;
     font-weight: bold;
 }
@@ -1469,4 +1474,21 @@ select, input[type="text"], input[type="date"] {
 
 #submitRegistration:hover {
     background-color: #b8837f;
+}
+
+/* Custom pink button styles overriding Bootstrap */
+.btn-pink {
+    background-color: #B76D68; /* Main Pink */
+    color: white; /* White text */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for the pink buttons */
+.btn-pink:hover {
+    background-color: #b8837f; /* Soft Pink on hover */
 }

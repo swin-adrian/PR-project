@@ -58,57 +58,102 @@ def add_course():
 
     return render_template('edprovideraddcourse.html')  # Render the renamed template for adding courses
 
+# Route for viewing courses
 @edprovider_bp.route('/courses', methods=['GET'])
 def view_courses():
-    # Get the user's university from the session
+    
     user_university = session.get('university')
-
+    
     if not user_university:
         return jsonify({"error": "User session not found or university not specified."}), 400
 
     page = request.args.get('page', 1, type=int)
     per_page = 6
+    mongo = PyMongo(current_app)
 
-    from main import mongo
-    
-    # Step 1: Query registrations
+    # Query registrations and users data
     registrations = list(mongo.db.registrations.find({"university": user_university}).skip((page - 1) * per_page).limit(per_page))
-
-    # Step 2: Collect user_ids from registrations to query the users collection
+    
+    
     user_ids = [reg['user_id'] for reg in registrations]
-
-    # Step 3: Query users based on collected user_ids
+    
+    
     users = list(mongo.db.users.find({"_id": {"$in": user_ids}}))
-
-    # Step 4: Create a dictionary for quick lookup by user_id
+    
+    
     user_lookup = {str(user['_id']): user for user in users}
 
-    # Step 5: Merge the data for each registration with its corresponding user information
+
     merged_registrations = []
     for reg in registrations:
         user = user_lookup.get(str(reg['user_id']), {})
         merged_data = {
+            "_id": str(reg['_id']),
             "course_name": reg['course_name'],
             "cost": reg.get('cost', 0.00),
             "registration_date": reg.get('registration_date'),
             "first_name": user.get('first_name', ''),
             "last_name": user.get('last_name', ''),
-            "email": user.get('email', '')
+            "email": user.get('email', ''),
+            "key_learnings": reg.get('key_learnings', '')
         }
         merged_registrations.append(merged_data)
 
-    # Pagination information
+
     total_registrations = mongo.db.registrations.count_documents({"university": user_university})
     total_pages = (total_registrations + per_page - 1) // per_page
 
-    return render_template(
-        'edproviderviewcourse.html',  # Use the template for viewing courses
-        registrations=merged_registrations,
-        page=page,
-        per_page=per_page,
-        total_registrations=total_registrations,
-        total_pages=total_pages
-    )
+    return render_template('edproviderviewcourse.html', registrations=merged_registrations, page=page, per_page=per_page, total_pages=total_pages)
+
+@edprovider_bp.route('/modify_registration_ajax/<registration_id>', methods=['POST'])
+def modify_registration_ajax(registration_id):
+    from main import mongo
+
+    # Retrieve form data from the request
+    course_name = request.form.get('course_name')
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    email = request.form.get('email')
+    cost = request.form.get('cost')
+
+    # Validate cost as a float to prevent invalid input
+    try:
+        cost = float(cost)
+    except ValueError:
+        return jsonify({"success": False, "error": "Invalid cost value."})
+
+    # Ensure all necessary fields are present
+    if not course_name or not first_name or not last_name or not email or cost is None:
+        return jsonify({"success": False, "error": "Missing required fields."})
+
+    # Update registration with the new values
+    updated_registration = {
+        "course_name": course_name,
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "cost": cost,
+        "registration_date": datetime.now()  # Update registration date with current timestamp
+    }
+
+    # Perform the update in MongoDB
+    result = mongo.db.registrations.update_one({"_id": ObjectId(registration_id)}, {"$set": updated_registration})
+
+    if result.modified_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False, "error": "No changes made to the registration."})
+
+
+# Route for deleting a registration using AJAX
+@edprovider_bp.route('/delete_registration/<registration_id>', methods=['POST'])
+def delete_registration(registration_id):
+    mongo = PyMongo(current_app)
+    result = mongo.db.registrations.delete_one({"_id": ObjectId(registration_id)})
+    if result.deleted_count > 0:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False})
 
 
 
@@ -154,47 +199,7 @@ def search_courses():
         total_pages=total_pages,
         search_query=query
     )
-
-
-# Route for modifying a registration in the registrations collection using AJAX
-@edprovider_bp.route('/modify_registration_ajax/<registration_id>', methods=['POST'])
-def modify_registration_ajax(registration_id):
-    from main import mongo
-
-    # Retrieve form data including the cost
-    cost = request.form.get('cost')
-
-    # Update registration with the new values
-    updated_registration = {
-        "course_name": request.form.get('course_name'),
-        "first_name": request.form.get('first_name'),
-        "last_name": request.form.get('last_name'),
-        "email": request.form.get('email'),
-        "cost": float(cost),
-        "key_learnings": request.form.get('key_learnings'),
-        "registration_date": datetime.now(),
-        "university": session.get('university')
-    }
-
-    result = mongo.db.registrations.update_one({"_id": ObjectId(registration_id)}, {"$set": updated_registration})
-
-    if result.modified_count > 0:
-        return jsonify({"success": True})
-    else:
-        return jsonify({"success": False})
-
-
-# Route for deleting a registration using AJAX
-@edprovider_bp.route('/delete_registration/<registration_id>', methods=['POST'])
-def delete_registration(registration_id):
-    from main import mongo
-    result = mongo.db.registrations.delete_one({"_id": ObjectId(registration_id)})
-    if result.deleted_count > 0:
-        return jsonify({"success": True})
-    else:
-        return jsonify({"success": False})
-
-
+    
 @edprovider_bp.route('/edproviderlanding')
 def edproviderlanding():
     mongo = PyMongo(current_app)

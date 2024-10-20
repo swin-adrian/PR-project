@@ -362,14 +362,24 @@ def get_users_by_test():
         return jsonify({'error': str(e)}), 500
 
 
-# Route to display the inquiries
+# Route to display the inquiries with pagination
 @admin_bp.route('/viewinquiries', methods=['GET'])
 def viewinquiries():
     # Access the MongoDB instance
     mongo = PyMongo(current_app)
 
-    # Fetch inquiries from the 'inquiries' collection
-    inquiries_cursor = mongo.db.inquiries.find()
+    # Pagination parameters (defaults to page 1, 10 items per page)
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Number of inquiries per page
+
+    # Count the total number of inquiries
+    total_inquiries = mongo.db.inquiries.count_documents({})
+
+    # Calculate the number of total pages
+    total_pages = (total_inquiries + per_page - 1) // per_page  # Ceiling division
+
+    # Fetch the inquiries for the current page using `skip` and `limit`
+    inquiries_cursor = mongo.db.inquiries.find().skip((page - 1) * per_page).limit(per_page)
     inquiries = []
 
     for inquiry in inquiries_cursor:
@@ -404,8 +414,12 @@ def viewinquiries():
 
         inquiries.append(inquiry)
 
-    # Render the template and pass the inquiries data
-    return render_template('viewinquiries.html', inquiries=inquiries)
+    # Render the template and pass the inquiries data along with pagination info
+    return render_template('viewinquiries.html', 
+                           inquiries=inquiries, 
+                           page=page, 
+                           total_pages=total_pages)
+
 
 # Route to modify an inquiry (update status)
 @admin_bp.route('/modify_inquiry/<inquiry_id>', methods=['POST'])
