@@ -58,42 +58,49 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
-                <!-- Logo -->
+                
                 <a href="/" class="logo">
                     <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+
                 </a>
 
-                <!-- Navbar links (Home and Submit Inquiry) -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('edprovider.edproviderlanding') }}">Overview</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dashboards
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding') }}">Dashboard 1</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding2') }}">Dashboard 2</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{{ url_for('edprovider.view_courses') }}">Potential Student</a>
-                        </li>
-                    </ul>
-                </div>
 
-                <!-- Welcome message and Hamburger Menu -->
-                <div class="dropdown ms-auto d-flex align-items-center">
-                    <span class="welcome-text me-3">{{ migrant_email }}</span>
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="{{ url_for('edprovider.add_course') }}">Add Course</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('edprovider.user_inquiry') }}">Submit Inquiry</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url_for('edprovider.view_courses') }}">Potential Student</a>
+                                </li>
+                            </ul>
+                        </div>
+                    <div class="dropdown ms-auto d-flex align-items-center">
+                        <span class="welcome-text me-3">{{ migrant_email }}</span>
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="{{ url_for('edprovider.add_course') }}">Add Course</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('edprovider.user_inquiry') }}">Submit Inquiry</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
         </nav>
     </header>
 
     <div class="container my-5">
         <h2>Course Information</h2>
-        <table class="table table-striped">
+        <table class=>
             <thead >
                 <tr>
                     <th>Course Name</th>

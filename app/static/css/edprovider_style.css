@@ -1,7 +1,7 @@
 /* Somto CSS for a calm and soft design */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f7f6;
+    background-color: white;
     color: #444;
     margin: 0;
     padding: 0;
@@ -48,7 +48,7 @@ body {
     border: 3px solid #B76D68; /* Updated to Main Pink */
     border-radius: 8px;
     font-size: 18px;
-    background-color: #ffffff;
+    background-color: white;
     color: #555;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -150,7 +150,7 @@ th:last-child {
 }
 
 tr:hover {
-    background-color: #f0f0f0;
+    background-color: white;
 }
 
 /* Adjust search form container to align items in the same row */
@@ -486,7 +486,7 @@ tr:hover {
 
         /* Custom chart colors */
         .chart-background {
-            background-color: #f4f7f6;
+            background-color: #479c7f;
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1163,7 +1163,6 @@ th, td {
 
 thead {
     background-color: #B76D68;
-    color: white;
     font-weight: bold;
 }
 

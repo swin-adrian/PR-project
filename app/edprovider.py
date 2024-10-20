@@ -423,5 +423,29 @@ def get_inquiries():
 
     return jsonify(inquiries)
 
+@edprovider_bp.route('/get_course_piechart_data', methods=['GET'])
+def get_course_piechart_data():
+    from main import mongo
 
+    # Get the user's university from the session
+    user_university = session.get('university')
 
+    if not user_university:
+        return jsonify({"error": "User session not found or university not specified."}), 400
+
+    # Fetch all registrations for the user's university
+    registrations = list(mongo.db.registrations.find({"university": user_university}))
+
+    course_counts = {}
+
+    # Aggregate data for courses
+    for registration in registrations:
+        course_name = registration.get('course_name', 'Unknown Course')
+
+        # Count students per course
+        course_counts[course_name] = course_counts.get(course_name, 0) + 1
+
+    # Return the aggregated data as JSON for use in the pie chart
+    return jsonify({
+        "course_counts": course_counts
+    })
