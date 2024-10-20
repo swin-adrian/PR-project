@@ -58,8 +58,6 @@ def add_course():
 
     return render_template('edprovideraddcourse.html')  # Render the renamed template for adding courses
 
-
-# Route for viewing courses (formerly view_courses, now edproviderviewcourse.html)
 @edprovider_bp.route('/courses', methods=['GET'])
 def view_courses():
     # Get the user's university from the session
@@ -72,23 +70,40 @@ def view_courses():
     per_page = 6
 
     from main import mongo
-    # Count total number of registrations for the user's university
+    
+    # Step 1: Query registrations
+    registrations = list(mongo.db.registrations.find({"university": user_university}).skip((page - 1) * per_page).limit(per_page))
+
+    # Step 2: Collect user_ids from registrations to query the users collection
+    user_ids = [reg['user_id'] for reg in registrations]
+
+    # Step 3: Query users based on collected user_ids
+    users = list(mongo.db.users.find({"_id": {"$in": user_ids}}))
+
+    # Step 4: Create a dictionary for quick lookup by user_id
+    user_lookup = {str(user['_id']): user for user in users}
+
+    # Step 5: Merge the data for each registration with its corresponding user information
+    merged_registrations = []
+    for reg in registrations:
+        user = user_lookup.get(str(reg['user_id']), {})
+        merged_data = {
+            "course_name": reg['course_name'],
+            "cost": reg.get('cost', 0.00),
+            "registration_date": reg.get('registration_date'),
+            "first_name": user.get('first_name', ''),
+            "last_name": user.get('last_name', ''),
+            "email": user.get('email', '')
+        }
+        merged_registrations.append(merged_data)
+
+    # Pagination information
     total_registrations = mongo.db.registrations.count_documents({"university": user_university})
     total_pages = (total_registrations + per_page - 1) // per_page
 
-    # Fetch registrations for the current page, filtering by university
-    registrations = mongo.db.registrations.find({"university": user_university}).skip((page - 1) * per_page).limit(per_page)
-
-    # Convert the cost field to a float for each registration
-    registrations = [
-        {**registration, "cost": float(registration.get("cost", 0.00)) if registration.get("cost") is not None else 0.00}
-        for registration in registrations
-    ]
-
-
     return render_template(
-        'edproviderviewcourse.html',  # Use the renamed template for viewing courses
-        registrations=registrations,
+        'edproviderviewcourse.html',  # Use the template for viewing courses
+        registrations=merged_registrations,
         page=page,
         per_page=per_page,
         total_registrations=total_registrations,
