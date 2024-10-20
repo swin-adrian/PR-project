@@ -1,30 +1,50 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EdProvider Visuals</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+    <title>userinquiry</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
+    <script src="{{ url_for('static', filename='../static/js/edprovider.js') }}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
+                <!-- Logo -->
                 <a href="/" class="logo">
-                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo"
+                        id="logo">
                 </a>
+
+                <!-- Navbar links (Home and Submit Inquiry) -->
                 <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        
-                                <li> <a class="nav-link" href="{{ url_for('edprovider.edproviderlanding') }}">Overview</a></li>
-                                <li><a class="active" href="{{ url_for('edprovider.add_course') }}">Add Course</a></li>
-                                <li><a class="nav-link" href="{{ url_for('edprovider.view_courses') }}">Potential Student</a>
-                                </li>
-
-
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Dashboards
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
+                                    <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding') }}">Dashboard 1</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding2') }}">Dashboard 2</a></li>
+                                </ul>
+                            </li>
+                        <li class="nav-item">
+                            <a class="active" href="{{ url_for('edprovider.add_course') }}">Add Course</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('edprovider.view_courses') }}">Potential Student</a>
+                        </li>
                     </ul>
+                </div>
+
+                <!-- Welcome message and Hamburger Menu -->
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ migrant_email }}</span>
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -32,16 +52,15 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                        
+                        <li><a class="dropdown-item" href="{{ url_for('edprovider.add_course') }}">Add Course</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('edprovider.user_inquiry') }}">Submit Inquiry</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                        
-
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+<body>
 
     <div class="container">
         <!-- Display Flash Messages Here -->

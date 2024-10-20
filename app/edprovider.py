@@ -195,9 +195,7 @@ def delete_registration(registration_id):
         return jsonify({"success": False})
 
 
-
-# Route for course visuals (formerly edprovidervisuals, now edproviderlanding.html)
-@edprovider_bp.route('/edproviderlanding', methods=['GET'])
+@edprovider_bp.route('/edproviderlanding')
 def edproviderlanding():
     mongo = PyMongo(current_app)
 
@@ -210,16 +208,12 @@ def edproviderlanding():
 
     # Fetch registrations for the university
     registrations = list(mongo.db.registrations.find({'university': user_university}))
-    if not registrations:
-        flash("No registered students found for this university.", "error")
-        return render_template('edproviderlanding.html', total_students=0, average_age=0, average_pr_score=0, average_pr_probability=0, top_nationalities=[], top_countries=[], gender_distribution=[], revenue=0, potential_revenue=0)
 
-    student_ids = [reg['user_id'] for reg in registrations]
-    total_students = len(student_ids)
+    total_students = len(registrations)
 
-    # Calculate the average age using students' dates of birth
+    # Calculate the average age for registered students
     if total_students > 0:
-        students_data = list(mongo.db.users.find({'_id': {'$in': student_ids}}, {'dob': 1, 'nationality': 1, 'current_country': 1, 'gender': 1}))
+        students_data = list(mongo.db.users.find({'_id': {'$in': [r['user_id'] for r in registrations]}, 'dob': {'$ne': None}}, {'dob': 1}))
         total_age = 0
         age_count = 0
         for student in students_data:
@@ -233,8 +227,8 @@ def edproviderlanding():
     else:
         average_age = 0
 
-    # Calculate the average PR score and probability
-    scores = list(mongo.db.scores.find({'user_id': {'$in': student_ids}}, {'total_score': 1, 'pr_probability': 1}))
+    # Calculate average PR score and probability for students
+    scores = list(mongo.db.scores.find({'user_id': {'$in': [r['user_id'] for r in registrations]}}))
     if scores:
         total_pr_score = sum(score.get('total_score', 0) for score in scores)
         total_pr_prob = sum(score.get('pr_probability', 0) for score in scores)
@@ -244,67 +238,30 @@ def edproviderlanding():
         average_pr_score = 0
         average_pr_probability = 0
 
-    # Top 5 nationalities
+    # Top 5 nationalities of students
     top_nationalities = list(mongo.db.users.aggregate([
-        {'$match': {'_id': {'$in': student_ids}, 'nationality': {'$ne': None}}},
+        {'$match': {'_id': {'$in': [r['user_id'] for r in registrations]}, 'nationality': {'$ne': None}}},
         {'$group': {'_id': '$nationality', 'count': {'$sum': 1}}},
         {'$sort': {'count': -1}},
         {'$limit': 5}
     ]))
 
-    # Top 5 current countries
+    # Top 5 current countries of students
     top_countries = list(mongo.db.users.aggregate([
-        {'$match': {'_id': {'$in': student_ids}, 'current_country': {'$ne': None}}},
+        {'$match': {'_id': {'$in': [r['user_id'] for r in registrations]}, 'current_country': {'$ne': None}}},
         {'$group': {'_id': '$current_country', 'count': {'$sum': 1}}},
         {'$sort': {'count': -1}},
         {'$limit': 5}
     ]))
 
-    # Gender distribution
+    # Gender distribution of students
     gender_distribution = list(mongo.db.users.aggregate([
-        {'$match': {'_id': {'$in': student_ids}, 'gender': {'$ne': None}}},
-        {'$group': {'_id': '$gender', 'count': {'$sum': 1}}},
+        {'$match': {'_id': {'$in': [r['user_id'] for r in registrations]}}},
+        {'$group': {'_id': {'$ifNull': ['$gender', 'Unknown']}, 'count': {'$sum': 1}}},
         {'$sort': {'_id': 1}}
     ]))
 
-    # Fetch top 5 registered courses
-    top_registered_courses = list(mongo.db.registrations.aggregate([
-        {"$match": {"university": user_university}},
-        {"$group": {"_id": {"course_id": "$course_id", "course_name": "$course_name"}, "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}},
-        {"$limit": 5}
-    ]))
-
-    # Fetch top 5 saved courses
-    top_saved_courses = list(mongo.db.saved_courses.aggregate([
-        {"$unwind": "$course_ids"},
-        {"$group": {"_id": "$course_ids", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}},
-        {"$limit": 5}
-    ]))
-
-    # Fetch course names and costs for revenue calculation
-    course_names_map = {
-        str(course["_id"]): {"name": course["CourseName"], "cost": course["Cost"]}
-        for course in mongo.db.courses.find({}, {"CourseName": 1, "Cost": 1})
-    }
-
-    # Calculate Revenue (Registered)
-    revenue = 0
-    for course in top_registered_courses:
-        course_cost = course_names_map.get(str(course["_id"]["course_id"]), {}).get("cost", 0)
-        revenue += course["count"] * course_cost
-
-    # Calculate Potential Revenue (Saved)
-    potential_revenue = 0
-    for saved_course in top_saved_courses:
-        course_cost = course_names_map.get(saved_course["_id"], {}).get("cost", 0)
-        potential_revenue += saved_course["count"] * course_cost
-
-    # Map saved course ids to course names
-    for saved_course in top_saved_courses:
-        saved_course["name"] = course_names_map.get(saved_course["_id"], {}).get("name", "Unknown Course")
-
+    # Prepare data for the dashboard view
     return render_template(
         'edproviderlanding.html',
         total_students=total_students,
@@ -313,13 +270,41 @@ def edproviderlanding():
         average_pr_probability=round(average_pr_probability, 1),
         top_nationalities=top_nationalities,
         top_countries=top_countries,
-        gender_distribution=gender_distribution,
-        revenue=round(revenue, 2),
-        potential_revenue=round(potential_revenue, 2),
-        top_registered_courses=top_registered_courses,
-        top_saved_courses=top_saved_courses
+        gender_distribution=gender_distribution
     )
 
+
+@edprovider_bp.route('/edproviderlanding2', methods=['GET'])
+def edproviderlanding2():
+    mongo = PyMongo(current_app)
+
+    # Get the user's university from the session
+    user_university = session.get('university')
+
+    if not user_university:
+        flash("Please log in to access this page", "error")
+        return redirect(url_for('auth.login'))
+
+    # Fetch all registrations for the user's university
+    registrations = list(mongo.db.registrations.find({"university": user_university}))
+
+    course_counts = {}
+    total_costs = {}
+
+    # Aggregate data for courses and cost associated with the university
+    for registration in registrations:
+        course_name = registration.get('course_name', 'Unknown Course')
+        cost = registration.get('cost', 0)
+
+        # Count students and costs per course
+        course_counts[course_name] = course_counts.get(course_name, 0) + 1
+        total_costs[course_name] = total_costs.get(course_name, 0) + cost
+
+    return render_template(
+        'edproviderlanding2.html',  # Render Dashboard 2 template
+        course_counts=course_counts,
+        total_costs=total_costs
+    )
 
 
 

@@ -25,8 +25,14 @@
                 <!-- Navbar links (Home and Submit Inquiry) -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('edprovider.edproviderlanding') }}">Overview</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dashboards
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding') }}">Dashboard 1</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding2') }}">Dashboard 2</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="{{ url_for('edprovider.view_courses') }}">Potential Student</a>
