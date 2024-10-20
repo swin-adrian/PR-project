@@ -261,6 +261,21 @@ def edproviderlanding():
         {'$sort': {'_id': 1}}
     ]))
 
+    # Revenue calculation (total revenue from registrations)
+    course_ids = [r.get('course_id') for r in registrations if 'course_id' in r]
+    courses = mongo.db.courses.find({'_id': {'$in': course_ids}}, {'CourseName': 1, 'Cost': 1})
+    course_costs = {str(course['_id']): course.get('Cost', 0) for course in courses}
+
+    revenue = sum(course_costs.get(str(r.get('course_id')), 0) for r in registrations)
+
+    # Potential revenue (from saved courses or other projections)
+    saved_courses = list(mongo.db.saved_courses.aggregate([
+        {"$unwind": "$course_ids"},
+        {"$group": {"_id": "$course_ids", "count": {"$sum": 1}}}
+    ]))
+
+    potential_revenue = sum(course_costs.get(saved_course['_id'], 0) * saved_course['count'] for saved_course in saved_courses)
+
     # Prepare data for the dashboard view
     return render_template(
         'edproviderlanding.html',
@@ -270,7 +285,9 @@ def edproviderlanding():
         average_pr_probability=round(average_pr_probability, 1),
         top_nationalities=top_nationalities,
         top_countries=top_countries,
-        gender_distribution=gender_distribution
+        gender_distribution=gender_distribution,
+        revenue=round(revenue, 2),
+        potential_revenue=round(potential_revenue, 2)
     )
 
 
