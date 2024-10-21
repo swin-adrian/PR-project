@@ -64,17 +64,6 @@
 
     <div class="container">
         <!-- Display Flash Messages Here -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
         
         <form action="{{ url_for('edprovider.edproviderlanding') }}" method="POST">
             <fieldset class="form-fieldset">
