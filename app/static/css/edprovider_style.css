@@ -1091,6 +1091,10 @@ button:hover {
     background-color: #b8837f;
 }
 
+select.form-select {
+    padding-right: 2.5rem; /* Adds space between the text and the dropdown arrow */
+  }
+  
 
 /* About me Style */
 dl {
@@ -1490,4 +1494,15 @@ select, input[type="text"], input[type="date"] {
 /* Hover effect for the pink buttons */
 .btn-pink:hover {
     background-color: #b8837f; /* Soft Pink on hover */
+}
+/* Ensure chart containers have enough space for larger bars */
+.chart-box {
+    padding: 20px;
+    width: 45%; /* Make sure each chart is wide enough */
+    min-width: 300px;
+}
+
+canvas {
+    width: 100% !important;
+    height: 500px !important; /* Increase the height to allow for bigger bars */
 }

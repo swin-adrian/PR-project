@@ -368,42 +368,33 @@ def viewinquiries():
     # Access the MongoDB instance
     mongo = PyMongo(current_app)
 
-    # Pagination parameters (defaults to page 1, 10 items per page)
+    # Pagination parameters
     page = request.args.get('page', 1, type=int)
-    per_page = 10  # Number of inquiries per page
+    per_page = 10
 
     # Count the total number of inquiries
     total_inquiries = mongo.db.inquiries.count_documents({})
 
-    # Calculate the number of total pages
-    total_pages = (total_inquiries + per_page - 1) // per_page  # Ceiling division
+    # Calculate total pages
+    total_pages = (total_inquiries + per_page - 1) // per_page
 
-    # Fetch the inquiries for the current page using `skip` and `limit`
+    # Fetch inquiries for the current page
     inquiries_cursor = mongo.db.inquiries.find().skip((page - 1) * per_page).limit(per_page)
     inquiries = []
 
     for inquiry in inquiries_cursor:
-        # Convert ObjectId fields to strings for JSON serialization
         inquiry["_id"] = str(inquiry["_id"])
         if "user_id" in inquiry:
             inquiry["user_id"] = str(inquiry["user_id"])
-
-            # Fetch user email based on user_id
             user = mongo.db.users.find_one({"_id": ObjectId(inquiry["user_id"])})
             inquiry["user_email"] = user["email"] if user else "Unknown"
         else:
             inquiry["user_id"] = None
             inquiry["user_email"] = "Unknown"
 
-        # Ensure 'inquiry' field exists
-        if "inquiry" not in inquiry:
-            inquiry["inquiry"] = "No inquiry provided"
+        inquiry["inquiry"] = inquiry.get("inquiry", "No inquiry provided")
+        inquiry["status"] = inquiry.get("status", "Pending")
 
-        # Ensure 'status' field exists
-        if "status" not in inquiry:
-            inquiry["status"] = "Pending"
-
-        # Format 'submitted_at' if necessary
         if "submitted_at" in inquiry:
             if isinstance(inquiry["submitted_at"], datetime):
                 inquiry["submitted_at"] = inquiry["submitted_at"].strftime('%Y-%m-%d %H:%M:%S')
@@ -414,41 +405,42 @@ def viewinquiries():
 
         inquiries.append(inquiry)
 
-    # Render the template and pass the inquiries data along with pagination info
-    return render_template('viewinquiries.html', 
-                           inquiries=inquiries, 
-                           page=page, 
-                           total_pages=total_pages)
+    return render_template('viewinquiries.html', inquiries=inquiries, page=page, total_pages=total_pages)
 
-
-# Route to modify an inquiry (update status)
 @admin_bp.route('/modify_inquiry/<inquiry_id>', methods=['POST'])
 def modify_inquiry(inquiry_id):
+    print(f"modify_inquiry called with inquiry_id: {inquiry_id}")
+    print(f"Received form data: {request.form}")
     mongo = PyMongo(current_app)
     status = request.form.get('status')
+
     if not status:
+        print("Status is missing from the form data")
         return jsonify({"success": False, "message": "Status is required"}), 400
 
-    # Update the 'status' field of the specific inquiry
+
     try:
         result = mongo.db.inquiries.update_one(
             {"_id": ObjectId(inquiry_id)},
             {"$set": {"status": status}}
         )
+        print(f"Update result: {result.raw_result}")
     except Exception as e:
+        print(f"Exception occurred: {e}")
         return jsonify({"success": False, "message": str(e)}), 500
 
-    if result.modified_count > 0:
+    if result.matched_count > 0:
         return jsonify({"success": True})
     else:
         return jsonify({"success": False, "message": "Inquiry not found"}), 404
+
 
 # Route to delete an inquiry
 @admin_bp.route('/delete_inquiry/<inquiry_id>', methods=['POST'])
 def delete_inquiry(inquiry_id):
     mongo = PyMongo(current_app)
 
-    # Delete the inquiry with the given _id
+
     try:
         result = mongo.db.inquiries.delete_one({"_id": ObjectId(inquiry_id)})
     except Exception as e:

@@ -8,8 +8,6 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
     <script src="{{ url_for('static', filename='../static/js/edprovider.js') }}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
@@ -76,7 +74,7 @@
             {% endif %}
         {% endwith %}
         
-        <form action="{{ url_for('edprovider.edproviderlanding') }}" method="POST">
+        <form action="{{ url_for('edprovider.add_course') }}" method="POST">
             <fieldset class="form-fieldset">
                 <legend><strong>Add New Course</strong></legend>
                 <p class="container">Select one of the options provided below:</p>

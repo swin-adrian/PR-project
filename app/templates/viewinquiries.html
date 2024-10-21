@@ -4,61 +4,25 @@
     <meta charset="UTF-8">
     <title>User Inquiries</title>
     <!-- Include CSS and JS files as needed -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/admin_style.css') }}">
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (if needed) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Reference the correct JavaScript file -->
+    <!-- Reference your custom JavaScript file -->
     <script src="{{ url_for('static', filename='js/admin_inquiries.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
+    <!-- Additional CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/edprovider_style.css') }}">
 </head>
 <body>
 
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid navi_menu">
-            <a href="/" class="logo">
-                <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.adminlanding') }}">Overview</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dashboardsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dashboards
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dashboardsDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard_m') }}">Migrants</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard_a') }}">Agents</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard_e') }}">Courses</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="dropdown ms-auto d-flex align-items-center">
-                <span class="welcome-text me-3"></span>
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="{{ url_for('admin.user_management') }}">User Management</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('admin.manage_connections') }}">Manage Connections</a></li>
-                    <li><a class="dropdown-item active" href="{{ url_for('admin.viewinquiries') }}">View Inquiries</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('admin.occupations') }}">Occupation Management</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <!-- ... existing header content ... -->
 </header>
-
-
 
 <main>
     <h1>User Inquiries</h1>
 
-    <table class="table table-striped">
+    <table>
         <thead>
             <tr>
                 <th>User Email</th>
@@ -77,60 +41,90 @@
                 <td>{{ inquiry.submitted_at }}</td>
                 <td class="status-column">{{ inquiry.status }}</td>
                 <td>
-                    <button class="btn btn-pink modify-btn"  data-inquiry-id="{{ inquiry._id }}">Edit</button>
+                    <!-- Edit Button -->
+                    <button class="btn btn-pink modify-btn"
+                            data-inquiry-id="{{ inquiry._id }}"
+                            data-status="{{ inquiry.status }}"
+                            data-url="{{ url_for('.modify_inquiry', inquiry_id=inquiry._id) }}"
+                            data-bs-toggle="modal" data-bs-target="#editInquiryModal">
+                        Edit
+                    </button>
                 </td>
                 <td>
-                    <button class="btn btn-pink delete-btn" data-inquiry-id="{{ inquiry._id }}">Delete</button>
-                </td>
-            </tr>
-            <!-- Hidden edit form -->
-            <tr id="edit-row-{{ inquiry._id }}" style="display:none;">
-                <td colspan="6">
-                    <form class="edit-inquiry-form" data-inquiry-id="{{ inquiry._id }}">
-                        <label for="status-{{ inquiry._id }}">Status:</label>
-                        <select id="status-{{ inquiry._id }}" name="status">
-                            <option value="Pending" {% if inquiry.status == 'Pending' %}selected{% endif %}>Pending</option>
-                            <option value="Completed" {% if inquiry.status == 'Completed' %}selected{% endif %}>Completed</option>
-                        </select>
-                        <button type="submit" class="btn btn-success">Update Status</button>
-                    </form>
+                    <!-- Delete Button -->
+                    <button class="btn btn-pink delete-btn"
+                            data-inquiry-id="{{ inquiry._id }}"
+                            data-url="{{ url_for('.delete_inquiry', inquiry_id=inquiry._id) }}">
+                        Delete
+                    </button>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <!-- Pagination Controls -->
-    <div class="pagination">
-        <ul style="list-style-type:none; display:flex; justify-content: center; align-items: center;">
-            {% if page > 1 %}
-            <li style="margin-right:10px;">
-                <a href="{{ url_for('admin.viewinquiries', page=page-1) }}" class="pagination-arrow">&laquo; Previous</a>
-            </li>
-            {% endif %}
-            {% for num in range(1, total_pages + 1) %}
-            {% if num == page %}
-            <li style="margin-right:10px;">
-                <span class="current-page">{{ num }}</span>
-            </li>
-            {% else %}
-            <li style="margin-right:10px;">
-                <a href="{{ url_for('admin.viewinquiries', page=num) }}" class="pagination-number">{{ num }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-            {% if page < total_pages %}
-            <li style="margin-left:10px;">
-                <a href="{{ url_for('admin.viewinquiries', page=page+1) }}" class="pagination-arrow">Next &raquo;</a>
-            </li>
-            {% endif %}
-        </ul>
+    <!-- Edit Inquiry Modal -->
+  <!-- Edit Inquiry Modal -->
+<div class="modal fade" id="editInquiryModal" tabindex="-1" aria-labelledby="editInquiryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="edit-inquiry-form">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editInquiryModalLabel">Edit Inquiry Status</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="modal-inquiry-id">
+            <div class="mb-3">
+              <label for="modal-status" class="form-label">Status:</label>
+              <select id="modal-status" name="status" class="form-select">
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Update Status</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+  
+ <!-- Pagination Controls -->
+ <div class="pagination">
+    <ul style="list-style-type:none; display:flex; justify-content: center; align-items: center;">
+        {% if page > 1 %}
+        <li style="margin-right:10px;">
+            <a href="{{ url_for('admin.viewinquiries', page=page-1) }}" class="pagination-arrow">&laquo; Previous</a>
+        </li>
+        {% endif %}
+        {% for num in range(1, total_pages + 1) %}
+        {% if num == page %}
+        <li style="margin-right:10px;">
+            <span class="current-page">{{ num }}</span>
+        </li>
+        {% else %}
+        <li style="margin-right:10px;">
+            <a href="{{ url_for('admin.viewinquiries', page=num) }}" class="pagination-number">{{ num }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        {% if page < total_pages %}
+        <li style="margin-left:10px;">
+            <a href="{{ url_for('admin.viewinquiries', page=page+1) }}" class="pagination-arrow">Next &raquo;</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
 </main>
 
 
-<!-- Bootstrap and Chart.js -->
+</main>
+
+<!-- Bootstrap JS Bundle (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>

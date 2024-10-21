@@ -54,7 +54,8 @@ def add_course():
 
         # Flash a success message
         flash("Course added successfully!", "success")
-        return redirect(url_for('edprovider.view_courses'))
+        return redirect(url_for('edprovider.add_course'))
+
 
     return render_template('edprovideraddcourse.html')  # Render the renamed template for adding courses
 

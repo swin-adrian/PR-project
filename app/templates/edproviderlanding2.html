@@ -6,8 +6,54 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        <style>
+            /* Flexbox layout for the charts */
+            .chart-container {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                gap: 100px; /* Increased the gap for more spacing between charts */
+                margin: 50px 20px;
+                padding: 30px;
+            }
+    
+            /* Chart box styling with larger size and more spacing */
+            .chart-box {    
+                background-color: #fff;
+                padding: 40px; /* Increased padding */
+                border-radius: 15px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                width: 120%; /* Increased width to make the charts wider */
+                min-width: 1000px; /* Increased the minimum width */
+            }
+    
+            /* Styling for canvas to ensure responsiveness */
+            canvas {
+                width: 100% !important;
+                height: 1000px !important; /* Increased the height to allow for bigger bars */
+            }
+    
+            /* Styling the title */
+            h4 {
+                text-align: center;
+                font-size: 32px; /* Larger font size for titles */
+                color: #333;
+                margin-bottom: 30px; /* Increased margin for spacing */
+            }
+            /* Dropdown styling */
+            .dropdown-container {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+    
+            .dropdown-container select {
+                padding: 10px;
+                font-size: 16px;
+            }
+        </style>
+    </style>
 </head>
-<body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid navi_menu">
@@ -45,76 +91,148 @@
         </div>
     </nav>
 </header>
-<div class="container my-5">
 
-    <!-- Section 1: Bar Charts for Courses -->
-    <div class="row">
-        <div class="col-md-12 mb-4">
-            <h4 class="text-center mb-3">Number of Students per Course</h4>
-            <canvas id="studentsPerCourseChart" style="height: 600px; width: 100%;"></canvas>
-        </div>
-        <div class="col-md-12 mb-4">
-            <h4 class="text-center mb-3">Costs per Course</h4>
-            <canvas id="costsPerCourseChart" style="height: 600px; width: 100%;"></canvas>
+<body>
+    <div class="container my-5">
+        <!-- Section 1: Bar Charts for Courses -->
+        <div class="chart-container">
+            <div class="chart-box">
+                <h4>Number of Students per Course</h4>
+                <div class="dropdown-container">
+                    <select id="studentsDropdown">
+                        <option value="all">Show All</option>
+                        <option value="top10">Top 10</option>
+                        <option value="least10">Least 10</option>
+                    </select>
+                </div>
+                <canvas id="studentsPerCourseChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h4>Cost per Course</h4>
+                <div class="dropdown-container">
+                    <select id="costsDropdown">
+                        <option value="all">Show All</option>
+                        <option value="top10">Top 10</option>
+                        <option value="least10">Least 10</option>
+                    </select>
+                </div>
+                <canvas id="costsPerCourseChart"></canvas>
+            </div>
         </div>
     </div>
-</div>
-
-<script>
-    const courseCounts = {{ course_counts | tojson }};
-    const totalCosts = {{ total_costs | tojson }};
-
-    // Convert data to chart-friendly format
-    const courseNames = Object.keys(courseCounts);
-    const studentCounts = Object.values(courseCounts);
-    const courseCosts = Object.values(totalCosts);
-
-    // Bar chart for students per course (make it larger)
-    new Chart(document.getElementById('studentsPerCourseChart'), {
-        type: 'bar',
-        data: {
-            labels: courseNames,
-            datasets: [{
-                label: 'Number of Students',
-                data: studentCounts,
-                backgroundColor: '#4E79A7',
-                borderColor: '#4E79A7',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: { beginAtZero: true }
-            },
-            responsive: true,
-            maintainAspectRatio: false // Ensures chart is taller and bigger
+    
+    <script>
+        const courseCounts = {{ course_counts | tojson }};
+        const totalCosts = {{ total_costs | tojson }};
+    
+        // Convert data to chart-friendly format
+        const courseNames = Object.keys(courseCounts);
+        const studentCounts = Object.values(courseCounts);
+        const courseCosts = Object.values(totalCosts);
+    
+        let studentChart, costChart;
+    
+        // Create the chart for students per course
+        function createStudentChart(filteredCourses, filteredStudentCounts) {
+            const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
+            if (studentChart) studentChart.destroy(); // Destroy previous chart
+            studentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filteredCourses,
+                    datasets: [{
+                        label: 'Number of Students',
+                        data: filteredStudentCounts,
+                        backgroundColor: '#4E79A7',
+                        borderColor: '#4E79A7',
+                        borderWidth: 1,
+                        barThickness: 50, // Set the thickness of the bars
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { categoryPercentage: 0.8, barPercentage: 0.9 }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
         }
-    });
-
-    // Horizontal bar chart for costs per course
-    new Chart(document.getElementById('costsPerCourseChart'), {
-        type: 'bar',
-        data: {
-            labels: courseNames,
-            datasets: [{
-                label: 'Total Cost (USD)',
-                data: courseCosts,
-                backgroundColor: '#E15759',
-                borderColor: '#E15759',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            indexAxis: 'y', // Horizontal bar chart
-            scales: {
-                x: { beginAtZero: true }
-            },
-            responsive: true,
-            maintainAspectRatio: false // Ensures chart fits well
+    
+        // Create the chart for cost per course
+        function createCostChart(filteredCourses, filteredCourseCosts) {
+            const ctx = document.getElementById('costsPerCourseChart').getContext('2d');
+            if (costChart) costChart.destroy(); // Destroy previous chart
+            costChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filteredCourses,
+                    datasets: [{
+                        label: 'Total Cost (USD)',
+                        data: filteredCourseCosts,
+                        backgroundColor: '#E15759',
+                        borderColor: '#E15759',
+                        borderWidth: 1,
+                        barThickness: 50,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { callback: value => '$' + value.toLocaleString() }
+                        },
+                        y: { categoryPercentage: 0.8, barPercentage: 0.9 }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
         }
-    });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    
+        // Helper function to get top or least 10 data
+        function getTopOrLeastData(data, order = 'top', limit = 10) {
+            const sortedData = Object.entries(data)
+                .sort(([, a], [, b]) => order === 'top' ? b - a : a - b)
+                .slice(0, limit);
+            return [sortedData.map(([key]) => key), sortedData.map(([, value]) => value)];
+        }
+    
+        // Initialize charts with all data
+        createStudentChart(courseNames, studentCounts);
+        createCostChart(courseNames, courseCosts);
+    
+        // Event listener for student chart dropdown
+        document.getElementById('studentsDropdown').addEventListener('change', function () {
+            const selectedOption = this.value;
+            if (selectedOption === 'top10') {
+                const [filteredCourses, filteredStudentCounts] = getTopOrLeastData(courseCounts, 'top');
+                createStudentChart(filteredCourses, filteredStudentCounts);
+            } else if (selectedOption === 'least10') {
+                const [filteredCourses, filteredStudentCounts] = getTopOrLeastData(courseCounts, 'least');
+                createStudentChart(filteredCourses, filteredStudentCounts);
+            } else {
+                createStudentChart(courseNames, studentCounts); // Show all
+            }
+        });
+    
+        // Event listener for cost chart dropdown
+        document.getElementById('costsDropdown').addEventListener('change', function () {
+            const selectedOption = this.value;
+            if (selectedOption === 'top10') {
+                const [filteredCourses, filteredCourseCosts] = getTopOrLeastData(totalCosts, 'top');
+                createCostChart(filteredCourses, filteredCourseCosts);
+            } else if (selectedOption === 'least10') {
+                const [filteredCourses, filteredCourseCosts] = getTopOrLeastData(totalCosts, 'least');
+                createCostChart(filteredCourses, filteredCourseCosts);
+            } else {
+                createCostChart(courseNames, courseCosts); // Show all
+            }
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>'
