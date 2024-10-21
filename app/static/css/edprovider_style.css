@@ -1,7 +1,7 @@
 /* Somto CSS for a calm and soft design */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f7f6;
+    background-color: white;
     color: #444;
     margin: 0;
     padding: 0;
@@ -20,7 +20,7 @@ body {
 .form-title {
     font-size: 34px;
     font-weight: 700;
-    color: #4a4a4a;
+    color: #b95b5b;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -48,7 +48,7 @@ body {
     border: 3px solid #B76D68; /* Updated to Main Pink */
     border-radius: 8px;
     font-size: 18px;
-    background-color: #ffffff;
+    background-color: white;
     color: #555;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -150,7 +150,7 @@ th:last-child {
 }
 
 tr:hover {
-    background-color: #f0f0f0;
+    background-color: white;
 }
 
 /* Adjust search form container to align items in the same row */
@@ -486,7 +486,7 @@ tr:hover {
 
         /* Custom chart colors */
         .chart-background {
-            background-color: #f4f7f6;
+            background-color: #479c7f;
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1155,10 +1155,14 @@ table, th, td {
 th, td {
     padding: 10px;
 }
+.btn-inline {
+    display: inline-block;
+    margin-right: 5px; /* Optional: Add some spacing between the buttons */
+}
+
 
 thead {
-    background-color: #403F4C;
-    color: white;
+    background-color: #B76D68;
     font-weight: bold;
 }
 
@@ -1469,4 +1473,21 @@ select, input[type="text"], input[type="date"] {
 
 #submitRegistration:hover {
     background-color: #b8837f;
+}
+
+/* Custom pink button styles overriding Bootstrap */
+.btn-pink {
+    background-color: #B76D68; /* Main Pink */
+    color: white; /* White text */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for the pink buttons */
+.btn-pink:hover {
+    background-color: #b8837f; /* Soft Pink on hover */
 }

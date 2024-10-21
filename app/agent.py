@@ -146,14 +146,16 @@ def submit_inquiry():
     mongo.db.inquiries.insert_one(inquiry_data)
     return jsonify({"message": "Inquiry submitted successfully!"}), 200
 
+
 @agent_bp.route('/user_inquiry')
 def user_inquiry():
-    # Render the inquiry page with the appropriate URLs
+    # Render the inquiry page with the appropriate URLs for agents
     return render_template(
-        'Userinquiry.html',
+        'agent_userinquiry.html',  # Use specific HTML for agent
         submit_url=url_for('agent.submit_inquiry'),
         get_inquiries_url=url_for('agent.get_inquiries')
     )
+
 
 @agent_bp.route('/get_inquiries', methods=['GET'])
 def get_inquiries():
@@ -177,7 +179,6 @@ def get_inquiries():
         })
 
     return jsonify(inquiries)
-
 
 
 @agent_bp.route('/my_migrants')
