@@ -246,13 +246,29 @@ def get_migrant_profile(migrant_id):
 
     return jsonify(migrant_data), 200
 
-@agent_bp.route('/courses', methods=['GET'])
+@agent_bp.route('/get_courses', methods=['GET'])
 def get_courses():
-    mongo = PyMongo(current_app)
-    courses = list(mongo.db.courses.find({}))
-    for course in courses:
-        course['_id'] = str(course['_id'])  # Convert ObjectId to string for JSON compatibility
-    return jsonify(courses)
+    try:
+        mongo = PyMongo(current_app)
+
+        # Check if the courses collection exists and fetch all courses
+        courses = list(mongo.db.courses.find({}))
+        
+        # If no courses are found, return an appropriate message
+        if not courses:
+            return jsonify({"message": "No courses found"}), 404
+
+        # Convert ObjectId to string for each course
+        for course in courses:
+            course['_id'] = str(course['_id'])  # Convert ObjectId to string for JSON compatibility
+        
+        return jsonify(courses), 200
+
+    except Exception as e:
+        # Log the error for debugging purposes
+        current_app.logger.error(f"Error retrieving courses: {e}")
+        return jsonify({"error": "An error occurred while retrieving courses"}), 500
+
 
 @agent_bp.route('/linked_migrants', methods=['GET'])
 def get_linked_migrants():
@@ -295,17 +311,20 @@ def recommend_course():
 
 @agent_bp.route('/agent_courses')
 def agent_courses():
-    # Get the agent's email from the session
+    # Get the agent's email and user_id from the session
     agent_email = session.get('email')
     user_id = session.get('user_id')
     mongo = PyMongo(current_app)
 
-    if not user_id:
+    # Check if the user is logged in by verifying user_id and email in the session
+    if not user_id or not agent_email:
         flash("Please log in to access this page", "error")
         return redirect(url_for('auth.login'))
 
     # Find the agent's user data in the database
     agent = mongo.db.users.find_one({'_id': ObjectId(user_id), 'role': 'Agent'})
+    
+    # Check if the agent exists in the database
     if not agent:
         flash("Agent not found", "error")
         return redirect(url_for('auth.login'))

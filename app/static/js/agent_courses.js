@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // Fetch courses and display them
-    $.get('/courses', function(courses) {
+    $.get('/get_courses', function(courses) {
         let courseList = $('#course-list');
         courses.forEach(course => {
             let courseCard = `
