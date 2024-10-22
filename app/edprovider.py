@@ -162,10 +162,11 @@ def delete_registration(registration_id):
 @edprovider_bp.route('/search_courses', methods=['GET', 'POST'])
 def search_courses():
     page = request.args.get('page', 1, type=int)
-    per_page = 10
+    per_page = 6
     query = request.form.get('search_query') if request.method == 'POST' else request.args.get('search_query', '')
 
-    from main import mongo
+    mongo = PyMongo(current_app)
+    
     # Get the user's university from the session
     user_university = session.get('university')
 
@@ -184,22 +185,51 @@ def search_courses():
         ]
     }
 
+    # Retrieve the relevant page of registrations
+    registrations = list(mongo.db.registrations.find(search_filter).skip((page - 1) * per_page).limit(per_page))
+
+    # Get user_ids from the search results
+    user_ids = [reg['user_id'] for reg in registrations]
+
+    # Fetch user details based on user_ids
+    users = list(mongo.db.users.find({"_id": {"$in": user_ids}}))
+
+    # Create a lookup dictionary for user data
+    user_lookup = {str(user['_id']): user for user in users}
+
+    # Merge registration data with user data
+    merged_registrations = []
+    for reg in registrations:
+        user = user_lookup.get(str(reg['user_id']), {})
+        merged_data = {
+            "_id": str(reg['_id']),
+            "course_name": reg['course_name'],
+            "cost": reg.get('cost', 0.00),
+            "registration_date": reg.get('registration_date'),
+            "first_name": user.get('first_name', ''),
+            "last_name": user.get('last_name', ''),
+            "email": user.get('email', ''),
+            "key_learnings": reg.get('key_learnings', '')
+        }
+        merged_registrations.append(merged_data)
+
     # Count total matching registrations for pagination
     total_registrations = mongo.db.registrations.count_documents(search_filter)
     total_pages = (total_registrations + per_page - 1) // per_page
 
-    # Retrieve the relevant page of registrations
-    registrations = mongo.db.registrations.find(search_filter).skip((page - 1) * per_page).limit(per_page)
+
 
     return render_template(
         'edproviderviewcourse.html',
-        registrations=registrations,
+        registrations=merged_registrations,
         page=page,
         per_page=per_page,
         total_registrations=total_registrations,
         total_pages=total_pages,
         search_query=query
     )
+
+    
     
 @edprovider_bp.route('/edproviderlanding')
 def edproviderlanding():
