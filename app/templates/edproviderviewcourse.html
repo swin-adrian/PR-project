@@ -146,8 +146,16 @@
         <header>
             <!-- Your header content -->
         </header>
+
+       
+        
     
         <div class="container my-5">
+            <form method="GET" action="{{ url_for('edprovider.search_courses') }}" class="d-flex mb-4">
+                <input class="form-control me-2" type="search" name="search_query" placeholder="Search by course" value="{{ search_query }}">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+                 </form>
+        
             <h2>Course Information</h2>
             <table>
                 <thead>

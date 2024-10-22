@@ -109,7 +109,6 @@ def signup():
 def logout():
     # Clear the session
     session.clear()
-    flash("You have been logged out successfully.", "success")
     return redirect(url_for('auth.home'))
 
 # Login route

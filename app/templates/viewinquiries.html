@@ -12,14 +12,56 @@
     <script src="{{ url_for('static', filename='js/admin_inquiries.js') }}"></script>
     <!-- Additional CSS -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/edprovider_style.css') }}">
+
+    
+    <header>
+  </header>
 </head>
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container-fluid navi_menu">
+      <a href="/" class="logo">
+          <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+      </a>
+
+          <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dashboards
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
+        
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('admin.adminlanding') }}">Overview</a>
+              </li>
+              <li class="nav-item">
+                  <a class=" active" href="#" id="dashboardsDropdown" role="button" data-bs-toggle="dropdown">
+                      Dashboards
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="dashboardsDropdown">
+                      <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard_m') }}">Migrants</a></li>
+                      <li><a class="dropdown-item active" href="{{ url_for('admin.admin_dashboard_a') }}">Agents</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard_e') }}">Courses</a></li>
+                  </ul>
+              </li>
+          </ul>
+      </div>
+      <div class="dropdown ms-auto d-flex align-items-center">
+          <span class="welcome-text me-3"></span>
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+              <li><a class="dropdown-item" href="{{ url_for('admin.user_management') }}">User Management</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.manage_connections') }}">Manage Connections</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.viewinquiries') }}">View Inquiries</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('admin.occupations') }}">Occupation Management</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+          </ul>
+      </div>
+  </div>
+</nav>
 <body>
-
-<header>
-    <!-- ... existing header content ... -->
-</header>
-
-<main>
     <h1>User Inquiries</h1>
 
     <table>
