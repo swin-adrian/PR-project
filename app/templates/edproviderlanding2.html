@@ -1,138 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Meta tags for responsive design and Bootstrap CSS -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page Title -->
+    <title>EdProvider Dashboard - Charts</title>
+
+    <!-- Bootstrap CSS for styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS for additional styles -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
+
+    <!-- Chart.js for creating charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        <style>
-            /* Flexbox layout for the charts */
-            .chart-container {
-                display: flex;
-                flex-wrap: wrap; /* Allows wrapping of charts on smaller screens */
-                justify-content: space-around;
-                align-items: center;
-                gap: 50px; /* Reduced gap for better spacing on smaller screens */
-                margin: 20px;
-                padding: 30px;
-            }
-        
-            /* Chart box styling with responsive adjustments */
-            .chart-box {
-                background-color: #fff;
-                padding: 20px;
-                border-radius: 15px;
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-                width: 100%; /* Make the chart take full width */
-                max-width: 1000px; /* Maximum width for large screens */
-                flex: 1 1 300px; /* Allows the chart box to shrink and grow */
-            }
-        
-            /* Styling for canvas to ensure responsiveness */
-            canvas {
-                width: 100% !important;
-                height: auto !important; /* Let the height adjust automatically */
-                max-height: 600px; /* Optional: cap the max height for very large screens */
-            }
-        
-            /* Styling the title */
-            h4 {
-                text-align: center;
-                font-size: 24px; /* Adjusted font size for responsiveness */
-                color: #333;
-                margin-bottom: 20px; /* Adjusted margin for spacing */
-            }
-        
-            /* Media query for smaller screens */
-            @media (max-width: 768px) {
-                .chart-box {
-                    max-width: 100%; /* Make sure the chart takes full width on smaller screens */
-                    padding: 20px; /* Adjust padding */
-                }
-        
-                h4 {
-                    font-size: 20px; /* Adjust title font size for smaller screens */
-                }
-            }
-        </style>
-        
-    </style>
-</head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid navi_menu">
-            <a href="/" class="logo">
-                <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dashboards
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding') }}">Dashboard 1</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding2') }}">Dashboard 2</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('edprovider.view_courses') }}">Potential Student</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="dropdown ms-auto d-flex align-items-center">
-                <span class="welcome-text me-3">{{ migrant_email }}</span>
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="{{ url_for('edprovider.add_course') }}">Add Course</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('edprovider.user_inquiry') }}">Submit Inquiry</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
-<style>
+
+    <!-- Inline Styles for Charts -->
     <style>
         /* Flexbox layout for the charts */
         .chart-container {
             display: flex;
+            flex-wrap: wrap; /* Allows wrapping of charts on smaller screens */
             justify-content: space-around;
             align-items: center;
-            gap: 100px; /* Increased the gap for more spacing between charts */
-            margin: 50px 20px;
+            gap: 50px; /* Reduced gap for better spacing on smaller screens */
+            margin: 20px;
             padding: 30px;
         }
 
-        /* Chart box styling with larger size and more spacing */
-        .chart-box {    
+        /* Chart box styling with responsive adjustments */
+        .chart-box {
             background-color: #fff;
-            padding: 40px; /* Increased padding */
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            width: 90%; /* Increased width to make the charts wider */
-            min-width: 1000px; /* Increased the minimum width */
+            width: 100%; /* Make the chart take full width */
+            max-width: 1000px; /* Maximum width for large screens */
+            flex: 1 1 300px; /* Allows the chart box to shrink and grow */
         }
 
         /* Styling for canvas to ensure responsiveness */
         canvas {
             width: 100% !important;
-            height: 1000px !important; /* Increased the height to allow for bigger bars */
+            height: auto !important; /* Let the height adjust automatically */
+            max-height: 600px; /* Optional: cap the max height for very large screens */
         }
 
         /* Styling the title */
         h4 {
             text-align: center;
-            font-size: 32px; /* Larger font size for titles */
-            color:;
-            margin-bottom: 30px; /* Increased margin for spacing */
+            font-size: 24px; /* Adjusted font size for responsiveness */
+            color: #333;
+            margin-bottom: 20px; /* Adjusted margin for spacing */
         }
+
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+            .chart-box {
+                max-width: 100%; /* Make sure the chart takes full width on smaller screens */
+                padding: 20px; /* Adjust padding */
+            }
+
+            h4 {
+                font-size: 20px; /* Adjust title font size for smaller screens */
+            }
+        }
+
         /* Dropdown styling */
         .dropdown-container {
             text-align: center;
@@ -146,219 +82,276 @@
             border-radius: 5px;
         }
     </style>
-</style>
 </head>
+
 <body>
-<div class="container my-5">
-    <!-- Section 1: Bar Charts for Courses -->
-    <div class="chart-container">
-        <div class="chart-box">
-            <h4>Number of Students per Course</h4>
-            <div class="dropdown-container">
-                <select id="studentsDropdown">
-                    <option value="top10">Top 10</option>
-                    <option value="least10">Least 10</option>
-                </select>
+    <!-- Header and Navigation -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid navi_menu">
+                
+                <!-- Company logo link -->
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
+                </a>
+
+                <!-- Navbar links -->
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        
+                        <!-- Dashboard dropdown menu -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dashboards
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding') }}">Dashboard 1</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('edprovider.edproviderlanding2') }}">Dashboard 2</a></li>
+                            </ul>
+                        </li>
+                        
+                        <!-- Link to Potential Student page -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('edprovider.view_courses') }}">Potential Student</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- User profile and options -->
+                <div class="dropdown ms-auto d-flex align-items-center">
+                    <span class="welcome-text me-3">{{ migrant_email }}</span>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- User dropdown menu -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{{ url_for('edprovider.add_course') }}">Add Course</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('edprovider.user_inquiry') }}">Submit Inquiry</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </div>
             </div>
-            <canvas id="studentsPerCourseChart"></canvas>
-        </div>
-        <div class="chart-box">
-            <h4>Cost per Course</h4>
-            <div class="dropdown-container">
-                <select id="costsDropdown">
-                    <option value="top10">Top 10</option>
-                    <option value="least10">Least 10</option>
-                </select>
+        </nav>
+    </header>
+
+    <!-- Main Content - Charts Section -->
+    <div class="container my-5">
+        <!-- Section 1: Bar Charts for Courses -->
+        <div class="chart-container">
+            
+            <!-- Students per Course Chart -->
+            <div class="chart-box">
+                <h4>Number of Students per Course</h4>
+                <div class="dropdown-container">
+                    <select id="studentsDropdown">
+                        <option value="top10">Top 10</option>
+                        <option value="least10">Least 10</option>
+                    </select>
+                </div>
+                <canvas id="studentsPerCourseChart"></canvas>
             </div>
-            <canvas id="costsPerCourseChart"></canvas>
+            
+            <!-- Cost per Course Chart -->
+            <div class="chart-box">
+                <h4>Cost per Course</h4>
+                <div class="dropdown-container">
+                    <select id="costsDropdown">
+                        <option value="top10">Top 10</option>
+                        <option value="least10">Least 10</option>
+                    </select>
+                </div>
+                <canvas id="costsPerCourseChart"></canvas>
+            </div>
         </div>
     </div>
-</div>
-<script>
-    const courseCounts = {{ course_counts | tojson }};
-    const totalCosts = {{ total_costs | tojson }};
-    
-    // Convert data to chart-friendly format
-    const courseNames = Object.keys(courseCounts);
-    const studentCounts = Object.values(courseCounts);
-    const courseCosts = Object.values(totalCosts);
-    
-    let studentChart, costChart;
-    
-    // Create the chart for students per course (Horizontal)
-    function createStudentChart(filteredCourses, filteredStudentCounts) {
-        const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
-        if (studentChart) studentChart.destroy(); // Destroy previous chart
-        studentChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: filteredCourses,
-                datasets: [{
-                    label: 'Number of Students',
-                    data: filteredStudentCounts,
-                    backgroundColor: 'rgba(75, 192, 192, 0.5)', // Transparent blue bars
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    barThickness: 50, // Set the thickness of the bars
-                    minBarLength: 10 // Ensure minimum bar length
-                }]
-            },
-            options: {
-                indexAxis: 'y', // Makes it a horizontal bar chart
-                scales: {
-                    x: { 
-                        beginAtZero: true,
-                        ticks: {
-                            color: 'black', // Set X-axis labels to black
-                            font: {
-                                size: 20 // Set font size for X-axis
+
+    <!-- JavaScript for Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript for handling Chart.js -->
+    <script>
+        // Data from backend
+        const courseCounts = {{ course_counts | tojson }};
+        const totalCosts = {{ total_costs | tojson }};
+        
+        // Convert data to chart-friendly format
+        const courseNames = Object.keys(courseCounts);
+        const studentCounts = Object.values(courseCounts);
+        const courseCosts = Object.values(totalCosts);
+        
+        let studentChart, costChart;
+        
+        // Create the chart for students per course (Horizontal)
+        function createStudentChart(filteredCourses, filteredStudentCounts) {
+            const ctx = document.getElementById('studentsPerCourseChart').getContext('2d');
+            if (studentChart) studentChart.destroy(); // Destroy previous chart
+            studentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filteredCourses,
+                    datasets: [{
+                        label: 'Number of Students',
+                        data: filteredStudentCounts,
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)', // Transparent blue bars
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        barThickness: 50, // Set the thickness of the bars
+                        minBarLength: 10 // Ensure minimum bar length
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Makes it a horizontal bar chart
+                    scales: {
+                        x: { 
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'black', // Set X-axis labels to black
+                                font: {
+                                    size: 20 // Set font size for X-axis
+                                }
+                            }
+                        },
+                        y: { 
+                            categoryPercentage: 0.8, 
+                            barPercentage: 0.9,
+                            ticks: {
+                                color: 'black', // Set Y-axis labels to black
+                                font: {
+                                    size: 20 // Set font size for Y-axis
+                                }
                             }
                         }
                     },
-                    y: { 
-                        categoryPercentage: 0.8, 
-                        barPercentage: 0.9,
-                        ticks: {
-                            color: 'black', // Set Y-axis labels to black
-                            font: {
-                                size: 20 // Set font size for Y-axis
-                            }
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            top: 20,
+                            bottom: 20,
+                            left: 20,
+                            right: 20
                         }
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        top: 20,
-                        bottom: 20,
-                        left: 20,
-                        right: 20
-                    }
-                },
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: 'black', // Set legend labels to black
-                            font: {
-                                size: 20 // Set font size for legend
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'black', // Set legend labels to black
+                                font: {
+                                    size: 20 // Set font size for legend
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
-    }
-    
-    // Create the chart for cost per course (Horizontal)
-    function createCostChart(filteredCourses, filteredCourseCosts) {
-        const ctx = document.getElementById('costsPerCourseChart').getContext('2d');
-        if (costChart) costChart.destroy(); // Destroy previous chart
-        costChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: filteredCourses,
-                datasets: [{
-                    label: 'Total Cost (USD)',
-                    data: filteredCourseCosts,
-                    backgroundColor: 'rgba(153, 102, 255, 0.5)', // Transparent purple bars
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    borderWidth: 1,
-                    barThickness: 50,
-                    minBarLength: 10 // Ensure minimum bar length
-                }]
-            },
-            options: {
-                indexAxis: 'y', // Makes it a horizontal bar chart
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: value => '$' + value.toLocaleString(),
-                            color: 'black', // Set X-axis labels to black
-                            font: {
-                                size: 20 // Set font size for X-axis
-                            }   
-                        }
-                    },
-                    y: {
-                        categoryPercentage: 0.8, 
-                        barPercentage: 0.9,
-                        ticks: {
-                            color: 'black', // Set Y-axis labels to black
-                            font: {
-                                size: 20 // Set font size for Y-axis
+            });
+        }
+        
+        // Create the chart for cost per course (Horizontal)
+        function createCostChart(filteredCourses, filteredCourseCosts) {
+            const ctx = document.getElementById('costsPerCourseChart').getContext('2d');
+            if (costChart) costChart.destroy(); // Destroy previous chart
+            costChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filteredCourses,
+                    datasets: [{
+                        label: 'Total Cost (USD)',
+                        data: filteredCourseCosts,
+                        backgroundColor: 'rgba(153, 102, 255, 0.5)', // Transparent purple bars
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1,
+                        barThickness: 50,
+                        minBarLength: 10 // Ensure minimum bar length
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Makes it a horizontal bar chart
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => '$' + value.toLocaleString(),
+                                color: 'black', // Set X-axis labels to black
+                                font: {
+                                    size: 20 // Set font size for X-axis
+                                }   
+                            }
+                        },
+                        y: {
+                            categoryPercentage: 0.8, 
+                            barPercentage: 0.9,
+                            ticks: {
+                                color: 'black', // Set Y-axis labels to black
+                                font: {
+                                    size: 20 // Set font size for Y-axis
+                                }
                             }
                         }
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        top: 20,
-                        bottom: 20,
-                        left: 20,
-                        right: 20
-                    }
-                },
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: 'black', // Set legend labels to black
-                            font: {
-                                size: 20 // Set font size for legend
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            top: 20,
+                            bottom: 20,
+                            left: 20,
+                            right: 20
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'black', // Set legend labels to black
+                                font: {
+                                    size: 20 // Set font size for legend
+                                }
                             }
                         }
                     }
                 }
+            });
+        }
+        
+        // Helper function to get top or least 10 data
+        function getTopOrLeastData(data, order = 'top', limit = 10) {
+            const sortedData = Object.entries(data)
+                .sort(([, a], [, b]) => order === 'top' ? b - a : a - b)
+                .slice(0, limit);
+            return [sortedData.map(([key]) => key), sortedData.map(([, value]) => value)];
+        }
+        
+        // Initialize charts with "Top 10" data by default
+        const [topCourses, topStudentCounts] = getTopOrLeastData(courseCounts, 'top');
+        createStudentChart(topCourses, topStudentCounts);
+        
+        const [topCostCourses, topCourseCosts] = getTopOrLeastData(totalCosts, 'top');
+        createCostChart(topCostCourses, topCourseCosts);
+        
+        // Event listener for student chart dropdown
+        document.getElementById('studentsDropdown').addEventListener('change', function () {
+            const selectedOption = this.value;
+            if (selectedOption === 'top10') {
+                const [filteredCourses, filteredStudentCounts] = getTopOrLeastData(courseCounts, 'top');
+                createStudentChart(filteredCourses, filteredStudentCounts);
+            } else if (selectedOption === 'least10') {
+                const [filteredCourses, filteredStudentCounts] = getTopOrLeastData(courseCounts, 'least');
+                createStudentChart(filteredCourses, filteredStudentCounts);
             }
         });
-    }
-    
-    // Helper function to get top or least 10 data
-    function getTopOrLeastData(data, order = 'top', limit = 10) {
-        const sortedData = Object.entries(data)
-            .sort(([, a], [, b]) => order === 'top' ? b - a : a - b)
-            .slice(0, limit);
-        return [sortedData.map(([key]) => key), sortedData.map(([, value]) => value)];
-    }
-    
-    // Initialize charts with "Top 10" data by default
-    const [topCourses, topStudentCounts] = getTopOrLeastData(courseCounts, 'top');
-    createStudentChart(topCourses, topStudentCounts);
-    
-    const [topCostCourses, topCourseCosts] = getTopOrLeastData(totalCosts, 'top');
-    createCostChart(topCostCourses, topCourseCosts);
-    
-    // Event listener for student chart dropdown
-    document.getElementById('studentsDropdown').addEventListener('change', function () {
-        const selectedOption = this.value;
-        if (selectedOption === 'top10') {
-            const [filteredCourses, filteredStudentCounts] = getTopOrLeastData(courseCounts, 'top');
-            createStudentChart(filteredCourses, filteredStudentCounts);
-        } else if (selectedOption === 'least10') {
-            const [filteredCourses, filteredStudentCounts] = getTopOrLeastData(courseCounts, 'least');
-            createStudentChart(filteredCourses, filteredStudentCounts);
-        }
-    });
-    
-    // Event listener for cost chart dropdown
-    document.getElementById('costsDropdown').addEventListener('change', function () {
-        const selectedOption = this.value;
-        if (selectedOption === 'top10') {
-            const [filteredCourses, filteredCourseCosts] = getTopOrLeastData(totalCosts, 'top');
-            createCostChart(filteredCourses, filteredCourseCosts);
-        } else if (selectedOption === 'least10') {
-            const [filteredCourses, filteredCourseCosts] = getTopOrLeastData(totalCosts, 'least');
-            createCostChart(filteredCourses, filteredCourseCosts);
-        }
-    });
-</script>
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        
+        // Event listener for cost chart dropdown
+        document.getElementById('costsDropdown').addEventListener('change', function () {
+            const selectedOption = this.value;
+            if (selectedOption === 'top10') {
+                const [filteredCourses, filteredCourseCosts] = getTopOrLeastData(totalCosts, 'top');
+                createCostChart(filteredCourses, filteredCourseCosts);
+            } else if (selectedOption === 'least10') {
+                const [filteredCourses, filteredCourseCosts] = getTopOrLeastData(totalCosts, 'least');
+                createCostChart(filteredCourses, filteredCourseCosts);
+            }
+        });
+    </script>
 </body>
+
 </html>

@@ -5,46 +5,52 @@
     <meta name="description" content="Smart Migrate">
     <meta name="keywords" content="Smart migrate, migration to Australia, PR Pathway">
     <meta name="author" content="Adrian Soe Myint">
-    <!--accessibility setting-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--stylesheet-->
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
-    <title>Easi Resi | PR Pathway</title>
+
+    <!-- ApexCharts Library -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
+    <title>Easi Resi | PR Pathway</title>
 </head>
 
 <body>
+    <!-- Header Section -->
     <header>
         <nav>
-            <!--Navigation menu in header as a list to apply more styles-->
             <div class="navi_menu">
                 <a class="active" href="/"><strong>Home</strong></a>
-                <!-- <a href="product.html"><strong>Products</strong></a>
-                <a href="enquire.html"><strong>Enquire</strong></a>
-                <a href="about.html"><strong>About</strong></a>
-                <a href="/"><strong>Enhancements</strong></a> !-->
             </div>
         </nav>
     </header>
     
-    <h1>Welcome Migrant</h1>
-    <div class="container">
-        <h1>Results</h1>
-        <div class="widget">
-            <h2>Your Score</h2>
-            <p>Total Score: {{ total_score }}</p>
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <h1>Welcome Migrant</h1>
+            <section>
+                <h2>Results</h2>
+                <div class="widget">
+                    <h3>Your Score</h3>
+                    <p>Total Score: {{ total_score }}</p>
+                </div>
+                <div class="widget">
+                    <h3>PR Probability</h3>
+                    <div id="chart"></div>
+                </div>
+            </section>
         </div>
-        <div class="widget">
-            <h2>PR Probability</h2>
-            <div id="chart"></div>
-        </div>
-    </div>
-
-    <script>
-        // Use your actual PR probability value here
-        var prProbability = {{ pr_prob }}; // Ensure this value is properly rendered by your server-side template engine
+    </main>
     
+    <!-- Chart Script -->
+    <script>
+        // PR Probability value retrieved from the server-side rendering
+        var prProbability = {{ pr_prob }}; // Ensure this value is properly rendered by your server-side template engine
+
+        // Chart options
         var options = {
             series: [prProbability],
             chart: {
@@ -59,13 +65,13 @@
                     dataLabels: {
                         name: {
                             fontSize: '16px',
-                            color: '#FF9933', // Primary orange color for the label
+                            color: '#FF9933', // Primary orange color
                             offsetY: 120
                         },
                         value: {
                             offsetY: 76,
                             fontSize: '22px',
-                            color: '#3366FF', // Complementary blue for the value
+                            color: '#3366FF', // Complementary blue
                             formatter: function (val) {
                                 return val + "%";
                             }
@@ -79,23 +85,22 @@
                     shade: 'light',
                     shadeIntensity: 0.15,
                     inverseColors: false,
-                    gradientToColors: ['#FFCC33', '#FF9933', '#3366FF'], // Gradient from yellow to orange to blue
+                    gradientToColors: ['#FFCC33', '#FF9933', '#3366FF'], // Gradient colors
                     opacityFrom: 1,
                     opacityTo: 1,
                     stops: [0, 50, 100]
-                },
+                }
             },
             stroke: {
                 dashArray: 4,
-                colors: ['#FF6633'] // Analogous red-orange for stroke
+                colors: ['#FF6633'] // Stroke color
             },
             labels: ['PR Probability'],
         };
-    
+
+        // Render the chart
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
     </script>
-    
 </body>
-
 </html>

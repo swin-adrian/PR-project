@@ -1,54 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Meta tags for SEO and Accessibility -->
     <meta charset="utf-8">
     <meta name="description" content="Smart Migrate">
     <meta name="keywords" content="Smart migrate, migration to Australia, PR Pathway">
     <meta name="author" content="Adrian Soe Myint">
-    <!--accessibility setting-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--stylesheet-->
+
+    <!-- Link to Stylesheet and Favicon -->
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
+
+    <!-- Title of the Page -->
     <title>EasiResi</title>
 </head>
 
 <body>
     <header>
-
+        <!-- Add header content if needed -->
     </header>
 
+    <!-- Background Container for the Image and Form -->
     <div class="background-container">
+        <!-- Background Image -->
         <img src="../static/css/images/background.jpg" alt="Background Image" id="background-image">
+
+        <!-- Brand/Logo Text -->
         <p id="brand1">EZ <span class="logo-color">Resi</span></p>
-    
+
+        <!-- Form Container for Login -->
         <div class="form-container">
             <form method="post" action="/login" id="login_form">
                 <fieldset>
                     <legend>Sign in</legend>
-    
+
+                    <!-- Email Input -->
                     <div class="form-group">
                         <label for="email">Email:</label>
                         <input type="email" id="email" name="email" required>
                     </div>
-    
+
+                    <!-- Password Input -->
                     <div class="form-group">
                         <label for="password">Password:</label>
                         <input type="password" id="password" name="password" maxlength="25" required>
                     </div>
-    
+
+                    <!-- Submit Button -->
                     <button type="submit" value="signin">Sign In</button>
-    
+
+                    <!-- Signup Redirect -->
                     <p class="signup-message">Don't have an account yet? <a href="/signup">Create an account</a></p>
                 </fieldset>
             </form>
         </div>
     </div>
-    
-    
 
+    <!-- Footer Section -->
     <footer>
         &#169 2024-2025 EasiResi All Rights Reserved
     </footer>
 </body>
+
 </html>

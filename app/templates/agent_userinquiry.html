@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Meta tags and CSS imports -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Page Title -->
     <title>Agent Inquiry Submission</title>
+    
+    <!-- Custom CSS styles -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/css/edprovider_style.css') }}">
 </head>
+
 <body>
+    <!-- Header and navigation bar -->
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
+                
+                <!-- Company logo link -->
                 <a href="/" class="logo">
                     <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
                 </a>
-
+                
+                <!-- Navigation menu items -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -25,33 +36,44 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('agent.agent_courses') }}">Courses</a>
                         </li>
-
                     </ul>
                 </div>
-
+                
+                <!-- User profile and actions -->
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ agent.email }}</span>
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+                    <!-- User options dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
+    <!-- Main content area for inquiry submission -->
     <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <!-- Page title -->
         <h2 style="text-align: center; font-family: Arial, sans-serif; color: #333;">Submit Your Inquiry</h2>
+        
+        <!-- Inquiry form -->
         <form id="inquiryForm" method="POST" action="{{ submit_url }}" style="display: flex; flex-direction: column; gap: 15px;">
+            <!-- Text area for writing inquiry -->
             <textarea id="inquiry" name="inquiry" required placeholder="Write your inquiry here..." style="width: 100%; height: 150px; padding: 10px; font-size: 16px; border: 2px solid #B76D68; border-radius: 5px; background-color: #fff; color: #333;"></textarea>
+            
+            <!-- Submit button -->
             <button type="submit" style="padding: 12px; background-color: #B76D68; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease;">Submit Inquiry</button>
         </form>
     </div>
 
+    <!-- Section to display user inquiries -->
+    <div class="container">
         <h2>Your Inquiries</h2>
+        
+        <!-- Table for listing submitted inquiries -->
         <table id="inquiries-table">
             <thead>
                 <tr>
@@ -61,6 +83,7 @@
                 </tr>
             </thead>
             <tbody id="inquiries-body">
+                <!-- Loop through each inquiry -->
                 {% for inquiry in inquiries %}
                 <tr>
                     <td>{{ inquiry.inquiry }}</td>
@@ -76,13 +99,17 @@
         </table>
     </div>
 
+    <!-- JavaScript to handle form submission and fetching inquiries -->
     <script>
+        // Event listener for submitting the inquiry form
         document.getElementById('inquiryForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission
 
+            // Gather inquiry content
             const inquiryContent = document.getElementById('inquiry').value;
             const roleSubmitURL = "{{ submit_url }}";
 
+            // Submit inquiry using Fetch API
             fetch(roleSubmitURL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -92,10 +119,11 @@
             })
             .then(response => response.json())
             .then(data => {
+                // Handle response from server
                 if (data.message) {
                     alert(data.message);
                     document.getElementById('inquiryForm').reset();
-                    fetchInquiries();
+                    fetchInquiries(); // Refresh inquiries list
                 } else {
                     alert('Error: ' + data.error);
                 }
@@ -105,6 +133,38 @@
             });
         });
 
+        // Function to fetch and display inquiries
         function fetchInquiries() {
             fetch("{{ get_inquiries_url }}")
-            .
+            .then(response => response.json())
+            .then(data => {
+                const inquiriesBody = document.getElementById('inquiries-body');
+                inquiriesBody.innerHTML = ''; // Clear the table body
+
+                // Display inquiries or show a message if none exist
+                if (data.length === 0) {
+                    inquiriesBody.innerHTML = '<tr><td colspan="3">You have not submitted any inquiries yet.</td></tr>';
+                } else {
+                    data.forEach(function(inquiry) {
+                        const row = `<tr>
+                            <td>${inquiry.inquiry}</td>
+                            <td>${inquiry.submitted_at}</td>
+                            <td>${inquiry.status}</td>
+                        </tr>`;
+                        inquiriesBody.innerHTML += row;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching inquiries:', error);
+            });
+        }
+
+        // Fetch inquiries when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchInquiries();
+        });
+    </script>
+</body>
+
+</html>

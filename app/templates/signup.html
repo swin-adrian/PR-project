@@ -1,35 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Smart Migrate">
     <meta name="keywords" content="Smart migrate, migration to Australia, PR Pathway">
     <meta name="author" content="Adrian Soe Myint">
-    <!--stylesheet-->
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
     <title>EasiResi - Sign Up</title>
 </head>
+
 <body>
     <header>
-        <!-- Add any content you want to display in the header here -->
+        <!-- Optional header content -->
     </header>
 
     <div class="background-container">
         <img src="../static/css/images/background.jpg" alt="Background Image" id="background-image">
         <p id="brand1">EZ <span class="logo-color">Resi</span></p>
 
+        <!-- Signup Form Container -->
         <div class="form-container">
             <form method="POST" action="{{ url_for('auth.signup') }}" id="signup_form">
                 <fieldset>
                     <legend>Sign Up</legend>
 
+                    <!-- Email Field -->
                     <div class="form-group">
                         <label for="email">Email:</label>
                         <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email">
                     </div>
 
+                    <!-- Password Fields -->
                     <div class="form-group">
                         <label for="password">Password:</label>
                         <input type="password" id="password" name="pwd" placeholder="Password" required autocomplete="new-password">
@@ -40,7 +44,7 @@
                         <input type="password" id="confirm_pwd" name="confirm_pwd" placeholder="Confirm Password" required autocomplete="new-password">
                     </div>
 
-                    <!-- New Radio Buttons for Profile Type -->
+                    <!-- Profile Type Selection -->
                     <div class="form-group">
                         <label>Select Profile Type:</label>
                         <div>
@@ -53,8 +57,10 @@
                         </div>
                     </div>
 
+                    <!-- Signup Button -->
                     <button type="submit" class="submit-button">Register</button>
 
+                    <!-- Login Prompt -->
                     <p class="login-prompt">Already a user? <a href="/home">Log in here</a>.</p>
 
                     <!-- Error Message Placeholder -->
@@ -62,7 +68,7 @@
                 </fieldset>
             </form>
 
-            <!-- Display flash messages or errors (if using Flask messages) -->
+            <!-- Flash Messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <ul class="flash-messages">
@@ -81,26 +87,34 @@
             <span class="close">&times;</span>
             <form id="agent_info_form">
                 <h2>Agent Information</h2>
+
+                <!-- Agent Details Form Fields -->
                 <div class="form-group">
                     <label for="first_name">First Name:</label>
                     <input type="text" id="first_name" name="first_name" required>
                 </div>
+
                 <div class="form-group">
                     <label for="last_name">Last Name:</label>
                     <input type="text" id="last_name" name="last_name" required>
                 </div>
+
                 <div class="form-group">
                     <label for="company_name">Company Name:</label>
                     <input type="text" id="company_name" name="company_name" required>
                 </div>
+
                 <div class="form-group">
                     <label for="abn">ABN:</label>
                     <input type="text" id="abn" name="abn" required>
                 </div>
+
                 <div class="form-group">
                     <label for="phone">Phone Number:</label>
                     <input type="tel" id="phone" name="phone" required>
                 </div>
+
+                <!-- Submit Button for Agent Info -->
                 <button type="button" id="agentSubmit" class="submit-button">Submit</button>
             </form>
         </div>
@@ -110,12 +124,14 @@
         &#169 2024-2025 EasiResi All Rights Reserved
     </footer>
 
+    <!-- JavaScript for Handling the Modal and Form Submission -->
     <script>
         const signupForm = document.getElementById('signup_form');
         const agentModal = document.getElementById('agentModal');
         const agentSubmitButton = document.getElementById('agentSubmit');
         const closeModal = document.querySelector('.close');
 
+        // Handle Signup Form Submission
         signupForm.addEventListener('submit', function(event) {
             const migrant = document.getElementById('migrant').checked;
             const agent = document.getElementById('agent').checked;
@@ -127,13 +143,13 @@
             } else {
                 errorMessage.style.display = 'none';
                 if (agent) {
-                    // Show the modal if Agent is selected
                     agentModal.style.display = 'block';
                     event.preventDefault(); // Prevent the form from submitting
                 }
             }
         });
 
+        // Handle Agent Modal Submission
         agentSubmitButton.addEventListener('click', function() {
             const formData = new FormData(agent_info_form);
             formData.append('email', document.getElementById('email').value);
@@ -152,10 +168,12 @@
             });
         });
 
+        // Close the Modal
         closeModal.addEventListener('click', function() {
             agentModal.style.display = 'none';
         });
 
+        // Close Modal When Clicking Outside of It
         window.onclick = function(event) {
             if (event.target == agentModal) {
                 agentModal.style.display = 'none';
@@ -163,4 +181,5 @@
         };
     </script>
 </body>
+
 </html>

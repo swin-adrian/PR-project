@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Meta tags and CSS imports -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    
+    <!-- Page Title -->
     <title>Agent Courses</title>
 </head>
+
 <body>
+    <!-- Header and navigation bar -->
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
+                
+                <!-- Company logo link -->
                 <a href="/" class="logo">
                     <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
                 </a>
-
+                
+                <!-- Navigation menu items -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -26,53 +39,65 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="{{ url_for('agent.agent_courses') }}">Courses</a>
                         </li>
-
                     </ul>
                 </div>
-
+                
+                <!-- User profile and actions -->
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ agent.email }}</span>
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+                    <!-- User options dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="{{ url_for('agent.user_inquiry') }}">Submit Inquiry</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
+    <!-- Main content area for available courses -->
     <div class="container my-5">
+        <!-- Page title -->
         <h2 class="text-center mb-4">Available Courses</h2>
         <div class="row" id="course-list">
-            <!-- Course cards will be populated here by JavaScript -->
+            <!-- Course cards will be dynamically populated here by JavaScript -->
         </div>
     </div>
 
-    <!-- Modal for recommending a course -->
+    <!-- Modal for recommending a course to a migrant -->
     <div class="modal fade" id="recommendModal" tabindex="-1" aria-labelledby="recommendModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
+                    <!-- Modal title and close button -->
                     <h5 class="modal-title" id="recommendModalLabel">Recommend Course</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                
+                <!-- Modal body with recommendation form -->
                 <div class="modal-body">
                     <form id="recommendForm">
+                        <!-- Migrant selection dropdown -->
                         <div class="mb-3">
                             <label for="migrantSelect" class="form-label">Select Migrant</label>
                             <select class="form-select" id="migrantSelect" required>
-                                <!-- Migrant options will be populated here by JavaScript -->
+                                <!-- Migrant options will be dynamically added here by JavaScript -->
                             </select>
                         </div>
+                        
+                        <!-- Feedback text area -->
                         <div class="mb-3">
                             <label for="feedback" class="form-label">Feedback</label>
                             <textarea class="form-control" id="feedback" rows="3" required></textarea>
                         </div>
+                        
+                        <!-- Hidden field for the course ID -->
                         <input type="hidden" id="courseId">
+                        
+                        <!-- Submit button for the recommendation form -->
                         <button type="submit" class="btn btn-primary">Submit Recommendation</button>
                     </form>
                 </div>
@@ -80,9 +105,12 @@
         </div>
     </div>
 
-    <!-- Add jQuery and Bootstrap JS before your custom script -->
+    <!-- JavaScript imports: jQuery, Bootstrap JS, and custom script -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript file for handling course interactions -->
     <script src="{{ url_for('static', filename='js/agent_courses.js') }}" defer></script>
 </body>
+
 </html>

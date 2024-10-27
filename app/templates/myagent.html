@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Agent</title>
+
+    <!-- External Stylesheets and Libraries -->
     <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,16 +18,16 @@
 </head>
 
 <body>
+    <!-- Header Section -->
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
                 <!-- Logo -->
                 <a href="/" class="logo">
-                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo"
-                        id="logo">
+                    <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
                 </a>
 
-                <!-- Navbar links (Home and Submit Inquiry) -->
+                <!-- Navbar Links -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -40,21 +42,17 @@
                     </ul>
                 </div>
 
-                <!-- Welcome message and Hamburger Menu -->
+                <!-- User Dropdown -->
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ migrant_email }}</span>
-                    <!-- Hamburger button triggers dropdown -->
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <!-- Dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="{{ url_for('migrant.migrantform') }}">Profile</a></li>
                         <li><a class="dropdown-item">Submit Inquiry</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>
                 </div>
@@ -62,11 +60,13 @@
         </nav>
     </header>
 
+    <!-- Main Content -->
     <div class="container my-4">
         <h1>My Agent</h1>
         {% if not agent %}
             <p>You don't have an agent assigned yet. <a href="{{ url_for('migrant.findagent') }}">Find an agent</a>.</p>
         {% else %}
+            <!-- Display Agent Information -->
             <div class="agent-profile p-3 mb-4 border rounded">
                 <h2>Agent Information</h2>
                 <p><strong>Full Name:</strong> {{ agent.first_name }} {{ agent.last_name }}</p>
@@ -77,6 +77,7 @@
         {% endif %}
     </div>
 
+    <!-- Recommended Courses Section -->
     <div class="container recommended-courses">
         <h2>Recommended Courses</h2>
         <div class="row">
@@ -104,12 +105,13 @@
             {% endif %}
         </div>
     </div>
-    
 
+    <!-- Footer Section -->
     <footer class="text-center mt-4">
         &#169 2024-2025 EasiResi All Rights Reserved
     </footer>
 
+    <!-- JavaScript for Register Button -->
     <script>
         $(document).on('click', '.register-button', function () {
             var courseId = $(this).data('course-id');

@@ -1,40 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Meta tags for responsive design -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Page Title -->
     <title>Find an Agent</title>
+    
+    <!-- Link to the CSS for custom styles -->
     <link rel="stylesheet" type="text/css" href="../static/css/migrant.css">
+    
+    <!-- Favicon for the page -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='../static/css/images/logo.png') }}">
 </head>
+
 <body>
+    <!-- Main Container for content -->
     <div class="container">
         <h1>Find an Agent</h1>
         <ul class="agent-list">
+            <!-- Loop through the list of agents and display each one -->
             {% for agent in agents %}
                 <li>
                     <h2>{{ agent.first_name }} {{ agent.last_name }}</h2>
                     <p><strong>Email:</strong> {{ agent.email }}</p>
                     <p><strong>Company Name:</strong> {{ agent.company_name }}</p>
+                    
+                    <!-- Button to select an agent, triggering a JavaScript function -->
                     <button onclick="linkAgent('{{ agent._id }}')">Select Agent</button>
                 </li>
             {% endfor %}
         </ul>
     </div>
 
+    <!-- JavaScript to handle linking an agent -->
     <script>
+        // Function to link an agent to the migrant
         function linkAgent(agentId) {
             fetch('{{ url_for("migrant.linkagent") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                // Send the agent ID in the request body
                 body: JSON.stringify({ agent_id: agentId })
             })
             .then(response => response.json())
             .then(data => {
+                // Alert user based on response from server
                 if (data.message === "Agent linked successfully!") {
                     alert("Agent linked successfully!");
+                    // Redirect to the 'my agent' page
                     window.location.href = "{{ url_for('migrant.myagent') }}";
                 } else {
                     alert("Failed to link agent. Please try again.");
@@ -46,4 +64,5 @@
         }
     </script>
 </body>
+
 </html>

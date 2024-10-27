@@ -1,21 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Meta tags and CSS imports -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/my_migrants.csss">
+    <link rel="stylesheet" type="text/css" href="../static/css/my_migrants.css">
+    
+    <!-- Page Title -->
     <title>My Migrants</title>
 </head>
+
 <body>
+    <!-- Header and navigation bar -->
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid navi_menu">
+                
+                <!-- Company logo link -->
                 <a href="/" class="logo">
                     <img src="{{ url_for('static', filename='../static/css/images/logo.png') }}" alt="Company Logo" id="logo">
                 </a>
-
+                
+                <!-- Navigation menu items -->
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -27,28 +40,32 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('agent.agent_courses') }}">Courses</a>
                         </li>
-
                     </ul>
                 </div>
-
+                
+                <!-- User profile and actions -->
                 <div class="dropdown ms-auto d-flex align-items-center">
                     <span class="welcome-text me-3">{{ agent.email }}</span>
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+                    <!-- User options dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="{{ url_for('agent.user_inquiry') }}">Submit Inquiry</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    
+
+    <!-- Main content area for managing migrants -->
     <div class="container">
+        <!-- Page title -->
         <h1>Welcome, {{ agent.email }}</h1>
         <h2>Your Migrants</h2>
+        
+        <!-- Migrant table if there are connections -->
         {% if connections %}
             <table class="table table-striped table-responsive">
                 <thead>
@@ -58,6 +75,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Loop through each connected migrant -->
                     {% for connection in connections %}
                     <tr>
                         <td>{{ connection.migrant_email }}</td>
@@ -69,21 +87,24 @@
                     {% endfor %}
                 </tbody>
             </table>
+        <!-- Message if no migrants are connected -->
         {% else %}
             <p>No migrants are connected to you yet.</p>
         {% endif %}
     </div>
 
-    <!-- Modal for displaying migrant profile -->
+    <!-- Modal for displaying migrant profile details -->
     <div class="modal fade" id="migrantProfileModal" tabindex="-1" aria-labelledby="migrantProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
+                    <!-- Modal title and close button -->
                     <h5 class="modal-title" id="migrantProfileModalLabel">Migrant Profile</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                
+                <!-- Modal body with migrant details -->
                 <div class="modal-body">
-                    <!-- Profile details will be populated here -->
                     <p><strong>Email:</strong> <span id="migrant-email"></span></p>
                     <p><strong>Name:</strong> <span id="migrant-name"></span></p>
                     <p><strong>Occupation:</strong> <span id="migrant-occupation"></span></p>
@@ -92,7 +113,9 @@
                     <p><strong>Date of Birth:</strong> <span id="migrant-dob"></span></p>
                     <p><strong>PR Score:</strong> <span id="migrant-pr-score"></span></p>
                     <p><strong>PR Probability:</strong> <span id="migrant-pr-probability"></span></p>
-                </div>                
+                </div>
+                
+                <!-- Modal footer with close button -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
@@ -100,10 +123,13 @@
         </div>
     </div>
 
-    <!-- Add Bootstrap JS and jQuery -->
+    <!-- JavaScript imports: jQuery, Bootstrap JS, and custom script -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript file for managing migrant interactions -->
     <script src="{{ url_for('static', filename='js/my_migrants.js') }}" defer></script>
 
 </body>
+
 </html>
