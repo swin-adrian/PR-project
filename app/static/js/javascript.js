@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
   let currentTab = 0; // Set the initial tab
   showTab(currentTab); // Display the current tab
-
+  
+  // Function to show the specified tab
   function showTab(n) {
       let x = document.getElementsByClassName("tab");
 
-      // Hide all tabs
+      // Hide all tabs initially
       for (let i = 0; i < x.length; i++) {
           x[i].style.display = "none";
       }
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
       fixStepIndicator(n);
   }
 
+  // Function to handle the Next/Previous button functionality
   function nextPrev(n) {
       let x = document.getElementsByClassName("tab");
 
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
       showTab(currentTab);
   }
 
+  // Function to validate the inputs on the current tab
   function validateForm() {
       let x, y, i, valid = true;
       x = document.getElementsByClassName("tab");
@@ -64,18 +67,23 @@ document.addEventListener('DOMContentLoaded', function() {
       return valid; // return the valid status
   }
 
+  // Function to highlight the step indicators for the progress bar
   function fixStepIndicator(n) {
       let i, x = document.getElementsByClassName("step");
+
+      // Remove the "active" class from all steps
       for (i = 0; i < x.length; i++) {
           x[i].className = x[i].className.replace(" active", "");
       }
       x[n].className += " active";
 
+      // Mark completed steps
       for (i = 0; i < n; i++) {
           x[i].className += " finish";
       }
   }
 
+  // Function to fetch occupations based on the selected occupation type
   function fetchOccupations(type) {
       fetch('/get_occupations', {
           method: 'POST',
@@ -93,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
+  // Function to populate the occupation dropdown with fetched data
   function populateOccupations(occupations) {
       let dropdown = document.getElementById('occupations');
       let selectedValue = dropdown.value; // Preserve selected value
@@ -101,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Clear existing options
       dropdown.innerHTML = '<option value="">-- Select Occupation --</option>'; 
 
+      // Populate with new options
       if (occupations.length > 0) {
           occupations.forEach(occupation => {
               let option = document.createElement('option');
@@ -120,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('Selected value after update:', dropdown.value);
   }
 
+  // Function to handle the occupation list based on the selected subclass
   function handleOccupationListChange() {
       let selectedSubclass = document.querySelector('input[name="visa-subclass"]:checked');
       let occupationType = '';
@@ -180,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
 
+  // Event listeners for navigation buttons
   document.getElementById("prevBtn").addEventListener("click", function() {
       nextPrev(-1);
   });
@@ -242,8 +254,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching results:', error);
             });
     });
-      // Condition for page 8
-  function showFollowUp(isYes) {
+
+  // Condition for page 8
+function showFollowUp(isYes) {
     const followUpSection = document.getElementById("followUpSection");
     if (isYes) {
         followUpSection.classList.remove("hidden");

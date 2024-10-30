@@ -76,13 +76,14 @@ nav {
     margin-right: 10px; /* Space between welcome text and the hamburger icon */
 }
 
-
+/* Dropdown container styling */
 .dropdown {
     margin-left: auto; /* Align hamburger menu to the right */
     display: flex;
     align-items: center; /* Vertically align the hamburger icon */
 }
 
+/* Button styling for dropdown */
 .dropdown button {
     background: none; /* Remove default button styling */
     border: none; /* Remove border */
@@ -100,11 +101,12 @@ nav {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
 }
 
-
+/* Dropdown menu item styling */
 .dropdown-menu a {
     color: rgb(0, 0, 0) !important; /* Ensure the text is white */
 }
 
+/* Hover effect for dropdown menu items */
 .dropdown-menu a:hover {
     background-color: #dddada !important; /* Add hover background for dropdown items */
 }
@@ -140,9 +142,6 @@ nav {
         padding: 10px;
     }
 }
-
-
-/* Welcome text styling */
 
 /* Form Section */
 .form-section {
@@ -390,6 +389,7 @@ footer {
     border: 1px solid #ccc;
 }
 
+/* Submit Button Styling */
 #submitRegistration {
     background-color: #B76D68;
     color: white;
@@ -405,6 +405,8 @@ footer {
 #submitRegistration:hover {
     background-color: #b8837f;
 }
+
+/* Modal Overlay Styling */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; 
@@ -418,6 +420,7 @@ footer {
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+/* Modal Content Box Styling */
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto;
@@ -426,16 +429,19 @@ footer {
     width: 80%; /* Could be more or less, depending on screen size */
 }
 
+/* Card Footer Button Alignment */
 .card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+/* Register Button Spacing */
 .register-button {
     margin-right: 10px; /* Additional margin to ensure spacing between buttons */
 }
 
+/* Save Button Positioning */
 .save-button {
     margin-left: auto; /* Push Save button to the right if necessary */
 }

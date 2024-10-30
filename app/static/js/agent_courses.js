@@ -2,6 +2,8 @@ $(document).ready(function() {
     // Fetch courses and display them
     $.get('/get_courses', function(courses) {
         let courseList = $('#course-list');
+        
+        // Template literal for each course card
         courses.forEach(course => {
             let courseCard = `
                 <div class="col-md-4 mb-3">
@@ -28,6 +30,8 @@ $(document).ready(function() {
         $.get('/linked_migrants', function(migrants) {
             let migrantSelect = $('#migrantSelect');
             migrantSelect.empty();
+
+            // Add each migrant as an option in the dropdown
             migrants.forEach(migrant => {
                 migrantSelect.append(new Option(migrant.first_name + " " + migrant.last_name, migrant._id));
             });
@@ -38,6 +42,8 @@ $(document).ready(function() {
     // Handle recommendation form submission
     $('#recommendForm').submit(function(event) {
         event.preventDefault();
+
+        // Collect data for the recommendation in an object
         let recommendationData = {
             course_id: $('#courseId').val(),
             migrant_id: $('#migrantSelect').val(),

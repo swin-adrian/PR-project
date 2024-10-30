@@ -1,4 +1,4 @@
-/* Somto CSS for a calm and soft design */
+/* Set up the overall font, background color, and color scheme */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f7f6;
@@ -14,7 +14,7 @@ body {
     padding: 20px;
 }
 
-/* Form container with heavier borders */
+/* Form container with heavier borders, rounded borders and a box shadow */
 .form-container {
     display: flex;
     flex-direction: column;
@@ -39,12 +39,12 @@ body {
     text-align: center;
 }
 
-/* Form group styles with soft colors */
+/* Form group styles with for each input field with spacing */
 .form-group {
     width: 100%;
     margin-bottom: 25px;
 }
-
+/* Label styling for input fields */
 .form-label {
     font-size: 18px;
     font-weight: 600;
@@ -53,7 +53,7 @@ body {
     display: block;
 }
 
-/* Input, select, and textarea fields with heavier borders */
+/* Input, select, and textarea fields with heavier borders, rounded borders and background color */
 .form-input,
 .form-select,
 .form-textarea {
@@ -67,7 +67,7 @@ body {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Soft focus effect */
+/* Soft focus effect for inputs, select, and textarea */
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
@@ -75,7 +75,7 @@ body {
     box-shadow: 0 0 10px rgba(183, 131, 127, 0.3);
 }
 
-/* Button styles with gradient background */
+/* Button styles with gradient background, rounded corners, and hover effects */
 .form-button,
 button[type="submit"] {
     padding: 14px;
@@ -91,6 +91,7 @@ button[type="submit"] {
     display: inline-block;
 }
 
+/* Button hover effect */
 .form-button:hover,
 button[type="submit"]:hover {
     background: linear-gradient(135deg, #b8837f, #B76D68);
@@ -109,6 +110,7 @@ button[style="background-color: red;"] {
     transition: background-color 0.3s ease, transform 0.2s;
 }
 
+/*Actions button hover effect */
 button[style="background-color: red;"]:hover {
     background-color: #b8837f;
     transform: translateY(-2px);
@@ -128,7 +130,7 @@ textarea.form-input {
     resize: vertical;
 }
 
-/* Soft focus effect */
+/* Soft focus effect for textarea */
 textarea.form-input:focus {
     border-color: #b8837f;
     box-shadow: 0 0 10px rgba(183, 131, 127, 0.3);
@@ -143,6 +145,7 @@ table {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
 }
 
+/* Styling for table headers and cells */
 th, td {
     padding: 16px;
     text-align: left;
@@ -163,6 +166,7 @@ th:last-child {
     border-right: none;
 }
 
+/* Highlight table row on hover */
 tr:hover {
     background-color: #f0f0f0;
 }
@@ -188,7 +192,7 @@ tr:hover {
     color: #555;
 }
 
-/* Search button */
+/* Styling for Search button */
 .search-container button {
     padding: 10px 20px;
     background-color: #B76D68;
@@ -215,6 +219,7 @@ tr:hover {
     justify-content: center;
 }
 
+/* Style for view courses button */
 .view-courses-btn {
     display: inline-block;
     padding: 12px 24px;
@@ -229,6 +234,7 @@ tr:hover {
     margin-top: 20px;
 }
 
+/* Hover effect for view courses button */
 .view-courses-btn:hover {
     background-color: #b8837f;
 }
@@ -246,6 +252,7 @@ tr:hover {
     color: #B76D68;
 }
 
+/* Hover effect for icons */
 .icon:hover {
     color: #b8837f;
 }
@@ -284,7 +291,7 @@ tr:hover {
     margin-top: 20px;
 }
 
-/* Numbered page links */
+/* Styling for numbered page links */
 .pagination-number {
     padding: 8px 14px;
     background-color: #B76D68;
@@ -352,12 +359,14 @@ tr:hover {
     background-color: #b8837f;
 }
 
+/* Centered button container with spacing */
 .button-container {
     display: flex;
     gap: 10px;
     justify-content: center;
 }
 
+/* Form button styling for consistency */
 .form-button {
     padding: 8px 12px;
     border: none;
@@ -369,6 +378,7 @@ tr:hover {
     text-align: center;
 }
 
+/* Modify button style and hover effect */
 .modify-button {
     background-color: #b8837f;
 }
@@ -377,6 +387,7 @@ tr:hover {
     background-color: #a07875;
 }
 
+/* Delete button style and hover effect */
 .delete-button {
     background-color: #B76D68;
 }
@@ -385,7 +396,7 @@ tr:hover {
     background-color: #b8837f;
 }
 
-/* Style form inputs inside table rows */
+/* Style form inputs inside table rows of edit course form */
 .edit-course-form input[type="text"],
 .edit-course-form textarea {
     width: 100%;
@@ -429,6 +440,7 @@ tr:hover {
     padding: 8px;
 }
 
+/* Display settings for form buttons */
 .edit-course-form button {
     display: inline-block;
     margin-top: 10px;
@@ -457,7 +469,7 @@ tr:hover {
     color: #333;
 }
 
-/* Cancel Button Style */
+/* Cancel Button Style and Hover Effect */
 .cancel-button {
     background-color: #ccc;
     color: #333;
@@ -485,6 +497,7 @@ tr:hover {
     padding-top: 60px;
 }
 
+/* Modal content styling with padding and centered appearance */
 .modal-content {
     background-color: #fefefe;
     margin: 5% auto;
@@ -494,6 +507,7 @@ tr:hover {
     max-width: 500px;
 }
 
+/* Close button styling */
 .close {
     color: #aaa;
     float: right;
@@ -501,6 +515,7 @@ tr:hover {
     font-weight: bold;
 }
 
+/* Hover and focus effect for close button */
 .close:hover,
 .close:focus {
     color: black;

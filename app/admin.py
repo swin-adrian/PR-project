@@ -51,6 +51,7 @@ def adminlanding():
     total_migrants_with_profile = mongo.db.users.count_documents({'role': 'Migrant', 'profile_complete': True})
     profile_completion_percentage = (total_migrants_with_profile / total_migrants * 100) if total_migrants > 0 else 0
 
+    # Route to render the admin landing page
     return render_template(
         'adminlanding.html',
         total_migrants=total_migrants,
@@ -59,12 +60,14 @@ def adminlanding():
         profile_completion_percentage=round(profile_completion_percentage, 2)  # Rounding to 2 decimal places
     )
 
+# Route to manage users: Adding, displaying, and counting users
 @admin_bp.route('/user_management', methods=['GET', 'POST'])
 def user_management():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password_hash')
 
+        # Validate that both email and password are provided
         if not email or not password:
             flash("Email and Password are required fields.", "error")
             return redirect(url_for('admin.user_management'))
@@ -72,7 +75,8 @@ def user_management():
         password_hash = generate_password_hash(password)
         role, university = detect_role(email)  # Detect role and university
         print(role)
-        # Prepare user data
+
+        # Prepare user data for insertion into the database
         user_data = {
             "email": email,
             "password_hash": password_hash,
@@ -80,7 +84,7 @@ def user_management():
             "created_at": datetime.now()
         }
         
-                # If the role is Education Provider, store the university
+        # If the role is Education Provider, store the university
         if role == 'Education Provider':
             user_data['university'] = university
 
@@ -94,6 +98,7 @@ def user_management():
 
         return redirect(url_for('admin.user_management'))
 
+    # Pagination logic
     page = request.args.get('page', 1, type=int)
     per_page = 6
 
@@ -111,7 +116,7 @@ def user_management():
         'Agent': mongo.db.users.count_documents({'role': 'Agent'})
     }
     
-
+    # Render user management page with user data and counts
     return render_template(
         'user_management.html',
         users=users,
@@ -122,6 +127,7 @@ def user_management():
         user_counts=user_counts
     )
 
+# Route for searching users based on query
 @admin_bp.route('/search_users', methods=['GET', 'POST'])
 def search_users():
     page = request.args.get('page', 1, type=int)
@@ -129,6 +135,8 @@ def search_users():
     query = request.form.get('search_query') if request.method == 'POST' else request.args.get('search_query', '')
 
     from main import mongo
+
+    # Create a search filter for querying users
     search_filter = {
         "$or": [
             {"email": {"$regex": query, "$options": "i"}},
@@ -151,6 +159,7 @@ def search_users():
             )
             user['role'] = role  # Update in local list as well
 
+    # Render user management page with search results
     return render_template(
         'user_management.html',
         users=users,
@@ -161,6 +170,7 @@ def search_users():
         search_query=query
     )
 
+# Route to delete a user by ID
 @admin_bp.route('/delete_user/<user_id>', methods=['POST'])
 def delete_user(user_id):
     from main import mongo
@@ -170,6 +180,7 @@ def delete_user(user_id):
     else:
         return jsonify({"success": False})
 
+# Route to modify user details via AJAX
 @admin_bp.route('/modify_user_ajax/<user_id>', methods=['POST'])
 def modify_user_ajax(user_id):
     from main import mongo
@@ -201,8 +212,6 @@ def modify_user_ajax(user_id):
     else:
         return jsonify({"success": False, "message": "Failed to update user."})
 
-
-
 # Route to update all existing records
 @admin_bp.route('/update_all_roles')
 def update_all_roles():
@@ -218,6 +227,7 @@ def update_all_roles():
         updated_count += 1
     return f"Updated roles for {updated_count} users."
 
+# Route to manage connections between migrants and agents
 @admin_bp.route('/manage_connections', methods=['GET', 'POST'])
 def manage_connections():
     from main import mongo
@@ -266,6 +276,7 @@ def manage_connections():
         }
     ])
     
+    # Render the manage connections page with relevant data
     return render_template(
         'manage_connections.html',
         migrants=migrants,
@@ -273,6 +284,7 @@ def manage_connections():
         connections=connections
     )
 
+# Route to delete a connection between an agent and a migrant
 @admin_bp.route('/delete_connection/<agent_id>/<migrant_id>', methods=['POST'])
 def delete_connection(agent_id, migrant_id):
     from main import mongo
@@ -289,7 +301,7 @@ def delete_connection(agent_id, migrant_id):
     flash("Connection deleted successfully!", "success")
     return redirect(url_for('admin.manage_connections'))
 
-
+# Route to get a summary of users by role
 @admin_bp.route('/get_user_summary', methods=['GET'])
 def get_user_summary():
     from main import mongo
@@ -407,6 +419,7 @@ def viewinquiries():
 
     return render_template('viewinquiries.html', inquiries=inquiries, page=page, total_pages=total_pages)
 
+# Route to modify the status of an inquiry
 @admin_bp.route('/modify_inquiry/<inquiry_id>', methods=['POST'])
 def modify_inquiry(inquiry_id):
     print(f"modify_inquiry called with inquiry_id: {inquiry_id}")
@@ -414,6 +427,7 @@ def modify_inquiry(inquiry_id):
     mongo = PyMongo(current_app)
     status = request.form.get('status')
 
+    # Check if status is provided; if not, return an error response
     if not status:
         print("Status is missing from the form data")
         return jsonify({"success": False, "message": "Status is required"}), 400
@@ -451,9 +465,7 @@ def delete_inquiry(inquiry_id):
     else:
         return jsonify({"success": False, "message": "Inquiry not found"}), 404
 
-
-# Occupation lists
-
+# Route to manage occupation lists
 @admin_bp.route('/occupations', methods=['GET', 'POST'])
 def occupations():
     # If a form is submitted (POST request)
@@ -528,6 +540,7 @@ def search_occupations():
     # Retrieve the relevant page of occupations
     occupations = mongo.db.occupations.find(search_filter).skip((page - 1) * per_page).limit(per_page)
 
+    # Render the occupations page with data
     return render_template(
         'occupations.html',
         occupations=occupations,
@@ -537,6 +550,8 @@ def search_occupations():
         total_pages=total_pages,  # Pass total pages to the template
         search_query=query
     )
+
+# Route to get summary of occupations
 @admin_bp.route('/get_occupation_summary', methods=['GET'])
 def get_occupation_summary():
     from main import mongo
@@ -586,7 +601,8 @@ def modify_occupation_ajax(occupation_id):
         return jsonify({"success": True})
     else:
         return jsonify({"success": False})
-    
+
+# Route for the admin dashboard for migrants
 @admin_bp.route('/admin_dashboard_m')
 def adminlanding_m():
     print("this is triggered")
@@ -645,8 +661,8 @@ def adminlanding_m():
         {'$limit': 5}
     ]))
 
-    # Gender distribution for all migrants
-# Gender distribution for all migrants, handling cases where gender is missing by defaulting to "Unknown"
+    
+    # Gender distribution for all migrants, handling cases where gender is missing by defaulting to "Unknown"
     gender_distribution = list(mongo.db.users.aggregate([
         {'$match': {'role': 'Migrant'}},  # Match all migrants
         {'$group': {
@@ -671,6 +687,7 @@ def adminlanding_m():
         for score in migrants_scores if str(score['user_id']) in migrants_data_map
     ]
 
+    # Render the admin dashboard template with the gathered data
     return render_template(
         'admindashboard_m.html',
         total_migrants=total_migrants,
@@ -683,14 +700,13 @@ def adminlanding_m():
         migrants_data=migrants_data_combined
     )
 
-
+# Route to render the Migrants Dashboard with relevant data
 @admin_bp.route('/admin_dashboard_m')
 def admin_dashboard_m():
     # Logic for Migrants dashboard
     return render_template('admindashboard_m.html')
 
-
-
+# Route to render the Education Providers Dashboard
 @admin_bp.route('/admin_dashboard_e')
 def admin_dashboard_e():
     mongo = PyMongo(current_app)
@@ -837,6 +853,7 @@ def admin_dashboard_e():
     recommended_course_names = [f"{course['course_name']} ({course['university']})" for course in top_recommended_courses]
     recommendation_counts = [course['recommendation_count'] for course in top_recommended_courses]
 
+    # Render the admin dashboard template with the gathered data
     return render_template(
         'admindashboard_e.html',
         universities_courses=university_course_data,  # Pass the processed university-course data
@@ -848,8 +865,7 @@ def admin_dashboard_e():
         recommendation_counts=recommendation_counts  # Pass the recommendation counts
     )
 
-
-
+# Route to render the Admin Dashboard for Agents
 @admin_bp.route('/admin_dashboard_a')
 def admin_dashboard_a():
     mongo = PyMongo(current_app)
@@ -922,7 +938,7 @@ def admin_dashboard_a():
         }
     ]))
 
-        # Recommendations per day
+    # Recommendations per day
     recommendations_by_day = list(mongo.db.recommendations.aggregate([
         {
             '$group': {
@@ -937,6 +953,7 @@ def admin_dashboard_a():
 
     total_agents = mongo.db.users.count_documents({'role': 'Agent'})
     
+    # Render the admin dashboard template for agents with the gathered data
     return render_template(
         'admindashboard_a.html',
         total_agents=total_agents,

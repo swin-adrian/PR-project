@@ -1,21 +1,15 @@
-/*
-filename: style.css
-author: Adrian Soe Myint created: 19/08//2024
-last modified: 19/08/2024
-description: stylings for CWA Assignmebnt 1
-*/
-
-
+/* Importing the 'Poppins' font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+/* Importing the 'Orbitron' font from Google Fonts */
 @import url('https://fonts.googleapis.com/css?family=Orbitron');
 
-
+/* Styling for <h1> elements */
 h1 {
 	text-align: center;
 	color: #403f4c;
 	font-size: 20px;
 }
-
 
 /* Global reset */
 * {
@@ -100,13 +94,14 @@ nav {
     margin-right: 10px; /* Space between welcome text and the hamburger icon */
 }
 
-
+/* Dropdown container styling */
 .dropdown {
     margin-left: auto; /* Align hamburger menu to the right */
     display: flex;
     align-items: center; /* Vertically align the hamburger icon */
 }
 
+/* Styling for dropdown button */
 .dropdown button {
     background: none; /* Remove default button styling */
     border: none; /* Remove border */
@@ -124,11 +119,12 @@ nav {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
 }
 
-
+/* Dropdown menu styling */
 .dropdown-menu a {
     color: rgb(0, 0, 0) !important; /* Ensure the text is white */
 }
 
+/* Hover effect for dropdown menu items */
 .dropdown-menu a:hover {
     background-color: #dddada !important; /* Add hover background for dropdown items */
 }
@@ -165,9 +161,7 @@ nav {
     }
 }
 
-
-
-
+/* Background video styling */
 #background-video {
 	object-fit: cover;
 	top: 0;
@@ -176,6 +170,7 @@ nav {
 	width: 100%
 }
 
+/* Basic styling for HTML and body elements */
 html, body {
     margin: 0;
     padding: 0;
@@ -185,12 +180,7 @@ html, body {
     background-color: #FFFF; /* Set a global background color */
 }
 
-
-
-
-
-
-/*logo*/
+/* Logo styling */
 #brand1 {
     position: absolute;
     font: bold 10vw Poppins, sans-serif; 
@@ -206,6 +196,7 @@ html, body {
     z-index: 2; /* Ensures the brand text is above the form */
 }
 
+/* Form container styling */
 .form-container {
     position: absolute;
     top: 60%;
@@ -219,7 +210,6 @@ html, body {
     width: 300px; /* Set a fixed width */
 }
 
-
 /* Form Styling */
 form {
     display: flex;
@@ -228,7 +218,6 @@ form {
     width: 100%;
 }
 
-
 /* Ensure form fields are on separate lines */
 .form-group {
     width: 100%;
@@ -236,15 +225,13 @@ form {
     display: flex;
     flex-direction: column;
 }
+
 .login-prompt{
     margin-top: 15px;
     color: black !important;
     font-size: 14px;
     text-align: center;
 }
-
-
-
 
 /* Styling for the "Don't have an account yet?" message */
 .signup-message {
@@ -254,16 +241,18 @@ form {
     text-align: center;
 }
 
+/* Styling for the link within the signup message */
 .signup-message a {
     color: #007bff; /* Adjust the color as needed */
     text-decoration: none;
 }
 
+/* Hover effect for the link within the signup message */
 .signup-message a:hover {
     text-decoration: underline;
 }
 
-
+/* Tagline styling */
 #tagline {
     position: absolute;
     font: bolder 2vw Poppins, sans-serif; 
@@ -301,15 +290,13 @@ form {
     }
 }
 
-
+/* Logo color styling */
 .logo-color
 {
 	color: #B76D68;
 }
 
-
-
-
+/* Company Intro Section Styling */
 #company_intro {
     padding: 2em;
     background-color: #f9f9f9; 
@@ -320,17 +307,18 @@ form {
     text-align: center; 
 }
 
+/* Company Intro Header Styling */
 #company_intro h2 {
     font-size: 2em; 
     color: #333; 
     margin-bottom: 0.5em; 
 }
 
+/* Company Intro Paragraph Styling */
 #company_intro p {
     font-size: 1.2em; 
     line-height: 1.5; 
 }
-
 
 /*background image in index.html*/
 #background_image {
@@ -343,14 +331,14 @@ form {
 	
 }
 
+/* Article text styling */
 article {
 	text-align: justify;
 	font-size: 14px;
 	clear: both;
 }
 
-
-
+/* Responsive styling for smaller screens */
 @media screen and (max-width: 480px) 
 {
     aside {
@@ -372,11 +360,13 @@ section {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
+/* Product Overview Header Styling */
 section h3 {
     color: #403F4C; 
     margin-bottom: 10px;
 }
 
+/* Product Overview Paragraph Styling */
 section p {
     margin-bottom: 15px;
     font-size: 16px;
@@ -416,8 +406,6 @@ ul li, ol li {
 }
 
 /* Aside Styles */
-
-
 aside {
     position: fixed;
     top: 100px;
@@ -453,7 +441,6 @@ aside ul li a:hover {
     color: #B76D68;
 }
 
-
 /*definition list - terms*/
 dt {
 	display: table;
@@ -466,8 +453,6 @@ dt ::after {
 	content: ":"; 
 }
 
-
-
 /*definition list container for personal information*/
 #define_list {
 	float: left;
@@ -475,9 +460,7 @@ dt ::after {
 	padding-left: 20em;
 }
 
-
 /*object data for resume in pdf*/
-
 footer {
 		bottom: 10px;
 		left: 0;
@@ -489,6 +472,7 @@ footer {
 		padding-bottom: 10px;
 }
 
+/* Horizontal Line Styling */
 hr {
     border: 0;
     height: 1px;
@@ -499,9 +483,6 @@ hr {
     margin-right: auto;
     opacity: 0.7; 
 }
-
-
-
 
 fieldset {
     border: none;
@@ -536,15 +517,18 @@ textarea {
     height: 100px;
 }
 
+/* Radio and Checkbox Group Styling */
 .radio-group, .checkbox-group {
     margin-bottom: 10px;
 }
 
+/* Radio and Checkbox Label Styling */
 .radio-group label, .checkbox-group label {
     display: inline-block;
     margin-right: 10px;
 }
 
+/* Button Styling */
 button {
     width: 100%;
     padding: 12px;
@@ -560,7 +544,6 @@ button {
 button:hover {
     background-color: #b8837f;
 }
-
 
 /* About me Style */
 dl {
@@ -592,8 +575,7 @@ figure {
     box-sizing: border-box; 
 }
 
-
-
+/* Responsive Styling for Figure on Smaller Screens */
 @media (max-width: 768px) {
     figure {
         float: none;
@@ -606,11 +588,13 @@ figure {
     }
 }
 
+/* Caption Styling for Figure */
 figcaption {
     text-align: center;
     margin-top: 5px;
 }
 
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -640,11 +624,11 @@ tbody tr:hover {
     background-color: #f1f1f1;
 }
 
-
 .product-main {
 	margin-left: 35%;	
 }
 
+/* Table Container Styling */
 .table-container {
     display: flex;
     justify-content: center; 
@@ -816,17 +800,17 @@ select, input[type="text"], input[type="date"] {
     border-radius: 4px;
     border: 1px solid #ccc;
 }
-  /*page 2 */
-  .q2-2-section {
+/* Page 2 form styling */
+.q2-2-section {
     display: none; 
 }
 
-  /*page 4 */
+/* Page 4 form styling */
 .score-section {
     display: none;
 }
 
-/* Page 8 */
+/* Page 8 form styling*/
 .hidden {
   display: none;
 }
@@ -902,6 +886,7 @@ select, input[type="text"], input[type="date"] {
     cursor: pointer;
 }
 
+/* Hover Effect for Close Button */
 .close-button:hover,
 .close-button:focus {
     color: #000;
@@ -916,6 +901,7 @@ select, input[type="text"], input[type="date"] {
     font-weight: bold;
 }
 
+/* Input Field Styling */
 #registerForm input {
     width: 100%;
     padding: 8px;
@@ -925,6 +911,7 @@ select, input[type="text"], input[type="date"] {
     border: 1px solid #ccc;
 }
 
+/* Submit Button Styling */
 #submitRegistration {
     background-color: #B76D68;
     color: white;
@@ -937,6 +924,7 @@ select, input[type="text"], input[type="date"] {
     width: 100%;
 }
 
+/* Hover Effect for Submit Button */
 #submitRegistration:hover {
     background-color: #b8837f;
 }

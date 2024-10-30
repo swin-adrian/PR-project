@@ -2,10 +2,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentTab = 0; // Set the initial tab
     showTab(currentTab); // Display the current tab
     
+    // Function to display the specified tab and adjust navigation buttons
     function showTab(n) {
       let x = document.getElementsByClassName("tab");
       
-      // Hide all tabs
+      // Hide all tabs initially
       for (let i = 0; i < x.length; i++) {
         x[i].style.display = "none";
       }
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("prevBtn").style.display = "inline";
       }
       
+      // Change Next button text to "Submit" if on the last tab
       if (n === (x.length - 1)) {
         document.getElementById("nextBtn").innerHTML = "Submit";
       } else {
@@ -29,7 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update the step indicators
       fixStepIndicator(n);
     }
-  
+    
+    // Function to navigate between tabs
     function nextPrev(n) {
       let x = document.getElementsByClassName("tab");
       
@@ -52,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
       showTab(currentTab);
     }
     
+    // Function to validate inputs in the current tab
     function validateForm() {
       let x, y, i, valid = true;
       x = document.getElementsByClassName("tab");
@@ -72,31 +76,40 @@ document.addEventListener('DOMContentLoaded', function() {
   
       return valid; // return the valid status
     }
-  
+    
+    // Function to update step indicator visuals
     function fixStepIndicator(n) {
       let i, x = document.getElementsByClassName("step");
+      // Remove "active" class from all steps
       for (i = 0; i < x.length; i++) {
         x[i].className = x[i].className.replace(" active", "");
       }
       x[n].className += " active";
       
+      // Mark completed steps with the "finish" class
       for (i = 0; i < n; i++) {
         x[i].className += " finish";
       }
     }
-  
+    
+    // Event listener for Previous button
     document.getElementById("prevBtn").addEventListener("click", function() {
       nextPrev(-1);
     });
-  
+    
+    // Event listener for Next button
     document.getElementById("nextBtn").addEventListener("click", function() {
       nextPrev(1);
     });
   
-    // Condition for page 2
+    // Page 2 logic: dynamically display sections based on selected visa subclass
     document.querySelector('form').addEventListener('change', function(e) {
       let selectedSubclass = document.querySelector('input[name="visa-subclass"]:checked');
+      
+      // Hide all occupation sections initially
       document.querySelectorAll('.occupation-section').forEach(section => section.style.display = 'none');
+      
+      // Show occupation section based on selected subclass value
       if (selectedSubclass) {
           if (selectedSubclass.value === '189') {
               document.getElementById('mltssl-section-189').style.display = 'block';
@@ -106,7 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
               document.getElementById('question-491').style.display = 'block';
           }
       }
-  
+      
+      // Additional filtering for subclass 190 occupation lists
       if (e.target.name === "occupation-list-190") {
           if (e.target.value === 'mltssl') {
               document.getElementById('mltssl-section-190').style.display = 'block';
@@ -116,7 +130,8 @@ document.addEventListener('DOMContentLoaded', function() {
               document.getElementById('stsol-section-190').style.display = 'block';
           }
       }
-  
+      
+      // Additional filtering for subclass 491 occupation lists
       if (e.target.name === "occupation-list-491") {
           if (e.target.value === 'mltssl') {
               document.getElementById('mltssl-section-491').style.display = 'block';
@@ -133,7 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
           }
       }
   });
-    // Condition for page 4 
+  
+    // Page 4 logic: show score input fields based on selected English test
     document.getElementById("english-test").addEventListener("change", function() {
       // Hide all score sections initially
       const scoreSections = document.querySelectorAll('.score-section');
@@ -154,7 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 });
-    // Condition for page 8
+
+  // Page 8 logic: toggle follow-up section visibility based on Yes/No answer
   function showFollowUp(isYes) {
     const followUpSection = document.getElementById("followUpSection");
     if (isYes) {

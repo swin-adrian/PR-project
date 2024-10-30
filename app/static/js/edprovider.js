@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
             const registrationId = this.dataset.registrationId;
             const formData = new FormData(this);
-    
+            
+            // Send the form data to the server via AJAX
             fetch(`/modify_registration_ajax/${registrationId}`, {
                 method: 'POST',
                 body: formData,
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Temporarily hide the registration row
             registrationRow.style.display = 'none';
 
+            // Send delete request to the server
             fetch(`/delete_registration/${registrationId}`, {
                 method: 'POST',
             })

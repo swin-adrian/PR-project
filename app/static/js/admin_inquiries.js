@@ -1,5 +1,4 @@
 // admin_inquiries.js
-
 $(document).ready(function() {
     // CSRF token setup (if your application uses CSRF protection)
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -48,10 +47,13 @@ $(document).ready(function() {
             success: function(response) {
                 console.log('Server response:', response);
                 if (response.success) {
+
                     // Update the status in the table
                     $('#inquiry-row-' + inquiryId + ' .status-column').text(status);
+
                     // Update the data-status attribute of the Edit button
                     $('.modify-btn[data-inquiry-id="' + inquiryId + '"]').data('status', status);
+
                     // Hide the modal
                     var modalElement = document.getElementById('editInquiryModal');
                     var modal = bootstrap.Modal.getInstance(modalElement);
@@ -82,8 +84,9 @@ $(document).ready(function() {
                 type: 'POST',
                 success: function(response) {
                     console.log('Server response:', response);
+
+                    // Remove the inquiry row from the table
                     if (response.success) {
-                        // Remove the inquiry row from the table
                         $('#inquiry-row-' + inquiryId).remove();
                     } else {
                         alert('Error: ' + response.message);

@@ -1,4 +1,4 @@
-/* Somto CSS for a calm and soft design */
+/* Set up the overall font, background color, and color scheme */
 body {
     font-family: 'Arial', sans-serif;
     background-color: white;
@@ -13,8 +13,6 @@ body {
     margin: 0 auto;
     padding: 20px;
 }
-
-
 
 /* Calm, welcoming form title */
 .form-title {
@@ -77,6 +75,7 @@ button[type="submit"] {
     display: inline-block;
 }
 
+/* Hover effect for buttons */
 .form-button:hover,
 button[type="submit"]:hover {
     background: linear-gradient(135deg, #b8837f, #B76D68); /* Updated to Soft and Main Pink */
@@ -95,6 +94,7 @@ button[style="background-color: red;"] {
     transition: background-color 0.3s ease, transform 0.2s;
 }
 
+/* Hover effect for red action buttons */
 button[style="background-color: red;"]:hover {
     background-color: #b8837f; /* Updated to Soft Pink */
     transform: translateY(-2px);
@@ -149,6 +149,7 @@ th:last-child {
     border-right: none; /* Removes the right border from the last header cell */
 }
 
+/* Change background on row hover */
 tr:hover {
     background-color: white;
 }
@@ -174,7 +175,7 @@ tr:hover {
     color: #555;
 }
 
-/* Search button */
+/* Styling for Search button */
 .search-container button {
     padding: 10px 20px;
     background-color: #B76D68; /* Updated to Main Pink */
@@ -201,6 +202,7 @@ tr:hover {
     justify-content: center;
 }
 
+/* View courses button styling */
 .view-courses-btn {
     display: inline-block;
     padding: 12px 24px;
@@ -215,6 +217,7 @@ tr:hover {
     margin-top: 20px;
 }
 
+/* Hover effect for view courses button */
 .view-courses-btn:hover {
     background-color: #b8837f; /* Updated to Soft Pink */
 }
@@ -227,16 +230,18 @@ tr:hover {
     margin-bottom: 20px;
 }
 
+/* Icon styling */
 .icon {
     font-size: 32px;
     color: #B76D68; /* Updated to Main Pink */
 }
 
+/* Hover effect for icons */
 .icon:hover {
     color: #b8837f; /* Updated to Soft Pink */
 }
 
-
+/* Responsive design for small screens */
 @media screen and (max-width: 480px) {
     .navi_menu a {
         font-size: 14px;
@@ -288,6 +293,7 @@ tr:hover {
     transition: background-color 0.3s ease;
 }
 
+/* Hover effect for numbered pagination links */
 .pagination-number:hover {
     background-color: #b8837f; /* Updated to Soft Pink */
 }
@@ -300,7 +306,7 @@ tr:hover {
     color: #B76D68; /* Updated to Main Pink */
 }
 
-/* Pagination arrows */
+/* Styling for pagination arrows */
 .pagination-arrow {
     padding: 8px 14px;
     background-color: #B76D68; /* Updated to Main Pink */
@@ -311,11 +317,12 @@ tr:hover {
     transition: background-color 0.3s ease;
 }
 
+/* Hover effect for pagination arrows */
 .pagination-arrow:hover {
     background-color: #b8837f; /* Updated to Soft Pink */
 }
 
-/* Ellipsis dots */
+/* Styling for ellipsis dots in pagination */
 .pagination-dots {
     font-size: 16px;
     color: #B76D68; /* Updated to Main Pink */
@@ -345,12 +352,14 @@ tr:hover {
     background-color: #b8837f; /* Updated to Soft Pink */
 }
 
+/* Flexbox layout for button container */
 .button-container {
     display: flex;
     gap: 10px;
     justify-content: center;
 }
 
+/* Styling for form buttons */
 .form-button {
     padding: 8px 12px;
     border: none;
@@ -362,18 +371,22 @@ tr:hover {
     text-align: center;
 }
 
+/* Modify button styling */
 .modify-button {
     background-color: #b8837f; /* Updated to Soft Pink */
 }
 
+/* Hover effect for modify button */
 .modify-button:hover {
     background-color: #a07875; /* Darkened Soft Pink */
 }
 
+/* Delete button styling */
 .delete-button {
     background-color: #B76D68; /* Updated to Main Pink */
 }
 
+/* Hover effect for delete button */
 .delete-button:hover {
     background-color: #b8837f; /* Updated to Soft Pink */
 }
@@ -413,6 +426,7 @@ tr:hover {
     transition: background-color 0.3s ease;
 }
 
+/* Hover effect for edit course buttons */
 .edit-course-form button:hover {
     background-color: #b8837f; /* Updated to Soft Pink */
 }
@@ -422,6 +436,7 @@ tr:hover {
     padding: 8px;
 }
 
+/* Button styles for the edit course form */
 .edit-course-form button {
     display: inline-block;
     margin-top: 10px;
@@ -434,6 +449,7 @@ tr:hover {
     cursor: pointer;
 }
 
+/* Button hover effect for edit course form */
 .edit-course-form button:hover {
     background-color: #b8837f; /* Updated to Soft Pink */
 }
@@ -459,93 +475,95 @@ tr:hover {
     padding: 8px 14px;
 }
 
+/* Cancel button hover effect */
 .cancel-button:hover {
     background-color: #bbb;
 }
 
-        /* Flexbox layout for the charts */
-        .chart-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-top: 20px;
-        }
+/* Flexbox layout for the charts */
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+}
 
-        /* Chart box styles */
-        .chart-box {
-            width: 45%;
-            min-width: 300px;
-        }
+/* Chart box styles */
+.chart-box {
+    width: 45%;
+    min-width: 300px;
+}
 
-        /* Styling the title and layout */
-        h1 {
-            text-align: center;
-            font-family: 'Arial', sans-serif;
-            margin-top: 20px;
-        }
+/* Styling the title and layout */
+h1 {
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    margin-top: 20px;
+}
 
-        /* Custom chart colors */
-        .chart-background {
-            background-color: #479c7f;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+/* Custom chart colors */
+.chart-background {
+    background-color: #479c7f;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-        canvas {
-            width: 100% !important;
-            height: 400px !important;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f7f9fc;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
+/* Responsive canvas styles */
+canvas {
+    width: 100% !important;
+    height: 400px !important;
+}
 
-        /* Center the charts with better spacing */
-        .chart-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            gap: 30px;
-            margin: 50px 20px;
-            padding: 30px;
-        }
+/* Body styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
 
-        /* Chart box styling with rounded corners and soft shadow */
-        .chart-box {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            width: 45%;
-            min-width: 300px;
-        }
+/* Center the charts with better spacing */
+.chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 30px;
+    margin: 50px 20px;
+    padding: 30px;
+}
 
-        h1 {
-            text-align: center;
-            font-size: 36px;
-            color: #333;
-            margin-bottom: 20px;
-        }
+/* Chart box styling with rounded corners and soft shadow */
+.chart-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    width: 45%;
+    min-width: 300px;
+}
 
-        /* Styling for canvas to ensure responsiveness */
-        canvas {
-            width: 100% !important;
-            height: 400px !important;
-        }
+/* Title styling */
+h1 {
+    text-align: center;
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 20px;
+}
 
+/* Styling for canvas to ensure responsiveness */
+canvas {
+    width: 100% !important;
+    height: 400px !important;
+}
 
-
-
+/* Header styling */
 h1 {
 	text-align: center;
 	color: #403f4c;
 	font-size: 20px;
 }
-
 
 /* Global reset */
 * {
@@ -565,6 +583,7 @@ html, body {
     background-color: #FFFF; /* Set a global background color */
 }
 
+/* Navigation padding */
 nav {
     padding-top: 0 !important;
     padding-bottom: 15px;
@@ -630,13 +649,14 @@ nav {
     margin-right: 10px; /* Space between welcome text and the hamburger icon */
 }
 
-
+/* Dropdown menu alignment */
 .dropdown {
     margin-left: auto; /* Align hamburger menu to the right */
     display: flex;
     align-items: center; /* Vertically align the hamburger icon */
 }
 
+/* Dropdown button styling */
 .dropdown button {
     background: none; /* Remove default button styling */
     border: none; /* Remove border */
@@ -654,11 +674,12 @@ nav {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
 }
 
-
+/* Dropdown link styling */
 .dropdown-menu a {
     color: rgb(0, 0, 0) !important; /* Ensure the text is white */
 }
 
+/* Dropdown link hover effect */
 .dropdown-menu a:hover {
     background-color: #dddada !important; /* Add hover background for dropdown items */
 }
@@ -695,9 +716,7 @@ nav {
     }
 }
 
-
-
-
+/* Background video */
 #background-video {
 	object-fit: cover;
 	top: 0;
@@ -715,12 +734,7 @@ html, body {
     background-color: #FFFF; /* Set a global background color */
 }
 
-
-
-
-
-
-/*logo*/
+/* Logo styling */
 #brand1 {
     position: absolute;
     font: bold 10vw Poppins, sans-serif; 
@@ -736,6 +750,7 @@ html, body {
     z-index: 2; /* Ensures the brand text is above the form */
 }
 
+/* Form container styling */
 .form-container {
     position: absolute;
     top: 60%;
@@ -749,7 +764,6 @@ html, body {
     width: 300px; /* Set a fixed width */
 }
 
-
 /* Form Styling */
 form {
     display: flex;
@@ -758,7 +772,6 @@ form {
     width: 100%;
 }
 
-
 /* Ensure form fields are on separate lines */
 .form-group {
     width: 100%;
@@ -766,15 +779,14 @@ form {
     display: flex;
     flex-direction: column;
 }
+
+/* Login prompt styling */
 .login-prompt{
     margin-top: 15px;
     color: black !important;
     font-size: 14px;
     text-align: center;
 }
-
-
-
 
 /* Styling for the "Don't have an account yet?" message */
 .signup-message {
@@ -793,7 +805,7 @@ form {
     text-decoration: underline;
 }
 
-
+/* Tagline styling */
 #tagline {
     position: absolute;
     font: bolder 2vw Poppins, sans-serif; 
@@ -831,15 +843,13 @@ form {
     }
 }
 
-
+/* Color class for logo */
 .logo-color
 {
 	color: #B76D68;
 }
 
-
-
-
+/* Company intro section styling */
 #company_intro {
     padding: 2em;
     background-color: #f9f9f9; 
@@ -861,7 +871,6 @@ form {
     line-height: 1.5; 
 }
 
-
 /*background image in index.html*/
 #background_image {
 	object-fit: cover;
@@ -873,14 +882,14 @@ form {
 	
 }
 
+/* Article styling */
 article {
 	text-align: justify;
 	font-size: 14px;
 	clear: both;
 }
 
-
-
+/* Hide aside element on small screens */
 @media screen and (max-width: 480px) 
 {
     aside {
@@ -924,7 +933,7 @@ img {
     margin-bottom: 15px;
 }
 
-
+/* Additional image styling for div */
 div img {
 	display: block;
 	margin: 0 auto;
@@ -946,8 +955,6 @@ ul li, ol li {
 }
 
 /* Aside Styles */
-
-
 aside {
     position: fixed;
     top: 100px;
@@ -983,7 +990,6 @@ aside ul li a:hover {
     color: #B76D68;
 }
 
-
 /*definition list - terms*/
 dt {
 	display: table;
@@ -996,8 +1002,6 @@ dt ::after {
 	content: ":"; 
 }
 
-
-
 /*definition list container for personal information*/
 #define_list {
 	float: left;
@@ -1005,9 +1009,7 @@ dt ::after {
 	padding-left: 20em;
 }
 
-
 /*object data for resume in pdf*/
-
 footer {
 		bottom: 10px;
 		left: 0;
@@ -1019,6 +1021,7 @@ footer {
 		padding-bottom: 10px;
 }
 
+/* Horizontal rule styling */
 hr {
     border: 0;
     height: 1px;
@@ -1030,9 +1033,7 @@ hr {
     opacity: 0.7; 
 }
 
-
-
-
+/* Fieldset styling */
 fieldset {
     border: none;
     padding: 0;
@@ -1040,6 +1041,7 @@ fieldset {
     width: 100%;
 }
 
+/* Legend styling */
 legend {
     font-size: 1.5em;
     font-weight: bold;
@@ -1047,12 +1049,14 @@ legend {
     margin-bottom: 15px;
 }
 
+/* Label styling */
 label {
     margin: 10px 0 5px;
     width: 100%;
     text-align: left;
 }
 
+/* Input field styling */
 .input-field {
     width: 100%;
     padding: 10px;
@@ -1062,19 +1066,23 @@ label {
     box-sizing: border-box;
 }
 
+/* Textarea styling */
 textarea {
     height: 100px;
 }
 
+/* Radio and checkbox group styling */
 .radio-group, .checkbox-group {
     margin-bottom: 10px;
 }
 
+/* Inline label styling for radio and checkbox */
 .radio-group label, .checkbox-group label {
     display: inline-block;
     margin-right: 10px;
 }
 
+/* Button styling */
 button {
     width: 100%;
     padding: 12px;
@@ -1087,15 +1095,16 @@ button {
     margin-top: 10px;
 }
 
+/* Button hover effect */
 button:hover {
     background-color: #b8837f;
 }
 
+/* Dropdown select styling */
 select.form-select {
     padding-right: 2.5rem; /* Adds space between the text and the dropdown arrow */
-  }
+}
   
-
 /* About me Style */
 dl {
     margin: 0;
@@ -1126,8 +1135,7 @@ figure {
     box-sizing: border-box; 
 }
 
-
-
+/* Responsive styling for figure */
 @media (max-width: 768px) {
     figure {
         float: none;
@@ -1140,11 +1148,13 @@ figure {
     }
 }
 
+/* Figure caption styling */
 figcaption {
     text-align: center;
     margin-top: 5px;
 }
 
+/* Table styling */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -1159,11 +1169,12 @@ table, th, td {
 th, td {
     padding: 10px;
 }
+
+/* Inline button styling */
 .btn-inline {
     display: inline-block;
     margin-right: 5px; /* Optional: Add some spacing between the buttons */
 }
-
 
 thead {
     background-color: #B76D68;
@@ -1178,22 +1189,24 @@ tbody tr:hover {
     background-color: #f1f1f1;
 }
 
-
 .product-main {
 	margin-left: 35%;	
 }
 
+/* Table container styling */
 .table-container {
     display: flex;
     justify-content: center; 
 }
 
+/* Background container styling */
 .background-container {
     position: relative;
     overflow: hidden;
     display: inline-block;
 }
 
+/* Background container image styling */
 .background-container img {
     width: 100%;
     transition: transform 0.5s ease;
@@ -1217,7 +1230,6 @@ tbody tr:hover {
     z-index: 2; /* Place the text above the dim overlay */
     color: white; /* Text color contrasting with the dimmed background */
 }
-
 
 /* Container for the zoom effect */
 .image-container {
@@ -1354,17 +1366,17 @@ select, input[type="text"], input[type="date"] {
     border-radius: 4px;
     border: 1px solid #ccc;
 }
-  /*page 2 */
-  .q2-2-section {
+/* Styling for page 2 form */
+.q2-2-section {
     display: none; 
 }
 
-  /*page 4 */
+/* Styling for page 4 form */
 .score-section {
     display: none;
 }
 
-/* Page 8 */
+/* Styling for page 8 form */
 .hidden {
   display: none;
 }
@@ -1440,6 +1452,7 @@ select, input[type="text"], input[type="date"] {
     cursor: pointer;
 }
 
+/* Close button hover and focus styles */
 .close-button:hover,
 .close-button:focus {
     color: #000;
@@ -1454,6 +1467,7 @@ select, input[type="text"], input[type="date"] {
     font-weight: bold;
 }
 
+/* Input field styling for registration form */
 #registerForm input {
     width: 100%;
     padding: 8px;
@@ -1463,6 +1477,7 @@ select, input[type="text"], input[type="date"] {
     border: 1px solid #ccc;
 }
 
+/* Submit button styling */
 #submitRegistration {
     background-color: #B76D68;
     color: white;
@@ -1475,6 +1490,7 @@ select, input[type="text"], input[type="date"] {
     width: 100%;
 }
 
+/* Submit button hover effect */
 #submitRegistration:hover {
     background-color: #b8837f;
 }
@@ -1502,6 +1518,7 @@ select, input[type="text"], input[type="date"] {
     min-width: 300px;
 }
 
+/* Canvas styling for chart */
 canvas {
     width: 100% !important;
     height: 500px !important; /* Increase the height to allow for bigger bars */
