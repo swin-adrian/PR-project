@@ -10,8 +10,6 @@ from sklearn.preprocessing import StandardScaler
 from bson import ObjectId
 
 
-
-
 # Define the Blueprint before using it
 migrant_bp = Blueprint('migrant', __name__)
 @migrant_bp.route('/recommendcourse', methods=['GET'])
@@ -102,13 +100,14 @@ def recommendcourse():
 
 
 
-
+# Route to display the migrant's landing page
 @migrant_bp.route('/migrantlanding')
 def migrantlanding():
     mongo = PyMongo(current_app)
     user_id = session.get('user_id')
     migrant_email = session.get('email')
     
+    # Check if user ID is logged in
     if user_id:
         user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
         first_name = user.get("first_name", "Migrant")
@@ -134,14 +133,14 @@ def migrantlanding():
     # Pass the score, probability, occupation, and industry to the template
     return render_template('migrantlanding.html', first_name=first_name, profile_complete=profile_complete, total_score=total_score, pr_prob=pr_prob, occupation=occupation, industry=industry, migrant_email=migrant_email)
 
-
+# Route to display the migrant form page
 @migrant_bp.route('/form')
 def migrantform():
     user_id = session['user_id']
     print(user_id)
     return render_template('form.html')
 
-
+# Route to fetch occupations based on occupation type (POST request)
 @migrant_bp.route('/get_occupations', methods=["POST"])
 def get_occupations():
     mongo = PyMongo(current_app)
@@ -162,9 +161,7 @@ def get_occupations():
     # If no occupations are found, return an empty list
     return jsonify([]), 404
 
-
-
-
+# Route to handle form submission by the migrant (POST request)
 @migrant_bp.route('/submit_migrant_form', methods=["POST"])
 def submit_migrant_form():
     mongo = PyMongo(current_app)
@@ -313,7 +310,7 @@ def submit_migrant_form():
         # Redirect to the results page with the calculated total score and PR probability
         return redirect(url_for('migrant.migrantlanding', total_score=total_score, pr_prob=pr_prob))
 
-
+ # Define score mappings
 def calculate_scores(score_data):
     # Score mappings based on the provided instructions
     visa_score_mapping = {0: 0, 1: 5, 2: 15}
@@ -385,6 +382,7 @@ def calculate_scores(score_data):
 
     return individual_scores, total_score
 
+# Route to display PR score results page
 @migrant_bp.route('/results')
 def results_page():
     total_score = request.args.get('total_score', default=0, type=float)
@@ -393,7 +391,7 @@ def results_page():
     # Render the template and pass the parameters
     return render_template('prscore.html', total_score=total_score, pr_prob=pr_prob)
 
-
+# Route to register a course for the migrant user
 @migrant_bp.route('/register_course', methods=['POST'])
 def register_course():
     mongo = PyMongo(current_app)
@@ -443,8 +441,7 @@ def register_course():
         print(f"Error occurred during course registration: {e}")
         return jsonify({"error": "An error occurred while processing your registration."}), 500
 
-
-    
+# Route to handle submitting an inquiry by a migrant user    
 @migrant_bp.route('/submit_inquiry', methods=['POST'])
 def submit_inquiry():
     mongo = PyMongo(current_app)
@@ -475,7 +472,7 @@ def submit_inquiry():
     mongo.db.inquiries.insert_one(inquiry_data)
     return jsonify({"message": "Inquiry submitted successfully!"}), 200
 
-
+# Route to render the user inquiry page
 @migrant_bp.route('/userinquiry')
 def user_inquiry():
     return render_template(
@@ -484,6 +481,7 @@ def user_inquiry():
         get_inquiries_url=url_for('migrant.get_inquiries')
     )
 
+# Route to retrieve a list of inquiries made by the logged-in migrant user
 @migrant_bp.route('/get_inquiries', methods=['GET'])
 def get_inquiries():
     mongo = PyMongo(current_app)
@@ -507,8 +505,7 @@ def get_inquiries():
 
     return jsonify(inquiries)
 
-
-
+# Route to retrieve saved courses for the logged-in migrant user
 @migrant_bp.route('/get_saved_courses', methods=['GET'])
 def get_saved_courses():
     mongo = PyMongo(current_app)
@@ -522,6 +519,7 @@ def get_saved_courses():
 
     return jsonify({"saved_courses": saved_course_ids})
 
+# Route to save a course to the logged-in migrant user's saved courses list
 @migrant_bp.route('/save_course', methods=['POST'])
 def save_course():
     mongo = PyMongo(current_app)
@@ -552,6 +550,7 @@ def save_course():
 
     return jsonify({"message": "Course saved successfully!"})
 
+# Route to remove a saved course from migrant user's saved courses list
 @migrant_bp.route('/unsave_course', methods=['POST'])
 def unsave_course():
     mongo = PyMongo(current_app)
@@ -583,6 +582,7 @@ def migrantcourses():
     # Fetch additional data if necessary (registered courses, agent-recommended courses, etc.)
     return render_template('migrantcourses.html', migrant_email=migrant_email)
 
+# Route to retrieve detailed information of saved courses for the migrant user
 @migrant_bp.route('/get_saved_courses_details', methods=['GET'])
 def get_saved_courses_details():
     mongo = PyMongo(current_app)
@@ -611,7 +611,7 @@ def get_saved_courses_details():
 
     return jsonify({"saved_courses": saved_courses})
 
-
+# Route to retrieve courses that the migrant user is registered in
 @migrant_bp.route('/get_registered_courses', methods=['GET'])
 def get_registered_courses():
     mongo = PyMongo(current_app)
@@ -639,7 +639,7 @@ def get_registered_courses():
     else:
         return jsonify({"courses": []})  # Return empty list if no registered courses
 
-
+# Route to retrieve details of recommended courses for the migrant user
 @migrant_bp.route('/get_recommended_courses_details', methods=['GET'])
 def get_recommended_courses_details():
     try:
@@ -713,7 +713,8 @@ def get_recommended_courses_details():
     except Exception as e:
         print(f"Error occurred: {e}")
         return jsonify({"error": "An error occurred while processing your request."}), 500
-    
+
+ # Route to register a course for the migrant user    
 @migrant_bp.route('/register_course_migrantcourses', methods=['POST'])
 def register_course_migrantcourses():
     mongo = PyMongo(current_app)
@@ -757,8 +758,7 @@ def register_course_migrantcourses():
         print(f"Error occurred during course registration: {e}")
         return jsonify({"error": "An error occurred while processing your registration."}), 500
 
-
-
+# Route to save a course for the migrant user
 @migrant_bp.route('/save_course_migrantcourses', methods=['POST'])
 def save_course_migrantcourses():
     mongo = PyMongo(current_app)
@@ -795,6 +795,7 @@ def save_course_migrantcourses():
         print(f"Error occurred during saving course: {e}")
         return jsonify({"error": "An error occurred while saving the course."}), 500
 
+# Route to retrieve the agent information for the migrant user
 @migrant_bp.route('/myagent')
 def myagent():
     mongo = PyMongo(current_app)
@@ -838,7 +839,7 @@ def myagent():
 
     return render_template('myagent.html', agent=agent, recommended_courses=recommended_courses)
 
-
+# Route to fetch and display available agents for migrants
 @migrant_bp.route('/findagent')
 def findagent():
     mongo = PyMongo(current_app)
@@ -849,6 +850,7 @@ def findagent():
     
     return render_template('findagent.html', agents=agents)
 
+# Route to link a migrant user to a selected agent
 @migrant_bp.route('/linkagent', methods=['POST'])
 def linkagent():
     mongo = PyMongo(current_app)
