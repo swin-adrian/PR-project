@@ -74,26 +74,48 @@ Program Structure
 -------------------
 PR-project/
 │
+
 ├── app/
+
 │ ├── admin.py - Contains routes specifically to execute admin role's features and functions
+
 │ ├── agent.py - Contains routes specifically to execute agent role's features and functions
+
+
 │ ├── auth.py - Contains user authentication and sign-up functions, redirecting users to different landing pages depending on their roles
+
 │ ├── edprovider.py - Contains routes specifically to execute education provider role's features and functions
+
 │ ├── load_data.py - Script to populate data in MongoDB
+
 │ ├── courses_data.py - Script to populate courses data in MongoDB
+
 │ ├── logreg_model.pkl - Logistic regression model to predict PR probability
+
 │ ├── main.py - Python script to run the main app
+
 │ ├── migrant.py - Contains routes specifically to execute migrant role's features and functions
+
 │ ├── pr_algorithm.py - Script to train the PR model
+
 │ ├── test_model.py - Test script to verify PR probability scores
+
 │ ├── static/
+
 │ │ ├── css/ - Contains all CSS files for styling the application
+
 │ │ │ ├── images/ - Holds static images used across the application
+
 │ │ ├── js/ - Includes JavaScript files for added functionality
+
 │ ├── templates/ - Contains HTML templates for all pages
+
 ├── data/
+
 │ ├── Occupation_list.csv - Occupation list to populate the MongoDB
+
 │ ├── pr_train_data.csv - Dataset to train the PR model
+
 │ ├── Updated_Courses_with_Dates.csv - Dataset to populate the MongoD
 
 
